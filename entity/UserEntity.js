@@ -1,7 +1,7 @@
 // src/entities/UserEntity.js
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
-const { ROLES } = require('../constants');
+const { ROLES, ALLOWED_EXTRA_KEYS } = require('../constants');
 
 class UserEntity {
     // 字段定义
@@ -29,6 +29,25 @@ class UserEntity {
         [this.FIELDS.EMAIL]: Joi.string().email(),
         [this.FIELDS.PASSWORD]: Joi.string().min(6)
     });
+
+    // 验证扩展字段
+    static isAllowedExtraKey(key) {
+        return ALLOWED_EXTRA_KEYS.includes(key);
+    }
+
+    // 验证字段值格式
+    static validateExtraValue(key, value) {
+        const validators = {
+            phone: v => /^1[3-9]\d{9}$/.test(v),
+            sex: v => ['男', '女', '不愿透露'].includes(v),
+            nickname: v => v.length <= 30,
+            description: v => v.length <= 200
+        };
+
+        if (!validators[key](value)) {
+            throw new Error(`字段 ${key} 的值不合法`);
+        }
+    }
 
     // 数据脱敏
     static sanitize(user) {

@@ -3,12 +3,19 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const cors = require('cors');
+const corsOptions = require('./utils/corsConfig');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/auth');
 
 var app = express();
+
+// 处理 CORS
+app.use(cors(corsOptions));
+
+// 处理预检请求 OPTIONS
+app.options('*', cors(corsOptions));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

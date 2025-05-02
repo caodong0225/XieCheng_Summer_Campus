@@ -15,6 +15,10 @@ class UserController {
         this.getUserById = this.getUserById.bind(this);
         this.updateProfile = this.updateProfile.bind(this);
         this.listUsers = this.listUsers.bind(this);
+        this.deleteUser = this.deleteUser.bind(this);
+        this.updateExtras = this.updateExtras.bind(this);
+        this.changeUserRole = this.changeUserRole.bind(this);
+        this.updateUserProfile = this.updateUserProfile.bind(this);
     }
 
     // 用户注册
@@ -25,7 +29,7 @@ class UserController {
                 res,
                 UserEntity.sanitize(user),
                 '注册成功',
-                201
+                200
             );
         } catch (error) {
             response.error(res, error.message, 400);
@@ -54,11 +58,16 @@ class UserController {
     async updateProfile(req, res) {
         try {
             const contextUser = getContext()?.get('user');
-            const user = await this.userService.updateUser(
+            const result = await this.userService.updateUser(
                 contextUser?.userId,
                 req.body
             );
-            response.success(res, UserEntity.sanitize(user));
+            if(result){
+                response.success(res, null, '更新成功');
+            }
+            else{
+                response.error(res, '更新失败', 500);
+            }
         } catch (error) {
             response.error(res, error.message, 400);
         }
@@ -88,6 +97,93 @@ class UserController {
             response.success(res, UserEntity.sanitize(user));
         } catch (error) {
             response.error(res, error.message, 500);
+        }
+    }
+
+    // 统一更新扩展字段（单个/批量）
+    async updateExtras(req, res) {
+        try {
+            // 获取当前用户信息
+            const contextUser = getContext()?.get('user');
+            if (!contextUser) {
+                return response.error(res, '用户未认证', 401);
+            }
+
+            // 验证请求体格式
+            if (typeof req.body !== 'object' || req.body === null) {
+                return response.error(res, '请求体必须为JSON对象', 400);
+            }
+
+            // 执行批量更新
+            const results = await this.userService.batchUpdateExtras(
+                contextUser.userId,
+                req.body
+            );
+
+            response.success(res, results);
+        } catch (error) {
+            response.error(res, error.message, 400);
+        }
+    }
+
+    // 删除用户
+    async deleteUser(req, res) {
+        try {
+            const userId = req.params.userId;
+            const contextUser = getContext()?.get('user');
+            // 不能删除自己
+            if (userId == contextUser?.userId) {
+                return response.error(res, '不能删除自己', 403);
+            }
+            await this.userService.deleteUser(userId);
+            response.success(res, null, '用户删除成功');
+        } catch (error) {
+            response.error(res, error.message, 500);
+        }
+    }
+
+    async changeUserRole(req, res) {
+        try {
+            const  targetUserId  = req.params.userId;
+            const { role: newRole } = req.body;
+
+            await this.userService.changeUserRole(
+                targetUserId,
+                newRole
+            );
+
+            response.success(res, null, '角色更新成功');
+        } catch (error) {
+            response.error(
+                res,
+                error.message,
+                error.statusCode || 500
+            );
+        }
+    }
+
+    // 更新用户密码
+    async updateUserProfile(req, res) {
+        try{
+            const targetUserId  = req.params.userId;
+            const { password } = req.body;
+
+            const result = await this.userService.changePassword(
+                targetUserId,
+                password
+            );
+            if(result){
+                response.success(res, null, '密码更新成功');
+            }
+            else{
+                response.error(res, '密码更新失败', 500);
+            }
+        } catch (error) {
+            response.error(
+                res,
+                error.message,
+                error.statusCode || 500
+            );
         }
     }
 }

@@ -1,6 +1,7 @@
 // src/services/UserService.js
 const UserMapper = require('../mapper/UserMapper');
 const UserEntity = require('../entity/UserEntity');
+const {ROLES} = require("../constants");
 
 class UserService {
     constructor() {
@@ -66,9 +67,85 @@ class UserService {
 
     // 通过用户id获取用户
     async getUserById(userId) {
-        const user = await this.mapper.findById(userId);
+        const user = await this.mapper.findExtraById(userId);
         if (!user) throw new Error('用户不存在');
         return UserEntity.sanitize(user);
+    }
+
+    // 更新用户额外信息
+    async batchUpdateExtras(userId, updates) {
+        // 字段白名单验证
+        const invalidKeys = Object.keys(updates).filter(
+            key => !UserEntity.isAllowedExtraKey(key)
+        );
+        if (invalidKeys.length > 0) {
+            throw new Error(`非法字段: ${invalidKeys.join(', ')}`);
+        }
+
+        try {
+            // 开启事务
+            await this.mapper.beginTransaction();
+
+            const results = {};
+            for (const [key, value] of Object.entries(updates)) {
+                UserEntity.validateExtraValue(key, value);
+                results[key] = await this.mapper.createOrUpdateExtra(userId, key, value);
+            }
+
+            // 提交事务
+            await this.mapper.commit();
+            return results;
+        } catch (error) {
+            // 回滚事务
+            await this.mapper.rollback();
+            throw error;
+        }
+    }
+
+    /**
+     * 更改用户角色
+     * @param {number} targetUserId - 目标用户ID
+     * @param {string} newRole - 新角色
+     */
+    async changeUserRole(targetUserId, newRole) {
+        // 1. 验证目标用户存在
+        const targetUser = await this.mapper.findById(targetUserId);
+        if (!targetUser) {
+            throw new Error('用户不存在');
+        }
+
+        // 3. 验证角色合法性
+        if (!ROLES.includes(newRole)) {
+            throw new Error(`无效角色: ${newRole}`);
+        }
+
+        // 4. 执行更新
+        const isUpdated = await this.mapper.updateUserRole(targetUserId, newRole);
+        if (!isUpdated) {
+            throw new Error('角色更新失败');
+        }
+
+        return true;
+    }
+
+    // 根据id删除用户
+    async deleteUser(userId) {
+        const user = await this.mapper.findById(userId);
+        if (!user) throw new Error('用户不存在');
+        await this.mapper.delete(userId);
+        return { message: '用户已删除' };
+    }
+
+    // 根据用户id更改密码
+    async changePassword(userId, newPassword) {
+        // 验证密码格式
+        if (!newPassword || newPassword.length < 6) {
+            throw new Error('密码长度至少为6个字符');
+        }
+        const user = await this.mapper.findById(userId);
+        if (!user) throw new Error('用户不存在');
+        const hashedPassword = await UserEntity.hashPassword(newPassword);
+        return this.mapper.updatePassword(userId, hashedPassword);
     }
 }
 
