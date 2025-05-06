@@ -1,6 +1,6 @@
 // utils/corsConfig.js
 const whitelist = [
-    'http://localhost:3001' // 开发环境
+    'http://localhost:3001','http://localhost:8081' // 开发环境
 ];
 
 const corsOptions = {
