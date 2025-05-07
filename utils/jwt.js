@@ -23,7 +23,7 @@ const generateJWT = (user) => {
 
 // 验证 JWT 中间件
 const verifyJWT = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+    const authHeader = req.headers?.authorization;
 
     if (!authHeader?.startsWith('Bearer ')) {
         return res.status(401).json({ code: 401, message: '缺少访问令牌' });

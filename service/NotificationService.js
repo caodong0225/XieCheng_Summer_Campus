@@ -20,7 +20,8 @@ class NotificationService {
             await this.mapper.beginTransaction();
             const notificationId = await this.mapper.create(notificationData);
             await this.mapper.commit();
-            return notificationId;
+            const createdNotification = await this.mapper.getById(notificationId);
+            return createdNotification;
         } catch (error) {
             await this.mapper.rollback();
             throw error;

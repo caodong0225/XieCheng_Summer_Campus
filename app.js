@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 const corsOptions = require('./utils/corsConfig');
+const webSocketServer = require('./websocketServer');
 
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/auth');
@@ -67,4 +68,6 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-module.exports = app;
+
+// 启动 WebSocket 服务（独立进程）
+webSocketServer.initialize();

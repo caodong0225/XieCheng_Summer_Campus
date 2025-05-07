@@ -1,10 +1,12 @@
 const NotificationService = require('../service/NotificationService');
 const {getContext} = require("../utils/requestContext");
 const response = require("../utils/response");
+const webSocketServer = require('../websocketServer'); // 导入 WebSocket 实例
 
 class NotificationController {
     constructor() {
         this.service = new NotificationService();
+        this.io = webSocketServer.getIO(); // 获取 io 实例
 
         // 绑定 this，否则路由里调用时 this 会丢失
         this.createNotification = this.createNotification.bind(this);
@@ -16,8 +18,19 @@ class NotificationController {
 
     async createNotification(req, res) {
         try {
-            const notificationId = await this.service.createNotification(req.body);
-            response.success(res, {id : notificationId}); // 使用 200 Created 状态码
+            const createdNotification = await this.service.createNotification(req.body);
+
+            const userId = Number(req.body.user_id);
+            // 发送前检查房间是否存在
+            if (this.io.sockets.adapter.rooms.has(`user_${userId}`)) {
+                this.io.to(`user_${userId}`).emit('new_notification', {
+                    ...createdNotification
+                });
+            }else{
+                console.warn(`房间 user_${userId} 不存在，无法发送通知`);
+            }
+
+            response.success(res, createdNotification); // 使用 200 Created 状态码
         } catch (error) {
             response.error(res, error.message, 400); // 400 Bad Request
         }
