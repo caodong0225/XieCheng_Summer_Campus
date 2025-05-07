@@ -59,7 +59,7 @@ export default function PreviewScreen() {
     initialIndex: string;
   }>();
   
-  const parsedImages = JSON.parse(images);
+  const parsedImages: { uri: string }[] = JSON.parse(images);
   const [currentIndex, setCurrentIndex] = useState(parseInt(initialIndex));
   const [description, setDescription] = useState('');
   const scrollX = useSharedValue(0);

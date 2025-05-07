@@ -50,6 +50,8 @@ export default function RegisterScreen() {
         text1: "注册成功",
         onPress: () => router.back(),
       })
+      // 自动退回登录页面
+      router.back();
     } catch (error) {
         console.error('注册失败:', error);
         Toast.show({

@@ -89,37 +89,29 @@ export default function PostScreen() {
     });
   };
 
-  const renderMediaItem = ({ item, drag, isActive }: DragItemProps) => {
+  const renderMediaItem = ({ item, drag, isActive, getIndex }: any) => {
+    const index = getIndex ? getIndex() : 0;
     return (
       <ScaleDecorator>
         <TouchableOpacity
           onLongPress={drag}
           disabled={isActive}
-          style={tw`w-24 h-24 mr-2 rounded-lg overflow-hidden ${isActive ? 'opacity-50' : ''}`}
+          style={tw`mb-2 flex-row items-center bg-white rounded-lg p-2 shadow`}
+          onPress={() => handlePreview(index)}
         >
-          <TouchableOpacity 
-            style={tw`w-full h-full`}
-            onPress={() => handlePreview(mediaItems.findIndex(i => i.id === item.id))}
-          >
-            <Image
-              source={{ uri: item.uri }}
-              style={tw`w-full h-full`}
-              contentFit="cover"
-            />
+          <Image
+            source={{ uri: item.uri }}
+            style={tw`w-20 h-20 rounded mr-2`}
+          />
+          <Text style={tw`flex-1`} numberOfLines={1}>{item.uri.split('/').pop()}</Text>
+          <TouchableOpacity onPress={() => removeMedia(item.id)}>
+            <Ionicons name="close-circle" size={24} color="red" />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={tw`absolute top-1 right-1 bg-black/50 rounded-full p-0.5`}
-            onPress={() => removeMedia(item.id)}
-          >
-            <Ionicons name="close-circle" size={20} color="white" />
-          </TouchableOpacity>
-          <View style={tw`absolute bottom-1 left-1 bg-black/50 rounded-full px-1.5 py-0.5`}>
-            <Text style={tw`text-white text-xs`}>{item.weight + 1}</Text>
-          </View>
         </TouchableOpacity>
       </ScaleDecorator>
     );
   };
+
 
   return (
     <ScrollView style={tw`flex-1 bg-white`}>
