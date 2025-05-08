@@ -11,6 +11,7 @@ var indexRouter = require('./routes/index');
 var userRouter = require('./routes/auth');
 var noteRouter = require('./routes/note');
 var notificationRouter = require('./routes/notification');
+const fileRoutes = require('./routes/file');
 
 var app = express();
 
@@ -34,6 +35,7 @@ app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/note', noteRouter);
 app.use('/notification', notificationRouter);
+app.use('/file', fileRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
