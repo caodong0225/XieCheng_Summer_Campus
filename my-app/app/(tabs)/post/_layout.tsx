@@ -18,6 +18,14 @@ export default function PostLayout() {
           presentation: 'transparentModal',
         }}
       />
+      <Stack.Screen 
+        name="image-viewer" 
+        options={{
+          animation: 'fade',
+          presentation: 'transparentModal',
+          contentStyle: { backgroundColor: 'black' }
+        }}
+      />
     </Stack>
   );
 } 

@@ -3,9 +3,11 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatlist';
 import tw from 'twrnc';
+import { createNote } from '../../api/note';
+import { newUpload } from '../../api/upload';
 
 interface MediaItem {
   id: string;
@@ -32,7 +34,11 @@ export default function PostScreen() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
     if (status !== 'granted') {
-      alert('需要访问您的相册权限才能选择图片');
+      Alert.alert(
+        '权限请求',
+        '需要访问您的相册权限才能选择图片',
+        [{ text: '确定' }]
+      );
       return;
     }
 
@@ -44,13 +50,38 @@ export default function PostScreen() {
     });
 
     if (!result.canceled) {
-      const newItems = result.assets.map((asset, index) => ({
-        id: Math.random().toString(),
-        uri: asset.uri,
-        type: asset.type === 'video' ? 'video' as const : 'image' as const,
-        weight: mediaItems.length + index
-      }));
-      setMediaItems([...mediaItems, ...newItems]);
+      try {
+        // Upload each selected media file immediately
+        const uploadPromises = result.assets.map(async (asset, index) => {
+          const response = await fetch(asset.uri);
+          const blob = await response.blob();
+          const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
+          const uploadResult = await newUpload(file);
+
+          console.log(uploadResult)
+          
+          if (uploadResult) {
+            return {
+              id: Math.random().toString(),
+              uri: uploadResult.url, // 使用返回的完整URL
+              type: asset.type === 'video' ? 'video' as const : 'image' as const,
+              weight: mediaItems.length + index // 确保weight按顺序递增
+            };
+          } else {
+            throw new Error(uploadResult.message || '上传失败');
+          }
+        });
+
+        const newItems = await Promise.all(uploadPromises);
+        setMediaItems([...mediaItems, ...newItems]);
+      } catch (error) {
+        console.error('上传失败：', error);
+        Alert.alert(
+          '上传失败',
+          '图片上传失败，请重试',
+          [{ text: '确定' }]
+        );
+      }
     }
   };
 
@@ -63,30 +94,75 @@ export default function PostScreen() {
       pathname: '/post/preview',
       params: {
         images: JSON.stringify(mediaItems),
-        initialIndex: index.toString()
+        initialIndex: index.toString(),
+        title: title,       // 新增标题参数
+        content: content    // 新增内容参数
       }
     });
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (!title.trim()) {
-      alert('请输入标题');
+      Alert.alert(
+        '提示',
+        '请输入标题',
+        [{ text: '确定' }]
+      );
       return;
     }
     if (!content.trim()) {
-      alert('请输入内容');
+      Alert.alert(
+        '提示',
+        '请输入内容',
+        [{ text: '确定' }]
+      );
       return;
     }
     if (mediaItems.length === 0) {
-      alert('请至少添加一张图片');
+      Alert.alert(
+        '提示',
+        '请至少添加一张图片',
+        [{ text: '确定' }]
+      );
       return;
     }
-    // TODO: 实现发布逻辑
-    console.log('发布内容：', {
-      title,
-      content,
-      mediaItems
-    });
+
+    try {
+      // 构造符合要求的数据格式，确保weight从0开始按顺序递增
+      const noteData = {
+        title: title.trim(),
+        description: content.trim(),
+        attachments: mediaItems.map((item, index) => ({
+          type: 'picture',
+          link: item.uri,
+          weight: index // 使用当前数组索引作为weight，确保从0开始递增
+        }))
+      };
+
+      console.log('发布数据：', noteData);
+      const result = await createNote(noteData);
+      
+      if (result.success) {
+        Alert.alert(
+          '成功',
+          '发布成功！',
+          [{ text: '确定', onPress: () => router.back() }]
+        );
+      } else {
+        Alert.alert(
+          '发布失败',
+          result.message || '发布失败，请稍后重试',
+          [{ text: '确定' }]
+        );
+      }
+    } catch (error) {
+      console.error('发布失败：', error);
+      Alert.alert(
+        '发布失败',
+        '发布失败，请稍后重试',
+        [{ text: '确定' }]
+      );
+    }
   };
 
   const renderMediaItem = ({ item, drag, isActive, getIndex }: any) => {
@@ -103,7 +179,7 @@ export default function PostScreen() {
             source={{ uri: item.uri }}
             style={tw`w-20 h-20 rounded mr-2`}
           />
-          <Text style={tw`flex-1`} numberOfLines={1}>{item.uri.split('/').pop()}</Text>
+          <View style={tw`flex-1`} />
           <TouchableOpacity onPress={() => removeMedia(item.id)}>
             <Ionicons name="close-circle" size={24} color="red" />
           </TouchableOpacity>
@@ -144,6 +220,7 @@ export default function PostScreen() {
             renderItem={renderMediaItem}
             keyExtractor={(item) => item.id}
             onDragEnd={({ data }) => {
+              // 更新数据时重新设置weight
               const updatedData = data.map((item, index) => ({
                 ...item,
                 weight: index

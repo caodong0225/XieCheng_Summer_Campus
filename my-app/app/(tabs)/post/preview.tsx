@@ -2,13 +2,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { Dimensions, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
-    interpolate,
-    useAnimatedScrollHandler,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming
 } from 'react-native-reanimated';
 import tw from 'twrnc';
 
@@ -54,9 +54,11 @@ const DotIndicator = ({ index, scrollX }: { index: number; scrollX: any }) => {
 
 export default function PreviewScreen() {
   const router = useRouter();
-  const { images, initialIndex } = useLocalSearchParams<{ 
+  const { images, initialIndex, title, content } = useLocalSearchParams<{ 
     images: string;
     initialIndex: string;
+    title: string;
+    content: string;
   }>();
   
   const parsedImages: { uri: string }[] = JSON.parse(images);
@@ -101,10 +103,14 @@ export default function PreviewScreen() {
   };
 
   const handleImagePress = () => {
-    const currentImage = parsedImages[currentIndex];
     router.push({
       pathname: '/post/image-viewer',
-      params: { imageUri: currentImage.uri }
+      params: {
+        images: JSON.stringify(parsedImages),
+        initialIndex: currentIndex.toString(),
+        title: title,
+        content: content
+      }
     });
   };
 
@@ -161,13 +167,10 @@ export default function PreviewScreen() {
 
         {/* 文字说明区域 */}
         <View style={tw`px-4 py-2`}>
-          <TextInput
-            multiline
-            placeholder="添加文字说明..."
-            value={description}
-            onChangeText={setDescription}
-            style={tw`min-h-[100px] text-base`}
-          />
+          {/* 新增标题显示 */}
+          {title && <Text style={tw`text-xl font-bold mb-2`}>{title}</Text>}
+          {/* 新增内容显示 */}
+          {content && <Text style={tw`text-base leading-5`}>{content}</Text>}
         </View>
       </View>
 

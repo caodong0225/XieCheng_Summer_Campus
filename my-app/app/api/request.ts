@@ -187,3 +187,25 @@ export function newDel(url: string, isAuth = true) {
     isAuth
   );
 }
+
+export function upload(url: string, file: File, additionalData?: Record<string, any>, isAuth = true) {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  if (additionalData) {
+    Object.entries(additionalData).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+  }
+
+  return newRequest(
+    url,
+    {
+      method: "POST",
+      body: formData,
+      // Don't set Content-Type header manually, let the browser set it with the boundary
+      headers: {},
+    },
+    isAuth
+  );
+}
