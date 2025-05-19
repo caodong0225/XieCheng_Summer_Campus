@@ -181,7 +181,6 @@ class UserMapper {
         query += ` ORDER BY ${UserEntity.FIELDS[sort.toUpperCase()]} ${order}`;
 
         query += ` LIMIT ? OFFSET ?`;
-        query += ` LIMIT ? OFFSET ?`;
         // 分页
         params.push(pageSize, offset);
 

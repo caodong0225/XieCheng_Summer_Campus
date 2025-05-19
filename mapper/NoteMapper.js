@@ -1,6 +1,7 @@
 // src/mapper/NoteMapper.js
 const pool = require('../utils/database');
 const NoteEntity = require('../entity/NoteEntity');
+const UserEntity = require("../entity/UserEntity");
 
 class NoteMapper {
     constructor() {
@@ -159,6 +160,85 @@ class NoteMapper {
             [noteId]
         );
         return rows[0].count || 0;
+    }
+
+    // 审计游记
+    async auditNote(noteId, status, reason) {
+        const [result] = await pool.query(
+            `UPDATE notes_status SET 
+       status = ?, reason = ?
+       WHERE note_id = ?`,
+            [status, reason, noteId]
+        );
+        return result.affectedRows > 0;
+    }
+
+    // 获取游记列表信息
+    async getNoteList({ page = 1, pageSize = 10, title , description, created_by,
+                          status, sort = 'id', order = 'desc'}) {
+        page = parseInt(page, 10);
+        pageSize = parseInt(pageSize, 10);
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(pageSize) || pageSize < 1) pageSize = 10;
+
+        const offset = (page - 1) * pageSize;
+
+        let query = `SELECT notes.id, notes.title,notes.created_at,notes.updated_at,notes.description,notes.created_by, users.username, users.email,notes_status.status FROM notes join users on users.id = notes.created_by join notes_status on notes_status.note_id  = notes.id  where notes.del_flag = 0`;
+
+        let countQuery = `SELECT COUNT(*) as total FROM notes join notes_status on notes_status.note_id  = notes.id  where notes.del_flag = 0`;
+        const params = [];
+        const countParams = [];
+
+        if (title) {
+            query += ` and notes.title LIKE ?`;
+            countQuery += ` and notes.title LIKE ?`;
+            params.push(`%${title}%`);
+            countParams.push(`%${title}%`);
+        }
+
+        if (description) {
+            query +=  ` AND notes.description LIKE ?`;
+            countQuery += ` AND notes.description LIKE ?`;
+            params.push(`%${description}%`);
+            countParams.push(`%${description}%`);
+        }
+
+        if (created_by) {
+            query += ` AND notes.created_by = ?`;
+            countQuery += ` AND notes.created_by = ?`;
+            params.push(created_by);
+            countParams.push(created_by);
+        }
+
+        if(status){
+            query += ` and notes_status.status = ?`;
+            countQuery += ` and notes_status.status = ?`;
+            params.push(status);
+            countParams.push(status);
+        }
+
+        query += ` ORDER BY ${sort} ${order} LIMIT ?, ?`;
+        params.push(offset, pageSize);
+        const [[{ total }]] = await pool.query(countQuery, countParams); // 获取总数
+        const [rows] = await pool.query(query, params); // 获取数据
+
+        return {
+            pageNum: page,
+            pageSize: pageSize,
+            total,
+            pages: Math.ceil(total / pageSize),
+            list: rows
+        };
+    }
+
+    // 通过游记id获取附件列表
+    async getAttachmentListByNoteId(noteId) {
+        const [rows] = await pool.query(
+            `SELECT * FROM notes_attachment 
+       WHERE note_id = ?`,
+            [noteId]
+        );
+        return rows || null;
     }
 }
 

@@ -57,5 +57,56 @@ router.delete('/attachment/:attachmentId',
     NoteController.deleteAttachment
 );
 
+// 审核游记
+router.put('/review/:noteId',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    roleCheck('admin','super-admin'),
+    NoteController.auditNote
+);
+
+// 获取游记列表
+router.get('/list',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    NoteController.getNoteList
+);
+
+// 通过游记id获取游记
+router.get('/:noteId',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    NoteController.getNoteById
+);
+
+// 收藏操作
+router.post('/:noteId/collection',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    NoteController.toggleCollection
+);
+
+// 喜欢操作
+router.post('/:noteId/like',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    NoteController.toggleFavorite
+);
+
 
 module.exports = router;

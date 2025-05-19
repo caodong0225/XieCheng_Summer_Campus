@@ -19,9 +19,10 @@ interface ImageViewerProps {
   initialIndex: number;
   title?: string;
   content?: string;
+  onClose?: () => void;
 }
 
-export default function ImageViewer({ images, initialIndex, title, content }: ImageViewerProps) {
+export default function ImageViewer({ images, initialIndex, title, content, onClose }: ImageViewerProps) {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [alertConfig, setAlertConfig] = useState<{
@@ -53,7 +54,11 @@ export default function ImageViewer({ images, initialIndex, title, content }: Im
   };
 
   const handleClose = () => {
-    router.back();
+    if (onClose) {
+      onClose();
+    } else {
+      router.back();
+    }
   };
 
   const handleScroll = (event: any) => {
@@ -180,8 +185,8 @@ export default function ImageViewer({ images, initialIndex, title, content }: Im
   };
 
   return (
-    <View style={tw`flex-1 bg-black`}>
-      <StatusBar barStyle="light-content" />
+    <View style={tw`absolute inset-0 bg-black z-50`}>
+      <StatusBar barStyle="light-content" backgroundColor="black" />
       
       {/* 顶部工具栏 */}
       <View style={tw`absolute top-12 left-0 right-0 z-10 flex-row justify-between items-center px-4`}>
@@ -205,19 +210,19 @@ export default function ImageViewer({ images, initialIndex, title, content }: Im
         onScroll={handleScroll}
         scrollEventThrottle={16}
         contentOffset={{ x: initialIndex * SCREEN_WIDTH, y: 0 }}
-        style={tw`flex-1`}
+        style={tw`flex-1 bg-black`}
       >
         {images.map((image, index) => (
           <View 
             key={image.id}
             style={[
-              tw`justify-center items-center`,
+              tw`justify-center items-center bg-black`,
               { width: SCREEN_WIDTH, height: SCREEN_HEIGHT }
             ]}
           >
             <Image
               source={{ uri: image.uri }}
-              style={tw`w-full h-full`}
+              style={tw`w-full h-full bg-black`}
               contentFit="contain"
               transition={200}
             />
