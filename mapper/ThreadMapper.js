@@ -151,7 +151,50 @@ class ThreadMapper {
         );
         return result.affectedRows > 0;
     }
+    async create(threadData) {
+        const [result] = await pool.query(
+            `INSERT INTO threads SET ?
+            `,
+            [threadData]
+        );
+        return this.findByIdWithUser(result.insertId);
+    }
 
+    async findById(id) {
+        const [rows] = await pool.query(
+            `SELECT * FROM threads WHERE id = ?`,
+            [id]
+        );
+        return rows[0] || null;
+    }
+
+    async findByIdWithUser(id) {
+        const [rows] = await pool.query(`
+            SELECT t.*, u.username, u.email
+            FROM threads t
+            LEFT JOIN users u ON t.user_id = u.id
+            WHERE t.id = ?
+        `, [id]);
+        return rows[0] || null;
+    }
+
+    async update(id, updates) {
+        const [result] = await pool.query(
+            `UPDATE threads SET ?
+             WHERE id = ?`,
+            [updates, id]
+        );
+        if (result.affectedRows === 0) return null;
+        return this.findByIdWithUser(id);
+    }
+
+    async delete(id) {
+        await pool.query(
+            `DELETE FROM threads WHERE id = ?`,
+            [id]
+        );
+        return true;
+    }
 }
 
 module.exports = ThreadMapper;

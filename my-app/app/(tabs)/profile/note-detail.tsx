@@ -158,7 +158,7 @@ export default function NoteDetailScreen() {
     return (
       <View style={tw`flex-1 justify-center items-center bg-white`}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={tw`mt-2 text-gray-600`}>加载中...</Text>
+        <Text style={[tw`mt-2 text-gray-600`, { fontFamily: 'System' }]}>Loading...</Text>
       </View>
     );
   }
@@ -287,10 +287,6 @@ export default function NoteDetailScreen() {
           <Text style={tw`mt-1 text-sm text-gray-600`}>{note.comments}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={tw`flex-1 items-center`}>
-          <Ionicons name="share-outline" size={24} color="#666" />
-          <Text style={tw`mt-1 text-sm text-gray-600`}>分享</Text>
-        </TouchableOpacity>
       </View>
 
       {/* 图片查看器 */}
