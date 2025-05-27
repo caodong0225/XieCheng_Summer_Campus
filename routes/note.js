@@ -108,5 +108,15 @@ router.post('/:noteId/like',
     NoteController.toggleFavorite
 );
 
+// 通过游记id获取游记
+router.get('/detail/:noteId',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    NoteController.getNoteThreads
+);
+
 
 module.exports = router;

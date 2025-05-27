@@ -3,46 +3,50 @@ const ThreadMapper = require('../mapper/ThreadMapper');
 const {sanitize, createSchema, updateSchema} = require("../entity/ThreadEntity");
 const UserMapper = require("../mapper/UserMapper");
 const NoteMapper = require("../mapper/NoteMapper");
+const NoteEmojiMapper = require("../mapper/NoteEmojiMapper");
+const ReplyEmojiMapper = require("../mapper/ReplyEmojiMapper");
 
 class ThreadService {
     constructor() {
         this.mapper = new ThreadMapper();
         this.userMapper = new UserMapper();
         this.noteMapper = new NoteMapper();
+        this.noteEmojiMapper = new NoteEmojiMapper();
+        this.replyEmojiMapper = new ReplyEmojiMapper();
     }
 
     // 用户收藏操作
     async toggleCollection(userId, noteId) {
-        const isCollected = await this.mapper.isCollection(userId, noteId);
+        const isCollected = await this.noteEmojiMapper.isCollection(userId, noteId);
         try {
-            await this.mapper.beginTransaction();
+            await this.noteEmojiMapper.beginTransaction();
             if (isCollected) {
-                await this.mapper.cancelCollection(userId, noteId);
+                await this.noteEmojiMapper.cancelCollection(userId, noteId);
             } else {
-                await this.mapper.collection(userId, noteId);
+                await this.noteEmojiMapper.collection(userId, noteId);
             }
-            await this.mapper.commit();
+            await this.noteEmojiMapper.commit();
             return { collected: !isCollected };
         } catch (error) {
-            await this.mapper.rollback();
+            await this.noteEmojiMapper.rollback();
             throw new Error('收藏操作失败: ' + error.message);
         }
     }
 
     // 用户点赞操作
     async toggleFavorite(userId, noteId) {
-        const isFavorited = await this.mapper.isFavorite(userId, noteId);
+        const isFavorited = await this.noteEmojiMapper.isFavorite(userId, noteId);
         try {
-            await this.mapper.beginTransaction();
+            await this.noteEmojiMapper.beginTransaction();
             if (isFavorited) {
-                await this.mapper.cancelFavorite(userId, noteId);
+                await this.noteEmojiMapper.cancelFavorite(userId, noteId);
             } else {
-                await this.mapper.favorite(userId, noteId);
+                await this.noteEmojiMapper.favorite(userId, noteId);
             }
-            await this.mapper.commit();
+            await this.noteEmojiMapper.commit();
             return { favorited: !isFavorited };
         } catch (error) {
-            await this.mapper.rollback();
+            await this.noteEmojiMapper.rollback();
             throw new Error('点赞操作失败: ' + error.message);
         }
     }
@@ -100,6 +104,7 @@ class ThreadService {
         await this.mapper.delete(id);
         return true;
     }
+
 }
 
 module.exports = ThreadService;

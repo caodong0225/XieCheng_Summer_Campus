@@ -19,6 +19,7 @@ class NoteController {
         this.getNoteById = this.getNoteById.bind(this);
         this.toggleCollection = this.toggleCollection.bind(this);
         this.toggleFavorite = this.toggleFavorite.bind(this);
+        this.getNoteThreads = this.getNoteThreads.bind(this);
     }
 
     async createNote(req, res) {
@@ -152,6 +153,16 @@ class NoteController {
             response.success(res, result);
         } catch (error) {
             response.error(res, error.message, 500);
+        }
+    }
+
+    // 通过id获取游记的评论列表
+    async getNoteThreads(req, res) {
+        try {
+            const threads = await this.noteService.getThreadsWithRepliesByNote(req.params.noteId);
+            response.success(res, threads, '评论列表获取成功');
+        } catch (error) {
+            response.error(res, error.message, 400);
         }
     }
 }

@@ -240,6 +240,27 @@ class NoteMapper {
         );
         return rows || null;
     }
+
+    // 获取指定note_id的所有主帖（含一级回复和统计）
+    async getThreadsByNoteId(noteId) {
+        const [threads] = await pool.query(`
+        SELECT 
+            t.*,
+            u.username,
+            u.email,
+            COUNT(DISTINCT r.id) AS reply_count,
+            COUNT(DISTINCT tr.id) AS total_reactions
+        FROM threads t
+        LEFT JOIN users u ON t.user_id = u.id
+        LEFT JOIN thread_replies r ON r.thread_id = t.id
+        LEFT JOIN thread_emoji_reactions tr ON tr.thread_id = t.id
+        WHERE t.note_id = ? and t.status = ?
+        GROUP BY t.id
+        ORDER BY t.weight DESC, t.created_at DESC
+    `, [noteId, 'open']);
+        return threads;
+    }
+
 }
 
 module.exports = NoteMapper;

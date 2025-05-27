@@ -9,6 +9,8 @@ interface Comment {
   id: number;
   content: string;
   created_at: string;
+  likes: number;
+  isLiked: boolean;
   user: {
     id: number;
     username: string;
@@ -39,6 +41,8 @@ export default function CommentScreen() {
             id: 1,
             content: "风景真不错，下次我也要去！",
             created_at: new Date().toISOString(),
+            likes: 5,
+            isLiked: false,
             user: {
               id: 1,
               username: "旅行达人",
@@ -48,6 +52,8 @@ export default function CommentScreen() {
             id: 2,
             content: "照片拍得真好，请问是用什么相机拍的？",
             created_at: new Date(Date.now() - 3600000).toISOString(),
+            likes: 3,
+            isLiked: false,
             user: {
               id: 2,
               username: "摄影爱好者",
@@ -70,6 +76,8 @@ export default function CommentScreen() {
       id: Date.now(),
       content: commentText.trim(),
       created_at: new Date().toISOString(),
+      likes: 0,
+      isLiked: false,
       user: {
         id: 1, // 模拟当前用户
         username: "我",
@@ -77,6 +85,20 @@ export default function CommentScreen() {
     };
     setComments(prev => [newComment, ...prev]);
     setCommentText('');
+  };
+
+  const handleLike = (commentId: number) => {
+    setComments(prevComments => 
+      prevComments.map(comment => 
+        comment.id === commentId 
+          ? {
+              ...comment,
+              likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
+              isLiked: !comment.isLiked
+            }
+          : comment
+      )
+    );
   };
 
   const formatTime = (dateString: string) => {
@@ -160,22 +182,31 @@ export default function CommentScreen() {
                 </View>
                 <View style={tw`flex-1`}>
                   <View style={tw`flex-row items-center mb-1`}>
-                    <Text style={tw`font-medium text-base text-gray-900`}>
+                    <Text style={tw`font-medium text-base text-gray-900 font-sans`}>
                       {comment.user.username}
                     </Text>
-                    <Text style={tw`text-gray-400 text-sm ml-2`}>
+                    <Text style={tw`text-gray-400 text-sm ml-2 font-sans`}>
                       {formatTime(comment.created_at)}
                     </Text>
                   </View>
-                  <Text style={tw`text-gray-700 leading-5`}>{comment.content}</Text>
+                  <Text style={tw`text-gray-700 leading-5 font-sans`}>{comment.content}</Text>
                   <View style={tw`flex-row items-center mt-2`}>
-                    <TouchableOpacity style={tw`flex-row items-center mr-4`}>
-                      <Ionicons name="heart-outline" size={16} color="#666" />
-                      <Text style={tw`text-gray-500 text-sm ml-1`}>点赞</Text>
+                    <TouchableOpacity 
+                      style={tw`flex-row items-center mr-4`}
+                      onPress={() => handleLike(comment.id)}
+                    >
+                      <Ionicons 
+                        name={comment.isLiked ? "heart" : "heart-outline"} 
+                        size={16} 
+                        color={comment.isLiked ? "#ef4444" : "#666"} 
+                      />
+                      <Text style={tw`text-gray-500 text-sm ml-1 font-sans`}>
+                        {comment.likes > 0 ? comment.likes : '点赞'}
+                      </Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={tw`flex-row items-center`}>
                       <Ionicons name="chatbubble-outline" size={16} color="#666" />
-                      <Text style={tw`text-gray-500 text-sm ml-1`}>回复</Text>
+                      <Text style={tw`text-gray-500 text-sm ml-1 font-sans`}>回复</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -190,7 +221,7 @@ export default function CommentScreen() {
         <View style={tw`flex-row items-end`}>
           <View style={tw`flex-1 bg-gray-100 rounded-2xl px-4 py-2 mr-2 min-h-[40px] max-h-[100px]`}>
             <TextInput
-              style={tw`text-base text-gray-900`}
+              style={tw`text-base text-gray-900 font-sans`}
               placeholder="写下你的评论..."
               placeholderTextColor="#9ca3af"
               value={commentText}
@@ -204,7 +235,7 @@ export default function CommentScreen() {
             onPress={handleSubmitComment}
             disabled={!commentText.trim()}
           >
-            <Text style={tw`text-white font-medium`}>发送</Text>
+            <Text style={tw`text-white font-medium font-sans`}>发送</Text>
           </TouchableOpacity>
         </View>
       </View>

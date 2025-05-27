@@ -1,14 +1,18 @@
 // src/services/NoteService.js
 const NoteMapper = require('../mapper/NoteMapper');
 const NoteEntity = require('../entity/NoteEntity');
-const ThreadMapper = require("../mapper/ThreadMapper");
+const NoteEmojiMapper = require("../mapper/NoteEmojiMapper");
 const UserMapper = require("../mapper/UserMapper");
+const ReplyEmojiMapper = require("../mapper/ReplyEmojiMapper");
+const ThreadMapper = require("../mapper/ThreadMapper");
 
 class NoteService {
     constructor() {
         this.mapper = new NoteMapper();
-        this.threadMapper = new ThreadMapper();
+        this.noteEmojiMapper = new NoteEmojiMapper();
+        this.replyEmojiMapper = new ReplyEmojiMapper();
         this.userMapper = new UserMapper();
+        this.threadMapper = new ThreadMapper();
     }
 
     /**
@@ -162,15 +166,15 @@ class NoteService {
         user.password = undefined;
         note.user = user;
         // 获取游记评论数
-        const comments = await this.threadMapper.countReplyByNoteId(note.id);
+        const comments = await this.noteEmojiMapper.countReplyByNoteId(note.id);
         // 获取喜欢数
-        const likes = await this.threadMapper.countFavoriteByNoteId(note.id);
+        const likes = await this.noteEmojiMapper.countFavoriteByNoteId(note.id);
         // 获取收藏数
-        const collections = await this.threadMapper.countCollectionByNoteId(note.id);
+        const collections = await this.noteEmojiMapper.countCollectionByNoteId(note.id);
         // 是否用户有喜欢
-        const isFavorite = await this.threadMapper.isFavorite(userId, note.id);
+        const isFavorite = await this.noteEmojiMapper.isFavorite(userId, note.id);
         // 是否用户有收藏
-        const isCollection = await this.threadMapper.isCollection(userId, note.id);
+        const isCollection = await this.noteEmojiMapper.isCollection(userId, note.id);
         note.isFavorite = isFavorite;
         note.isCollection = isCollection;
         note.likes = likes;
@@ -178,6 +182,55 @@ class NoteService {
         note.comments = comments;
         note.attachments = attachments;
         return note;
+    }
+
+    // 组合查询服务
+    async getThreadsWithRepliesByNote(noteId) {
+        // 1. 获取主帖基础数据
+        const threads = await this.mapper.getThreadsByNoteId(noteId);
+        if (threads.length === 0) return [];
+        // 2. 并行查询关联数据
+        const threadIds = threads.map(t => t.id);
+        const [threadReactions] = await Promise.all([
+            this.threadMapper.getThreadReactions(threadIds),
+            this.threadMapper.getFirstLevelReplies(threadIds)
+        ]);
+
+        // 3. 获取所有层级的回复
+        const replies = await this.threadMapper.getAllReplies(threadIds);
+
+        // 4. 处理回复数据
+        const replyIds = replies.map(r => r.id);
+        const replyReactions = await this.replyEmojiMapper.getReplyReactions(replyIds);
+
+        // 4. 构建表情映射
+        const buildReactionMap = (data, idField) =>
+            data.reduce((map, item) => {
+                const id = item[idField];
+                map[id] = map[id] || {};
+                map[id][item.emoji] = {
+                    count: item.count,
+                    users: item.users.split(',').map(Number)
+                };
+                return map;
+            }, {});
+
+        const threadReactionMap = buildReactionMap(threadReactions, 'thread_id');
+        const replyReactionMap = buildReactionMap(replyReactions, 'thread_reply_id');
+
+        // 5. 组合最终数据结构
+        const replyMap = replies.reduce((map, reply) => {
+            reply.reactions = replyReactionMap[reply.id] || {};
+            map[reply.thread_id] = map[reply.thread_id] || [];
+            map[reply.thread_id].push(reply);
+            return map;
+        }, {});
+
+        return threads.map(thread => ({
+            ...thread,
+            reactions: threadReactionMap[thread.id] || {},
+            replies: replyMap[thread.id] || []
+        }));
     }
 
 }
