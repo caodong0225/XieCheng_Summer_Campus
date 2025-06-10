@@ -142,7 +142,6 @@ class NoteService {
 
     // 获取游记列表
     async getNoteList(filter) {
-        console.log(filter)
         const notes = await this.mapper.getNoteList(filter);
         for (const note of notes.list) {
             // 获取游记附件

@@ -12,6 +12,7 @@ var userRouter = require('./routes/auth');
 var noteRouter = require('./routes/note');
 var notificationRouter = require('./routes/notification');
 var threadRouter = require('./routes/thread');
+var replyRouter = require('./routes/reply');
 const fileRoutes = require('./routes/file');
 
 var app = express();
@@ -38,6 +39,7 @@ app.use('/note', noteRouter);
 app.use('/notification', notificationRouter);
 app.use('/file', fileRoutes);
 app.use('/thread', threadRouter);
+app.use('/reply', replyRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

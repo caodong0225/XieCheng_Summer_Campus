@@ -20,3 +20,7 @@ export async function deleteThread(id: any) {
 export async function undoThread(id: any) {
   return del(`thread/undo/${id}`);
 }
+
+export async function likeThread(id: any) {
+  return post(`thread/like/${id}`, {})
+}

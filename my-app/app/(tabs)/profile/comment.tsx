@@ -1,21 +1,48 @@
+import { getUser } from '@/store/token';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import tw from 'twrnc';
+import { getNoteReplyByNoteId } from '../../api/note'; // æ–°å¢ç‚¹èµAPI
+import { likeReply } from '../../api/reply';
+import { likeThread } from '../../api/thread';
+import { getAvatar } from '../../utils/string';
+
+interface Reply {
+  id: number;
+  user_id: number;
+  thread_id: number;
+  reply_id: number | null;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  username: string;
+  email: string;
+  child_replies_count: number;
+  reactions: Record<string, any>;
+  children?: Reply[]; // æ–°å¢å­å›å¤å­—æ®µ
+  liked?: boolean; // æ–°å¢ç‚¹èµçŠ¶æ€
+}
 
 interface Comment {
   id: number;
   content: string;
+  user_id: number;
+  note_id: number;
   created_at: string;
-  likes: number;
-  isLiked: boolean;
-  user: {
-    id: number;
-    username: string;
-    avatar?: string;
-  };
+  updated_at: string;
+  status: string;
+  weight: number;
+  username: string;
+  email: string;
+  reply_count: number;
+  total_reactions: number;
+  reactions: Record<string, any>;
+  replies: Reply[];
+  liked?: boolean; // æ–°å¢ç‚¹èµçŠ¶æ€
 }
 
 export default function CommentScreen() {
@@ -34,71 +61,165 @@ export default function CommentScreen() {
     try {
       setLoading(true);
       setError(null);
-      // Ä£ÄâÊı¾İ£¬ºóĞø¶Ô½Óºó¶Ë
-      setTimeout(() => {
-        setComments([
-          {
-            id: 1,
-            content: "·ç¾°Õæ²»´í£¬ÏÂ´ÎÎÒÒ²ÒªÈ¥£¡",
-            created_at: new Date().toISOString(),
-            likes: 5,
-            isLiked: false,
-            user: {
-              id: 1,
-              username: "ÂÃĞĞ´ïÈË",
-            }
-          },
-          {
-            id: 2,
-            content: "ÕÕÆ¬ÅÄµÃÕæºÃ£¬ÇëÎÊÊÇÓÃÊ²Ã´Ïà»úÅÄµÄ£¿",
-            created_at: new Date(Date.now() - 3600000).toISOString(),
-            likes: 3,
-            isLiked: false,
-            user: {
-              id: 2,
-              username: "ÉãÓ°°®ºÃÕß",
-            }
-          }
-        ]);
-        setLoading(false);
-      }, 1000);
+      const response = await getNoteReplyByNoteId(id);
+      const user = await getUser();
+      if (response.code === 200) {
+        // å°†æ‰å¹³å›å¤åˆ—è¡¨è½¬æ¢ä¸ºæ ‘å½¢ç»“æ„
+        const commentsWithTree = (response.data || []).map((comment: any) => {
+          return {
+            ...comment,
+            liked: comment.reactions?.['ğŸ’–']?.users.includes(user?.id),
+            replies: buildReplyTree(comment.replies || [])
+          };
+        });
+        setComments(commentsWithTree);
+      } else {
+        setError(response.message || 'è·å–è¯„è®ºå¤±è´¥');
+      }
     } catch (err) {
-      setError('»ñÈ¡ÆÀÂÛÊ±·¢Éú´íÎó');
+      setError('è·å–è¯„è®ºæ—¶å‘ç”Ÿé”™è¯¯');
       console.error('Error fetching comments:', err);
+    } finally {
       setLoading(false);
     }
   };
 
+  // æ„å»ºæ ‘å½¢å›å¤ç»“æ„
+  const buildReplyTree = (replies: Reply[]): Reply[] => {
+    const replyMap: Record<number, Reply> = {};
+    const replyTree: Reply[] = [];
+    
+    // åˆ›å»ºå›å¤æ˜ å°„
+    replies.forEach(reply => {
+      replyMap[reply.id] = {
+        ...reply,
+        children: [],
+        liked: false
+      };
+    });
+    
+    // æ„å»ºæ ‘å½¢ç»“æ„
+    replies.forEach(reply => {
+      if (reply.reply_id && replyMap[reply.reply_id]) {
+        replyMap[reply.reply_id].children?.push(replyMap[reply.id]);
+      } else {
+        replyTree.push(replyMap[reply.id]);
+      }
+    });
+    
+    return replyTree;
+  };
+
   const handleSubmitComment = async () => {
     if (!commentText.trim()) return;
-    // Ä£ÄâÌá½»ÆÀÂÛ£¬ºóĞø¶Ô½Óºó¶Ë
-    const newComment: Comment = {
-      id: Date.now(),
-      content: commentText.trim(),
-      created_at: new Date().toISOString(),
-      likes: 0,
-      isLiked: false,
-      user: {
-        id: 1, // Ä£Äâµ±Ç°ÓÃ»§
-        username: "ÎÒ",
-      }
-    };
-    setComments(prev => [newComment, ...prev]);
+    
+    // TODO: å®ç°æäº¤è¯„è®ºçš„APIè°ƒç”¨
+    Toast.show({
+      type: 'info',
+      text1: 'è¯„è®ºåŠŸèƒ½å¼€å‘ä¸­',
+      text2: 'è¯·ç¨åå†è¯•',
+    });
     setCommentText('');
   };
 
-  const handleLike = (commentId: number) => {
-    setComments(prevComments => 
-      prevComments.map(comment => 
-        comment.id === commentId 
-          ? {
+  // ç‚¹èµè¯„è®º
+  const handleLikeComment = async (commentId: number) => {
+    try {
+      // è°ƒç”¨ç‚¹èµAPI
+      const response = await likeThread(commentId);
+      
+      if (response.code === 200) {
+        // æ›´æ–°UIçŠ¶æ€
+        setComments(prev => prev.map(comment => {
+          if (comment.id === commentId) {
+            const isLiked = !comment.liked;
+            const increment = isLiked ? 1 : -1;
+            
+            return {
               ...comment,
-              likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
-              isLiked: !comment.isLiked
-            }
-          : comment
-      )
-    );
+              liked: isLiked,
+              total_reactions: comment.total_reactions + increment
+            };
+          }
+          return comment;
+        }));
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'æ“ä½œå¤±è´¥',
+          text2: response.message || 'è¯·ç¨åå†è¯•',
+        });
+      }
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'æ“ä½œå¤±è´¥',
+        text2: 'ç½‘ç»œé”™è¯¯ï¼Œè¯·æ£€æŸ¥è¿æ¥',
+      });
+      console.error('Error liking comment:', err);
+    }
+  };
+
+  // ç‚¹èµå›å¤
+  const handleLikeReply = async (replyId: number) => {
+    try {
+      // è°ƒç”¨ç‚¹èµAPI
+      const response = await likeReply(replyId);
+      
+      if (response.code === 200) {
+        // æ›´æ–°UIçŠ¶æ€
+        setComments(prev => prev.map(comment => {
+          // é€’å½’æŸ¥æ‰¾å¹¶æ›´æ–°å›å¤
+          const updateReplies = (replies: Reply[]): Reply[] => {
+            return replies.map(reply => {
+              if (reply.id === replyId) {
+                const isLiked = !reply.liked;
+                return {
+                  ...reply,
+                  liked: isLiked
+                };
+              }
+              
+              if (reply.children && reply.children.length > 0) {
+                return {
+                  ...reply,
+                  children: updateReplies(reply.children)
+                };
+              }
+              
+              return reply;
+            });
+          };
+          
+          return {
+            ...comment,
+            replies: updateReplies(comment.replies)
+          };
+        }));
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'æ“ä½œå¤±è´¥',
+          text2: response.message || 'è¯·ç¨åå†è¯•',
+        });
+      }
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'æ“ä½œå¤±è´¥',
+        text2: 'ç½‘ç»œé”™è¯¯ï¼Œè¯·æ£€æŸ¥è¿æ¥',
+      });
+      console.error('Error liking reply:', err);
+    }
+  };
+
+  const handleReply = (commentId: number) => {
+    // TODO: å®ç°å›å¤åŠŸèƒ½
+    Toast.show({
+      type: 'info',
+      text1: 'å›å¤åŠŸèƒ½å¼€å‘ä¸­',
+      text2: 'è¯·ç¨åå†è¯•',
+    });
   };
 
   const formatTime = (dateString: string) => {
@@ -109,10 +230,10 @@ export default function CommentScreen() {
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffMins < 1) return '¸Õ¸Õ';
-    if (diffMins < 60) return `${diffMins}·ÖÖÓÇ°`;
-    if (diffHours < 24) return `${diffHours}Ğ¡Ê±Ç°`;
-    if (diffDays < 7) return `${diffDays}ÌìÇ°`;
+    if (diffMins < 1) return 'åˆšåˆš';
+    if (diffMins < 60) return `${diffMins}åˆ†é’Ÿå‰`;
+    if (diffHours < 24) return `${diffHours}å°æ—¶å‰`;
+    if (diffDays < 7) return `${diffDays}å¤©å‰`;
     
     return date.toLocaleDateString('zh-CN', {
       month: 'long',
@@ -122,11 +243,83 @@ export default function CommentScreen() {
     });
   };
 
+  const renderReactions = (reactions: Record<string, any>) => {
+    if (!reactions || Object.keys(reactions).length === 0) return null;
+    
+    return Object.entries(reactions).map(([emoji, data]: [string, any]) => (
+      <View key={emoji} style={tw`flex-row items-center mr-2`}>
+        <Text style={tw`text-sm`}>{emoji}</Text>
+        <Text style={tw`text-xs text-gray-500 ml-1`}>{data.count}</Text>
+      </View>
+    ));
+  };
+
+  // é€’å½’æ¸²æŸ“å›å¤æ ‘
+  const renderReplyTree = (replies: Reply[], depth = 0) => {
+    if (!replies || replies.length === 0) return null;
+    
+    // é™åˆ¶æœ€å¤§åµŒå¥—æ·±åº¦
+    const maxDepth = 4;
+    if (depth >= maxDepth) return null;
+
+    return (
+      <View style={tw`ml-${depth > 0 ? 6 : 8} mt-2 border-l-2 border-gray-100 pl-3`}>
+        {replies.map((reply) => (
+          <View key={reply.id} style={tw`mb-3`}>
+            <View style={tw`flex-row items-start`}>
+              <View style={tw`w-8 h-8 rounded-full bg-gray-200 mr-2 overflow-hidden`}>
+                <Image
+                  source={{ uri: getAvatar({ email: reply.email }) }}
+                  style={tw`w-full h-full`}
+                  contentFit="cover"
+                />
+              </View>
+              <View style={tw`flex-1`}>
+                <View style={tw`flex-row items-center mb-1`}>
+                  <Text style={tw`font-medium text-sm text-gray-900`}>
+                    {reply.username}
+                  </Text>
+                  <Text style={tw`text-gray-400 text-xs ml-2`}>
+                    {formatTime(reply.created_at)}
+                  </Text>
+                </View>
+                <Text style={tw`text-gray-700 leading-4 text-sm`}>{reply.content}</Text>
+                <View style={tw`flex-row items-center mt-1`}>
+                  <TouchableOpacity 
+                    style={tw`flex-row items-center mr-3`}
+                    onPress={() => handleLikeReply(reply.id)}
+                  >
+                    <Ionicons 
+                      name={reply.liked ? "heart" : "heart-outline"} 
+                      size={14} 
+                      color={reply.liked ? "#ef4444" : "#666"} 
+                    />
+                    <Text style={tw`text-gray-500 text-xs ml-1`}>ç‚¹èµ</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={tw`flex-row items-center`}
+                    onPress={() => handleReply(reply.id)}
+                  >
+                    <Ionicons name="chatbubble-outline" size={14} color="#666" />
+                    <Text style={tw`text-gray-500 text-xs ml-1`}>å›å¤</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+            
+            {/* é€’å½’æ¸²æŸ“å­å›å¤ */}
+            {reply.children && reply.children.length > 0 && renderReplyTree(reply.children, depth + 1)}
+          </View>
+        ))}
+      </View>
+    );
+  };
+
   if (loading) {
     return (
       <View style={tw`flex-1 justify-center items-center bg-white`}>
         <ActivityIndicator size="large" color="#3b82f6" />
-        <Text style={tw`mt-2 text-gray-600`}>¼ÓÔØÖĞ...</Text>
+        <Text style={tw`mt-2 text-gray-600`}>åŠ è½½ä¸­...</Text>
       </View>
     );
   }
@@ -137,7 +330,7 @@ export default function CommentScreen() {
       style={tw`flex-1 bg-white`}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
-      {/* ¶¥²¿µ¼º½À¸ */}
+      {/* é¡¶éƒ¨å¯¼èˆªæ  */}
       <View style={tw`flex-row items-center px-4 py-3 border-b border-gray-200 bg-white`}>
         <TouchableOpacity 
           onPress={() => router.back()} 
@@ -145,7 +338,7 @@ export default function CommentScreen() {
         >
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={tw`text-lg font-semibold flex-1`}>ÆÀÂÛ {comments.length}</Text>
+        <Text style={tw`text-lg font-semibold flex-1`}>è¯„è®º {comments.length}</Text>
       </View>
 
       <ScrollView 
@@ -160,14 +353,14 @@ export default function CommentScreen() {
               style={tw`mt-4 px-6 py-2 bg-blue-500 rounded-full`}
               onPress={fetchComments}
             >
-              <Text style={tw`text-white font-medium`}>ÖØÊÔ</Text>
+              <Text style={tw`text-white font-medium`}>é‡è¯•</Text>
             </TouchableOpacity>
           </View>
         ) : comments.length === 0 ? (
           <View style={tw`p-8 items-center justify-center`}>
             <Ionicons name="chatbubble-outline" size={48} color="#d1d5db" />
-            <Text style={tw`mt-4 text-gray-500 text-center`}>ÔİÎŞÆÀÂÛ</Text>
-            <Text style={tw`mt-2 text-gray-400 text-sm text-center`}>À´·¢±íµÚÒ»ÌõÆÀÂÛ°É</Text>
+            <Text style={tw`mt-4 text-gray-500 text-center`}>æš‚æ— è¯„è®º</Text>
+            <Text style={tw`mt-2 text-gray-400 text-sm text-center`}>æ¥å‘è¡¨ç¬¬ä¸€æ¡è¯„è®ºå§</Text>
           </View>
         ) : (
           comments.map(comment => (
@@ -175,40 +368,49 @@ export default function CommentScreen() {
               <View style={tw`flex-row items-start`}>
                 <View style={tw`w-10 h-10 rounded-full bg-gray-200 mr-3 overflow-hidden`}>
                   <Image
-                    source={{ uri: `https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user.username}` }}
+                    source={{ uri: getAvatar({ email: comment.email }) }}
                     style={tw`w-full h-full`}
                     contentFit="cover"
                   />
                 </View>
                 <View style={tw`flex-1`}>
                   <View style={tw`flex-row items-center mb-1`}>
-                    <Text style={tw`font-medium text-base text-gray-900 font-sans`}>
-                      {comment.user.username}
+                    <Text style={tw`font-medium text-base text-gray-900`}>
+                      {comment.username}
                     </Text>
-                    <Text style={tw`text-gray-400 text-sm ml-2 font-sans`}>
+                    <Text style={tw`text-gray-400 text-sm ml-2`}>
                       {formatTime(comment.created_at)}
                     </Text>
                   </View>
-                  <Text style={tw`text-gray-700 leading-5 font-sans`}>{comment.content}</Text>
+                  <Text style={tw`text-gray-700 leading-5`}>{comment.content}</Text>
+                  
                   <View style={tw`flex-row items-center mt-2`}>
                     <TouchableOpacity 
                       style={tw`flex-row items-center mr-4`}
-                      onPress={() => handleLike(comment.id)}
+                      onPress={() => handleLikeComment(comment.id)}
                     >
                       <Ionicons 
-                        name={comment.isLiked ? "heart" : "heart-outline"} 
+                        name={comment.liked ? "heart" : "heart-outline"} 
                         size={16} 
-                        color={comment.isLiked ? "#ef4444" : "#666"} 
+                        color={comment.liked ? "#ef4444" : "#666"} 
                       />
-                      <Text style={tw`text-gray-500 text-sm ml-1 font-sans`}>
-                        {comment.likes > 0 ? comment.likes : 'µãÔŞ'}
+                      <Text style={tw`text-gray-500 text-sm ml-1`}>
+                        {comment.total_reactions > 0 ? comment.total_reactions : 'ç‚¹èµ'}
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={tw`flex-row items-center`}>
+                    <TouchableOpacity 
+                      style={tw`flex-row items-center mr-4`}
+                      onPress={() => handleReply(comment.id)}
+                    >
                       <Ionicons name="chatbubble-outline" size={16} color="#666" />
-                      <Text style={tw`text-gray-500 text-sm ml-1 font-sans`}>»Ø¸´</Text>
+                      <Text style={tw`text-gray-500 text-sm ml-1`}>
+                        {comment.reply_count > 0 ? comment.reply_count : 'å›å¤'}
+                      </Text>
                     </TouchableOpacity>
                   </View>
+                  
+                  {/* å›å¤åˆ—è¡¨ - ä½¿ç”¨æ ‘å½¢ç»“æ„ */}
+                  {renderReplyTree(comment.replies)}
                 </View>
               </View>
             </View>
@@ -216,13 +418,13 @@ export default function CommentScreen() {
         )}
       </ScrollView>
 
-      {/* ÆÀÂÛÊäÈë¿ò */}
+      {/* åº•éƒ¨è¯„è®ºè¾“å…¥ */}
       <View style={tw`px-4 py-3 border-t border-gray-200 bg-white`}>
         <View style={tw`flex-row items-end`}>
           <View style={tw`flex-1 bg-gray-100 rounded-2xl px-4 py-2 mr-2 min-h-[40px] max-h-[100px]`}>
             <TextInput
-              style={tw`text-base text-gray-900 font-sans`}
-              placeholder="Ğ´ÏÂÄãµÄÆÀÂÛ..."
+              style={tw`text-base text-gray-900`}
+              placeholder="å†™ä¸‹ä½ çš„è¯„è®º..."
               placeholderTextColor="#9ca3af"
               value={commentText}
               onChangeText={setCommentText}
@@ -235,10 +437,10 @@ export default function CommentScreen() {
             onPress={handleSubmitComment}
             disabled={!commentText.trim()}
           >
-            <Text style={tw`text-white font-medium font-sans`}>·¢ËÍ</Text>
+            <Text style={tw`text-white font-medium`}>å‘é€</Text>
           </TouchableOpacity>
         </View>
       </View>
     </KeyboardAvoidingView>
   );
-} 
+}

@@ -52,4 +52,13 @@ router.put('/:threadId',
     ThreadController.updateThread
 );
 
+// 点赞帖子
+router.post('/like/:threadId',
+    verifyJWT,
+    (req, res, next) => {
+        runInContext(req, next);
+    },
+    ThreadController.toggleThreadLike
+);
+
 module.exports = router;

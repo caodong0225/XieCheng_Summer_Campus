@@ -43,3 +43,7 @@ export async function collectionNote(id: any) {
 export async function likeNote(id: any) {
     return post(`note/${id}/like`,{});
 }
+
+export async function getNoteReplyByNoteId(id: any) {
+  return get(`note/detail/${id}`);
+}

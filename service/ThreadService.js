@@ -4,7 +4,7 @@ const {sanitize, createSchema, updateSchema} = require("../entity/ThreadEntity")
 const UserMapper = require("../mapper/UserMapper");
 const NoteMapper = require("../mapper/NoteMapper");
 const NoteEmojiMapper = require("../mapper/NoteEmojiMapper");
-const ReplyEmojiMapper = require("../mapper/ReplyEmojiMapper");
+const ThreadEmojiMapper = require("../mapper/ThreadEmojiMapper");
 
 class ThreadService {
     constructor() {
@@ -12,11 +12,14 @@ class ThreadService {
         this.userMapper = new UserMapper();
         this.noteMapper = new NoteMapper();
         this.noteEmojiMapper = new NoteEmojiMapper();
-        this.replyEmojiMapper = new ReplyEmojiMapper();
+        this.threadEmojiMapper = new ThreadEmojiMapper();
     }
 
     // 用户收藏操作
     async toggleCollection(userId, noteId) {
+        if (await this.noteMapper.getNoteById(noteId) === null) {
+            throw new Error('游记不存在');
+        }
         const isCollected = await this.noteEmojiMapper.isCollection(userId, noteId);
         try {
             await this.noteEmojiMapper.beginTransaction();
@@ -35,6 +38,9 @@ class ThreadService {
 
     // 用户点赞操作
     async toggleFavorite(userId, noteId) {
+        if (await this.noteMapper.getNoteById(noteId) === null) {
+            throw new Error('游记不存在');
+        }
         const isFavorited = await this.noteEmojiMapper.isFavorite(userId, noteId);
         try {
             await this.noteEmojiMapper.beginTransaction();
@@ -103,6 +109,27 @@ class ThreadService {
 
         await this.mapper.delete(id);
         return true;
+    }
+
+    // 点赞帖子
+    async toggleThreadLike(userId, threadId) {
+        // 判断threadId是否存在
+        const thread = await this.mapper.findById(threadId);
+        if (!thread) throw new Error('评论不存在');
+        const isLiked = await this.threadEmojiMapper.isFavorite(userId, threadId);
+        try {
+            await this.threadEmojiMapper.beginTransaction();
+            if (isLiked) {
+                await this.threadEmojiMapper.cancelFavorite(userId, threadId);
+            } else {
+                await this.threadEmojiMapper.favorite(userId, threadId);
+            }
+            await this.threadEmojiMapper.commit();
+            return { liked: !isLiked };
+        } catch (error) {
+            await this.threadEmojiMapper.rollback();
+            throw new Error('点赞操作失败: ' + error.message);
+        }
     }
 
 }

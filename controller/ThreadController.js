@@ -13,6 +13,7 @@ class ThreadController {
         this.updateThread = this.updateThread.bind(this);
         this.deleteThread = this.deleteThread.bind(this);
         this.undoThread = this.undoThread.bind(this);
+        this.toggleThreadLike = this.toggleThreadLike.bind(this);
     }
 
     // 创建评论
@@ -81,6 +82,19 @@ class ThreadController {
         }
     }
 
+    // 点赞帖子
+    async toggleThreadLike(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+            const result = await this.threadService.toggleThreadLike(
+                contextUser?.userId,
+                req.params.threadId
+            );
+            response.success(res, result, '点赞操作成功');
+        } catch (error) {
+            response.error(res, error.message, error.statusCode || 500);
+        }
+    }
 
 }
 
