@@ -35,7 +35,7 @@ class ReplyController {
     // 获取回复详情
     async getReplyById(req, res) {
         try {
-            const reply = await this.replyService.getReplyById(req.params.replyId);
+            const reply = await this.replyService.getReplyById(req.params.id);
             if (!reply) {
                 return response.error(res, '回复不存在', 404);
             }
@@ -50,7 +50,7 @@ class ReplyController {
         try {
             const contextUser = getContext()?.get('user');
             const reply = await this.replyService.updateReply(
-                req.params.replyId,
+                req.params.id,
                 req.body,
                 contextUser?.userId
             );
@@ -64,9 +64,11 @@ class ReplyController {
     async deleteReply(req, res) {
         try {
             const contextUser = getContext()?.get('user');
+            if(contextUser.role !== 'admin' && contextUser.role !== 'super-admin'){
+                await this.replyService.checkReplyPermission(contextUser.userId, req.params.id)
+            }
             await this.replyService.deleteReply(
-                req.params.replyId,
-                contextUser?.userId
+                req.params.id,
             );
             response.success(res, null, '回复删除成功');
         } catch (error) {
@@ -80,7 +82,7 @@ class ReplyController {
             const contextUser = getContext()?.get('user');
             const result = await this.replyService.toggleLikeReply(
                 contextUser?.userId,
-                req.params.replyId
+                req.params.id
             );
             response.success(res, result, '点赞操作成功');
         } catch (error) {
@@ -94,7 +96,7 @@ class ReplyController {
             const contextUser = getContext()?.get('user');
             const result = await this.replyService.toggleCollectReply(
                 contextUser?.userId,
-                req.params.replyId
+                req.params.id
             );
             response.success(res, result, '收藏操作成功');
         } catch (error) {

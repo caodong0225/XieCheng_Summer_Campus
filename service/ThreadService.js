@@ -93,6 +93,15 @@ class ThreadService {
         return this.mapper.update(id, updates);
     }
 
+    // 检查用户操作帖子的权限
+    async checkThreadPermission(userId, id) {
+        const thread = await this.mapper.findById(id);
+        if (thread?.user_id !== userId) {
+            throw new Error('你没有操作权限');
+        }
+        return true;
+    }
+
     // 删除评论
     async deleteThread(id) {
         const thread = await this.mapper.findById(id);

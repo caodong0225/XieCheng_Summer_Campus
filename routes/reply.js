@@ -16,7 +16,7 @@ router.post('/',
 );
 
 // 获取回复详情
-router.get('/:replyId',
+router.get('/:id',
     verifyJWT,
     (req, res, next) => {
         runInContext(req, next);
@@ -25,7 +25,7 @@ router.get('/:replyId',
 );
 
 // 更新回复
-router.put('/:replyId',
+router.put('/:id',
     verifyJWT,
     (req, res, next) => {
         runInContext(req, next);
@@ -34,17 +34,16 @@ router.put('/:replyId',
 );
 
 // 删除回复（管理员权限）
-router.delete('/:replyId',
+router.delete('/:id',
     verifyJWT,
     (req, res, next) => {
         runInContext(req, next);
     },
-    roleCheck('admin', 'super-admin'),
     ReplyController.deleteReply
 );
 
 // 点赞回复
-router.post('/like/:replyId',
+router.post('/like/:id',
     verifyJWT,
     (req, res, next) => {
         runInContext(req, next);
@@ -53,7 +52,7 @@ router.post('/like/:replyId',
 );
 
 // 收藏回复
-router.post('/collect/:replyId',
+router.post('/collect/:id',
     verifyJWT,
     (req, res, next) => {
         runInContext(req, next);

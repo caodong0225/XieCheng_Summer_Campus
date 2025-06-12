@@ -10,7 +10,6 @@ const createSchema = Joi.object({
 
 const updateSchema = Joi.object({
     content: Joi.string().min(1).max(1000),
-    status: Joi.string().valid('active', 'deleted', 'edited'),
 }).min(1);
 
 const sanitize = (reply) => {

@@ -59,6 +59,10 @@ class ThreadController {
     // 删除评论
     async deleteThread(req, res) {
         try {
+            const contextUser = getContext()?.get('user');
+            if(contextUser.role !== 'admin' && contextUser.role !== 'super-admin'){
+                await this.threadService.checkThreadPermission(contextUser.userId, req.params.id)
+            }
             await this.threadService.deleteThread(
                 req.params.threadId
             );

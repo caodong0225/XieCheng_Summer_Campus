@@ -34,7 +34,7 @@ class ReplyEmojiMapper {
         const executor = this.connection || pool;
         const [rows] = await executor.query(
             `SELECT COUNT(*) as count FROM thread_reply_emoji_reactions 
-            WHERE user_id = ? and reply_id = ? and emoji = ?`,
+            WHERE user_id = ? and thread_reply_id = ? and emoji = ?`,
             [user_id, thread_reply_id, '💖']  // 使用参数占位符
         );
         return rows[0].count > 0;

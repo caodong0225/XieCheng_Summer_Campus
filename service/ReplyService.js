@@ -60,6 +60,15 @@ class ReplyService {
         return true;
     }
 
+    // 检查用户操作帖子的权限
+    async checkReplyPermission(userId, id){
+        const reply = await this.mapper.findById(id);
+        if(reply?.user_id !== userId){
+            throw new Error('你没有操作权限');
+        }
+        return true;
+    }
+
     // 用户点赞回复操作
     async toggleLikeReply(userId, replyId) {
         const reply = await this.mapper.findById(replyId);
