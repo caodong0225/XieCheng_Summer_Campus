@@ -4,6 +4,7 @@ const router = express.Router();
 const ThreadController = require('../controller/ThreadController');
 const { verifyJWT } = require("../utils/jwt");
 const { runInContext } = require('../utils/requestContext');
+const roleCheck = require("../middlewares/roleCheck");
 
 // 删留言
 router.delete('/:threadId',
@@ -11,6 +12,7 @@ router.delete('/:threadId',
     (req, res, next) => {
         runInContext(req, next);
     },
+    roleCheck('admin','super-admin'),
     ThreadController.deleteThread
 );
 
@@ -57,6 +59,15 @@ router.post('/like/:threadId',
         runInContext(req, next);
     },
     ThreadController.toggleThreadLike
+);
+
+// 收藏帖子
+router.post('/collect/:threadId',
+    verifyJWT,
+    (req, res, next) => {
+        runInContext(req, next);
+    },
+    ThreadController.toggleThreadCollect
 );
 
 module.exports = router;

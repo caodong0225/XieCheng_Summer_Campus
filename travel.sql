@@ -3,19 +3,35 @@
 
  Source Server         : localhost
  Source Server Type    : MySQL
- Source Server Version : 80038 (8.0.38)
+ Source Server Version : 80042 (8.0.42)
  Source Host           : localhost:3306
  Source Schema         : travel
 
  Target Server Type    : MySQL
- Target Server Version : 80038 (8.0.38)
+ Target Server Version : 80042 (8.0.42)
  File Encoding         : 65001
 
- Date: 05/05/2025 22:08:28
+ Date: 13/06/2025 20:56:55
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for note_emoji_reactions
+-- ----------------------------
+DROP TABLE IF EXISTS `note_emoji_reactions`;
+CREATE TABLE `note_emoji_reactions`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` int NOT NULL COMMENT '用户id',
+  `note_id` int NOT NULL COMMENT '帖子id',
+  `emoji` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '表情',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `note_emoji_reactions_notes_id_fk`(`note_id` ASC) USING BTREE,
+  INDEX `note_emoji_reactions_users_id_fk`(`user_id` ASC) USING BTREE,
+  CONSTRAINT `note_emoji_reactions_notes_id_fk` FOREIGN KEY (`note_id`) REFERENCES `notes` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `note_emoji_reactions_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子的表情回复' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for notes
@@ -33,7 +49,7 @@ CREATE TABLE `notes`  (
   INDEX `notes_users_id_fk`(`created_by` ASC) USING BTREE,
   INDEX `notes_title_index`(`title` ASC) USING BTREE,
   CONSTRAINT `notes_users_id_fk` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '游记表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '游记表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for notes_attachment
@@ -51,7 +67,7 @@ CREATE TABLE `notes_attachment`  (
   INDEX `notes_attachment_notes_id_fk`(`note_id` ASC) USING BTREE,
   CONSTRAINT `notes_attachment_notes_id_fk` FOREIGN KEY (`note_id`) REFERENCES `notes` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `key_check` CHECK ((`key` = _utf8mb4'picture') or (`key` = _utf8mb4'video'))
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '游记的附件' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '游记的附件' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for notes_status
@@ -68,7 +84,7 @@ CREATE TABLE `notes_status`  (
   INDEX `notes_status_notes_id_fk`(`note_id` ASC) USING BTREE,
   CONSTRAINT `notes_status_notes_id_fk` FOREIGN KEY (`note_id`) REFERENCES `notes` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `status_check` CHECK ((`status` = _utf8mb4'checking') or (`status` = _utf8mb4'rejected') or (`status` = _utf8mb4'approved'))
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '游记状态' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '游记状态' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for notifications
@@ -85,7 +101,7 @@ CREATE TABLE `notifications`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `notifications_users_id_fk`(`user_id` ASC) USING BTREE,
   CONSTRAINT `notifications_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '通知表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '通知表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for thread_emoji_reactions
@@ -93,18 +109,15 @@ CREATE TABLE `notifications`  (
 DROP TABLE IF EXISTS `thread_emoji_reactions`;
 CREATE TABLE `thread_emoji_reactions`  (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `user_id` int NOT NULL COMMENT '创建者',
-  `reply_id` int NULL DEFAULT NULL COMMENT '回复id',
-  `note_id` int NULL DEFAULT NULL COMMENT '游记id',
+  `user_id` int NOT NULL COMMENT '用户id',
+  `thread_id` int NOT NULL COMMENT '帖子id',
   `emoji` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '表情',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `thread_emoji_reactions_notes_id_fk`(`note_id` ASC) USING BTREE,
-  INDEX `thread_emoji_reactions_thread_replies_id_fk`(`reply_id` ASC) USING BTREE,
+  INDEX `thread_emoji_reactions_threads_id_fk`(`thread_id` ASC) USING BTREE,
   INDEX `thread_emoji_reactions_users_id_fk`(`user_id` ASC) USING BTREE,
-  CONSTRAINT `thread_emoji_reactions_notes_id_fk` FOREIGN KEY (`note_id`) REFERENCES `notes` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  CONSTRAINT `thread_emoji_reactions_thread_replies_id_fk` FOREIGN KEY (`reply_id`) REFERENCES `thread_replies` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `thread_emoji_reactions_threads_id_fk` FOREIGN KEY (`thread_id`) REFERENCES `threads` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `thread_emoji_reactions_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子的表情回复' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子表情回复表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for thread_replies
@@ -125,7 +138,23 @@ CREATE TABLE `thread_replies`  (
   CONSTRAINT `thread_replies_thread_replies_id_fk` FOREIGN KEY (`reply_id`) REFERENCES `thread_replies` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `thread_replies_threads_id_fk` FOREIGN KEY (`thread_id`) REFERENCES `threads` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `thread_replies_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子回复' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '帖子回复' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for thread_reply_emoji_reactions
+-- ----------------------------
+DROP TABLE IF EXISTS `thread_reply_emoji_reactions`;
+CREATE TABLE `thread_reply_emoji_reactions`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` int NOT NULL COMMENT '用户id',
+  `thread_reply_id` int NULL DEFAULT NULL COMMENT '回复id',
+  `emoji` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '表情',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `thread_reply_emoji_reactions_thread_replies_id_fk`(`thread_reply_id` ASC) USING BTREE,
+  INDEX `thread_reply_emoji_reactions_users_id_fk`(`user_id` ASC) USING BTREE,
+  CONSTRAINT `thread_reply_emoji_reactions_thread_replies_id_fk` FOREIGN KEY (`thread_reply_id`) REFERENCES `thread_replies` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `thread_reply_emoji_reactions_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for threads
@@ -145,7 +174,7 @@ CREATE TABLE `threads`  (
   INDEX `threads_users_id_fk`(`user_id` ASC) USING BTREE,
   CONSTRAINT `threads_notes_id_fk` FOREIGN KEY (`note_id`) REFERENCES `notes` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `threads_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '评论' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '评论' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for user_exts
@@ -163,7 +192,7 @@ CREATE TABLE `user_exts`  (
   INDEX `user_exts_users_id_fk`(`user_id` ASC) USING BTREE,
   CONSTRAINT `user_exts_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `check_key` CHECK ((`key` = _utf8mb4'description') or (`key` = _utf8mb4'sex') or (`key` = _utf8mb4'phone'))
-) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表额外字段' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表额外字段' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for users
@@ -181,6 +210,6 @@ CREATE TABLE `users`  (
   UNIQUE INDEX `users_pk_3`(`email` ASC) USING BTREE,
   UNIQUE INDEX `users_pk_2`(`username` ASC) USING BTREE,
   INDEX `users_username_index`(`username` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -14,6 +14,7 @@ class ThreadController {
         this.deleteThread = this.deleteThread.bind(this);
         this.undoThread = this.undoThread.bind(this);
         this.toggleThreadLike = this.toggleThreadLike.bind(this);
+        this.toggleThreadCollect = this.toggleThreadCollect.bind(this);
     }
 
     // 创建评论
@@ -59,10 +60,6 @@ class ThreadController {
     // 删除评论
     async deleteThread(req, res) {
         try {
-            const contextUser = getContext()?.get('user');
-            if(contextUser.role !== 'admin' && contextUser.role !== 'super-admin'){
-                await this.threadService.checkThreadPermission(contextUser.userId, req.params.id)
-            }
             await this.threadService.deleteThread(
                 req.params.threadId
             );
@@ -95,6 +92,20 @@ class ThreadController {
                 req.params.threadId
             );
             response.success(res, result, '点赞操作成功');
+        } catch (error) {
+            response.error(res, error.message, error.statusCode || 500);
+        }
+    }
+
+    // 收藏帖子
+    async toggleThreadCollect(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+            const result = await this.threadService.toggleThreadCollect(
+                contextUser?.userId,
+                req.params.threadId
+            );
+            response.success(res, result, '收藏操作成功');
         } catch (error) {
             response.error(res, error.message, error.statusCode || 500);
         }

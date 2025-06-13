@@ -57,6 +57,27 @@ class ThreadService {
         }
     }
 
+    // 收藏帖子
+    async toggleThreadCollect(userId, threadId) {
+        // 判断threadId是否存在
+        const thread = await this.mapper.findById(threadId);
+        if (!thread) throw new Error('评论不存在');
+        const isCollected = await this.threadEmojiMapper.isCollection(userId, threadId);
+        try {
+            await this.threadEmojiMapper.beginTransaction();
+            if (isCollected) {
+                await this.threadEmojiMapper.cancelCollection(userId, threadId);
+            } else {
+                await this.threadEmojiMapper.collection(userId, threadId);
+            }
+            await this.threadEmojiMapper.commit();
+            return { collected: !isCollected };
+        } catch (error) {
+            await this.threadEmojiMapper.rollback();
+            throw new Error('收藏操作失败: ' + error.message);
+        }
+    }
+
     // 创建评论
     async createThread(threadData) {
         const { error, value } = createSchema.validate(threadData);
