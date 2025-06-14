@@ -3,13 +3,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import tw from 'twrnc';
-import { getNoteReplyByNoteId } from '../../api/note'; // 新增点赞API
-import { likeReply } from '../../api/reply';
+import { commentNote, deleteComment, getNoteReplyByNoteId } from '../../api/note';
+import { createReply, deleteReply, likeReply } from '../../api/reply';
 import { likeThread } from '../../api/thread';
 import { getAvatar } from '../../utils/string';
+
 
 interface Reply {
   id: number;
@@ -23,8 +24,8 @@ interface Reply {
   email: string;
   child_replies_count: number;
   reactions: Record<string, any>;
-  children?: Reply[]; // 新增子回复字段
-  liked?: boolean; // 新增点赞状态
+  children?: Reply[];
+  liked?: boolean;
 }
 
 interface Comment {
@@ -42,7 +43,7 @@ interface Comment {
   total_reactions: number;
   reactions: Record<string, any>;
   replies: Reply[];
-  liked?: boolean; // 新增点赞状态
+  liked?: boolean;
 }
 
 export default function CommentScreen() {
@@ -50,29 +51,49 @@ export default function CommentScreen() {
   const { id } = useLocalSearchParams();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [commentText, setCommentText] = useState('');
+  const [replyTo, setReplyTo] = useState<{ type: 'comment' | 'reply', id: number, username: string } | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchComments();
+    getCurrentUser();
   }, [id]);
 
-  const fetchComments = async () => {
+  const getCurrentUser = async () => {
     try {
-      setLoading(true);
+      const user = await getUser();
+      setCurrentUserId(user?.id || null);
+    } catch (err) {
+      console.error('Error getting current user:', err);
+    }
+  };
+
+  const fetchComments = async (isRefresh = false) => {
+    try {
+      if (isRefresh) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
       setError(null);
       const response = await getNoteReplyByNoteId(id);
       const user = await getUser();
+      
       if (response.code === 200) {
-        // 将扁平回复列表转换为树形结构
+        // 将扁平回复列表转换为树形结构，并正确初始化点赞状态
         const commentsWithTree = (response.data || []).map((comment: any) => {
           return {
             ...comment,
-            liked: comment.reactions?.['💖']?.users.includes(user?.id),
-            replies: buildReplyTree(comment.replies || [])
+            liked: comment.reactions?.['💖']?.users?.includes(user?.id) || false,
+            replies: buildReplyTree(comment.replies || [], user?.id)
           };
         });
         setComments(commentsWithTree);
+        console.log('评论数据已更新:', commentsWithTree.length, '条评论');
       } else {
         setError(response.message || '获取评论失败');
       }
@@ -80,21 +101,25 @@ export default function CommentScreen() {
       setError('获取评论时发生错误');
       console.error('Error fetching comments:', err);
     } finally {
-      setLoading(false);
+      if (isRefresh) {
+        setRefreshing(false);
+      } else {
+        setLoading(false);
+      }
     }
   };
 
-  // 构建树形回复结构
-  const buildReplyTree = (replies: Reply[]): Reply[] => {
+  // 构建树形回复结构，并初始化点赞状态
+  const buildReplyTree = (replies: Reply[], userId?: number): Reply[] => {
     const replyMap: Record<number, Reply> = {};
     const replyTree: Reply[] = [];
     
-    // 创建回复映射
+    // 创建回复映射，并初始化点赞状态
     replies.forEach(reply => {
       replyMap[reply.id] = {
         ...reply,
         children: [],
-        liked: false
+        liked: reply.reactions?.['💖']?.users?.includes(userId) || false
       };
     });
     
@@ -113,36 +138,116 @@ export default function CommentScreen() {
   const handleSubmitComment = async () => {
     if (!commentText.trim()) return;
     
-    // TODO: 实现提交评论的API调用
-    Toast.show({
-      type: 'info',
-      text1: '评论功能开发中',
-      text2: '请稍后再试',
-    });
-    setCommentText('');
+    try {
+      setSubmitting(true);
+      const user = await getUser();
+      
+      if (replyTo) {
+        // 回复评论或回复
+        const replyData = {
+          content: commentText,
+          thread_id: replyTo.type === 'comment' ? replyTo.id.toString() : replyTo.id.toString(),
+          reply_id: replyTo.type === 'reply' ? replyTo.id.toString() : undefined
+        };
+        
+        const response = await createReply(replyData);
+        
+        if (response.code === 200) {
+          Toast.show({
+            type: 'success',
+            text1: '回复成功',
+            text2: '回复已发布',
+          });
+          setCommentText('');
+          setReplyTo(null);
+          // 重新获取评论列表，显示最新数据
+          await fetchComments(false);
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: '回复失败',
+            text2: response.message || '请稍后再试',
+          });
+        }
+      } else {
+        // 评论游记
+        const commentData = {
+          note_id: id,
+          content: commentText
+        };
+        
+        const response = await commentNote(commentData);
+        
+        if (response.code === 200) {
+          Toast.show({
+            type: 'success',
+            text1: '评论成功',
+            text2: '评论已发布',
+          });
+          setCommentText('');
+          // 重新获取评论列表，显示最新数据
+          await fetchComments(false);
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: '评论失败',
+            text2: response.message || '请稍后再试',
+          });
+        }
+      }
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: '操作失败',
+        text2: '网络错误，请检查连接',
+      });
+      console.error('Error submitting comment:', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // 点赞评论
   const handleLikeComment = async (commentId: number) => {
     try {
-      // 调用点赞API
       const response = await likeThread(commentId);
       
       if (response.code === 200) {
-        // 更新UI状态
         setComments(prev => prev.map(comment => {
           if (comment.id === commentId) {
-            const isLiked = !comment.liked;
-            const increment = isLiked ? 1 : -1;
+            // 根据当前点赞状态计算新的点赞数量
+            const currentLiked = comment.liked;
+            const currentReactions = comment.reactions?.['💖'] || { count: 0, users: [] };
+            const newCount = currentLiked ? currentReactions.count - 1 : currentReactions.count + 1;
             
-            return {
-              ...comment,
-              liked: isLiked,
-              total_reactions: comment.total_reactions + increment
+            // 更新reactions数据
+            const updatedReactions = {
+              ...comment.reactions,
+              '💖': {
+                count: Math.max(0, newCount),
+                users: currentLiked 
+                  ? (currentReactions.users || []).filter((id: number) => id !== 6) // 移除当前用户
+                  : [...(currentReactions.users || []), 6] // 添加当前用户
+              }
             };
+            
+            const updatedComment = {
+              ...comment,
+              liked: !currentLiked, // 切换点赞状态
+              total_reactions: Math.max(0, newCount),
+              reactions: updatedReactions
+            };
+            
+            return updatedComment;
           }
           return comment;
         }));
+        
+        Toast.show({
+          type: 'success',
+          text1: '操作成功',
+          text2: '点赞状态已更新',
+        });
       } else {
         Toast.show({
           type: 'error',
@@ -163,21 +268,36 @@ export default function CommentScreen() {
   // 点赞回复
   const handleLikeReply = async (replyId: number) => {
     try {
-      // 调用点赞API
       const response = await likeReply(replyId);
       
       if (response.code === 200) {
-        // 更新UI状态
         setComments(prev => prev.map(comment => {
-          // 递归查找并更新回复
           const updateReplies = (replies: Reply[]): Reply[] => {
             return replies.map(reply => {
               if (reply.id === replyId) {
-                const isLiked = !reply.liked;
-                return {
-                  ...reply,
-                  liked: isLiked
+                // 根据当前点赞状态计算新的点赞数量
+                const currentLiked = reply.liked;
+                const currentReactions = reply.reactions?.['💖'] || { count: 0, users: [] };
+                const newCount = currentLiked ? currentReactions.count - 1 : currentReactions.count + 1;
+                
+                // 更新reactions数据
+                const updatedReactions = {
+                  ...reply.reactions,
+                  '💖': {
+                    count: Math.max(0, newCount),
+                    users: currentLiked 
+                      ? (currentReactions.users || []).filter((id: number) => id !== 6) // 移除当前用户
+                      : [...(currentReactions.users || []), 6] // 添加当前用户
+                  }
                 };
+                
+                const updatedReply = {
+                  ...reply,
+                  liked: !currentLiked, // 切换点赞状态
+                  reactions: updatedReactions
+                };
+                
+                return updatedReply;
               }
               
               if (reply.children && reply.children.length > 0) {
@@ -196,6 +316,12 @@ export default function CommentScreen() {
             replies: updateReplies(comment.replies)
           };
         }));
+        
+        Toast.show({
+          type: 'success',
+          text1: '操作成功',
+          text2: '点赞状态已更新',
+        });
       } else {
         Toast.show({
           type: 'error',
@@ -213,13 +339,75 @@ export default function CommentScreen() {
     }
   };
 
-  const handleReply = (commentId: number) => {
-    // TODO: 实现回复功能
-    Toast.show({
-      type: 'info',
-      text1: '回复功能开发中',
-      text2: '请稍后再试',
-    });
+  const handleReply = (type: 'comment' | 'reply', id: number, username: string) => {
+    setReplyTo({ type, id, username });
+    // 自动添加@用户名到输入框
+    // setCommentText(`@${username} `);
+  };
+
+  const cancelReply = () => {
+    setReplyTo(null);
+    setCommentText('');
+  };
+
+  // 删除评论
+  const handleDeleteComment = async (commentId: number) => {
+    try {
+      const response = await deleteComment(commentId);
+      
+      if (response.code === 200) {
+        Toast.show({
+          type: 'success',
+          text1: '删除成功',
+          text2: '评论已删除',
+        });
+        // 重新获取评论列表
+        await fetchComments(false);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: '删除失败',
+          text2: response.message || '请稍后再试',
+        });
+      }
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: '删除失败',
+        text2: '网络错误，请检查连接',
+      });
+      console.error('Error deleting comment:', err);
+    }
+  };
+
+  // 删除回复
+  const handleDeleteReply = async (replyId: number) => {
+    try {
+      const response = await deleteReply(replyId);
+      
+      if (response.code === 200) {
+        Toast.show({
+          type: 'success',
+          text1: '删除成功',
+          text2: '回复已删除',
+        });
+        // 重新获取评论列表
+        await fetchComments(false);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: '删除失败',
+          text2: response.message || '请稍后再试',
+        });
+      }
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: '删除失败',
+        text2: '网络错误，请检查连接',
+      });
+      console.error('Error deleting reply:', err);
+    }
   };
 
   const formatTime = (dateString: string) => {
@@ -254,8 +442,14 @@ export default function CommentScreen() {
     ));
   };
 
+  // 获取特定表情的点赞数量
+  const getReactionCount = (reactions: Record<string, any>, emoji: string) => {
+    if (!reactions || !reactions[emoji]) return 0;
+    return reactions[emoji].count || 0;
+  };
+
   // 递归渲染回复树
-  const renderReplyTree = (replies: Reply[], depth = 0) => {
+  const renderReplyTree = (replies: Reply[], depth = 0, parentUsername?: string) => {
     if (!replies || replies.length === 0) return null;
     
     // 限制最大嵌套深度
@@ -275,15 +469,35 @@ export default function CommentScreen() {
                 />
               </View>
               <View style={tw`flex-1`}>
-                <View style={tw`flex-row items-center mb-1`}>
-                  <Text style={tw`font-medium text-sm text-gray-900`}>
-                    {reply.username}
-                  </Text>
-                  <Text style={tw`text-gray-400 text-xs ml-2`}>
-                    {formatTime(reply.created_at)}
-                  </Text>
+                <View style={tw`flex-row items-center justify-between mb-1`}>
+                  <View style={tw`flex-row items-center flex-1`}>
+                    <Text style={tw`font-medium text-sm text-gray-900`}>
+                      {reply.username}
+                    </Text>
+                    <Text style={tw`text-gray-400 text-xs ml-2`}>
+                      {formatTime(reply.created_at)}
+                    </Text>
+                  </View>
+                  {/* 删除按钮 - 只有自己创建的回复才显示 */}
+                  {reply.user_id === currentUserId && (
+                    <TouchableOpacity 
+                      style={tw`p-1`}
+                      onPress={() => handleDeleteReply(reply.id)}
+                    >
+                      <Ionicons name="trash-outline" size={14} color="#ef4444" />
+                    </TouchableOpacity>
+                  )}
                 </View>
+                
+                {/* 显示回复标识 */}
+                {reply.reply_id && parentUsername && (
+                  <Text style={tw`text-blue-600 text-xs mb-1`}>
+                    回复 @{parentUsername}
+                  </Text>
+                )}
+                
                 <Text style={tw`text-gray-700 leading-4 text-sm`}>{reply.content}</Text>
+                
                 <View style={tw`flex-row items-center mt-1`}>
                   <TouchableOpacity 
                     style={tw`flex-row items-center mr-3`}
@@ -294,21 +508,25 @@ export default function CommentScreen() {
                       size={14} 
                       color={reply.liked ? "#ef4444" : "#666"} 
                     />
-                    <Text style={tw`text-gray-500 text-xs ml-1`}>点赞</Text>
+                    <Text style={tw`text-gray-500 text-xs ml-1`}>
+                      {getReactionCount(reply.reactions, '💖') > 0 ? getReactionCount(reply.reactions, '💖') : '点赞'}
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity 
                     style={tw`flex-row items-center`}
-                    onPress={() => handleReply(reply.id)}
+                    onPress={() => handleReply('reply', reply.id, reply.username)}
                   >
                     <Ionicons name="chatbubble-outline" size={14} color="#666" />
-                    <Text style={tw`text-gray-500 text-xs ml-1`}>回复</Text>
+                    <Text style={tw`text-gray-500 text-xs ml-1`}>
+                      {reply.child_replies_count > 0 ? reply.child_replies_count : '回复'}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
             
-            {/* 递归渲染子回复 */}
-            {reply.children && reply.children.length > 0 && renderReplyTree(reply.children, depth + 1)}
+            {/* 递归渲染子回复，传递当前回复的用户名 */}
+            {reply.children && reply.children.length > 0 && renderReplyTree(reply.children, depth + 1, reply.username)}
           </View>
         ))}
       </View>
@@ -345,13 +563,19 @@ export default function CommentScreen() {
         style={tw`flex-1`} 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={tw`pb-4`}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => fetchComments(true)}
+          />
+        }
       >
         {error ? (
           <View style={tw`p-4 items-center`}>
             <Text style={tw`text-red-500`}>{error}</Text>
             <TouchableOpacity 
               style={tw`mt-4 px-6 py-2 bg-blue-500 rounded-full`}
-              onPress={fetchComments}
+              onPress={() => fetchComments(false)}
             >
               <Text style={tw`text-white font-medium`}>重试</Text>
             </TouchableOpacity>
@@ -374,13 +598,24 @@ export default function CommentScreen() {
                   />
                 </View>
                 <View style={tw`flex-1`}>
-                  <View style={tw`flex-row items-center mb-1`}>
-                    <Text style={tw`font-medium text-base text-gray-900`}>
-                      {comment.username}
-                    </Text>
-                    <Text style={tw`text-gray-400 text-sm ml-2`}>
-                      {formatTime(comment.created_at)}
-                    </Text>
+                  <View style={tw`flex-row items-center justify-between mb-1`}>
+                    <View style={tw`flex-row items-center flex-1`}>
+                      <Text style={tw`font-medium text-base text-gray-900`}>
+                        {comment.username}
+                      </Text>
+                      <Text style={tw`text-gray-400 text-sm ml-2`}>
+                        {formatTime(comment.created_at)}
+                      </Text>
+                    </View>
+                    {/* 删除按钮 - 只有自己创建的评论才显示 */}
+                    {comment.user_id === currentUserId && (
+                      <TouchableOpacity 
+                        style={tw`p-1`}
+                        onPress={() => handleDeleteComment(comment.id)}
+                      >
+                        <Ionicons name="trash-outline" size={16} color="#ef4444" />
+                      </TouchableOpacity>
+                    )}
                   </View>
                   <Text style={tw`text-gray-700 leading-5`}>{comment.content}</Text>
                   
@@ -395,12 +630,12 @@ export default function CommentScreen() {
                         color={comment.liked ? "#ef4444" : "#666"} 
                       />
                       <Text style={tw`text-gray-500 text-sm ml-1`}>
-                        {comment.total_reactions > 0 ? comment.total_reactions : '点赞'}
+                        {getReactionCount(comment.reactions, '💖') > 0 ? getReactionCount(comment.reactions, '💖') : '点赞'}
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity 
                       style={tw`flex-row items-center mr-4`}
-                      onPress={() => handleReply(comment.id)}
+                      onPress={() => handleReply('comment', comment.id, comment.username)}
                     >
                       <Ionicons name="chatbubble-outline" size={16} color="#666" />
                       <Text style={tw`text-gray-500 text-sm ml-1`}>
@@ -420,11 +655,23 @@ export default function CommentScreen() {
 
       {/* 底部评论输入 */}
       <View style={tw`px-4 py-3 border-t border-gray-200 bg-white`}>
+        {/* 回复提示 */}
+        {replyTo && (
+          <View style={tw`flex-row items-center justify-between mb-2 px-3 py-2 bg-blue-50 rounded-lg`}>
+            <Text style={tw`text-blue-600 text-sm`}>
+              回复 @{replyTo.username}
+            </Text>
+            <TouchableOpacity onPress={cancelReply}>
+              <Ionicons name="close" size={16} color="#3b82f6" />
+            </TouchableOpacity>
+          </View>
+        )}
+        
         <View style={tw`flex-row items-end`}>
           <View style={tw`flex-1 bg-gray-100 rounded-2xl px-4 py-2 mr-2 min-h-[40px] max-h-[100px]`}>
             <TextInput
               style={tw`text-base text-gray-900`}
-              placeholder="写下你的评论..."
+              placeholder={replyTo ? "写下你的回复..." : "写下你的评论..."}
               placeholderTextColor="#9ca3af"
               value={commentText}
               onChangeText={setCommentText}
@@ -433,11 +680,17 @@ export default function CommentScreen() {
             />
           </View>
           <TouchableOpacity
-            style={tw`px-4 py-2 bg-blue-500 rounded-full ${!commentText.trim() ? 'opacity-50' : ''}`}
+            style={tw`px-4 py-2 bg-blue-500 rounded-full ${(!commentText.trim() || submitting) ? 'opacity-50' : ''}`}
             onPress={handleSubmitComment}
-            disabled={!commentText.trim()}
+            disabled={!commentText.trim() || submitting}
           >
-            <Text style={tw`text-white font-medium`}>发送</Text>
+            {submitting ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={tw`text-white font-medium`}>
+                {replyTo ? '回复' : '发送'}
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>

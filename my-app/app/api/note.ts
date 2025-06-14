@@ -1,4 +1,4 @@
-import { get, post } from "./request";
+import { del, get, post } from "./request";
 
 export async function createNote(data: any) {
     return post(
@@ -46,4 +46,21 @@ export async function likeNote(id: any) {
 
 export async function getNoteReplyByNoteId(id: any) {
   return get(`note/detail/${id}`);
+}
+
+/**
+ * 评论游记
+ * @param noteId 游记ID
+ * @param data 评论数据
+ */
+export async function commentNote(data: any) {
+    return post(`thread`, data);
+}
+
+/**
+ * 删除评论
+ * @param commentId 评论ID
+ */
+export async function deleteComment(commentId: any) {
+    return del(`thread/${commentId}`);
 }
