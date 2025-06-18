@@ -63,3 +63,25 @@ export async function getNoteThreads(noteId) {
     const threads = await get(`note/${noteId}/threads`);
     return threads?.data;
 }
+
+export async function getNoteAll(params, sort, filter) {
+
+    if (sort) {
+        Object.keys(sort).forEach((key) => {
+            params["sort"] = key;
+            params["order"] = sort[key] === "ascend" ? "asc" : "desc";
+        });
+    }
+
+    if (!params["sort"]) {
+        params["sort"] = "id";
+        params["order"] = "desc";
+    }
+
+    const urlParams = new URLSearchParams(params);
+    const data = await get(`note/all?${urlParams.toString()}`);
+
+    data.success = true;
+    data.list = data?.data?.list;
+    return data;
+}

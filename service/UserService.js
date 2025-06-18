@@ -147,6 +147,16 @@ class UserService {
         const hashedPassword = await UserEntity.hashPassword(newPassword);
         return this.mapper.updatePassword(userId, hashedPassword);
     }
+
+    // 查询用户喜欢的帖子
+    async getUserFavorites(userId,filter) {
+        return this.mapper.getFavoriteThreads(userId, filter);
+    }
+
+    // 查询用户收藏的帖子
+    async getUserCollections(userId, filter) {
+        return this.mapper.getCollectionThreads(userId, filter);
+    }
 }
 
 module.exports = UserService;

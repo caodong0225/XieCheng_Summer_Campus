@@ -6,7 +6,7 @@ import {
   ProFormText,
 } from "@ant-design/pro-components";
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, use } from "react";
 import { message, theme, Tabs, App } from "antd";
 import { user } from "@/api/index";
 import { getSiteConfig } from "@/store/site_config";
@@ -146,8 +146,9 @@ const Page = ({ router, to, first }) => {
 
 export default function Login({ searchParams }) {
   const router = useRouter();
-  const to = searchParams?.to;
-  const first = searchParams?.first;
+  const unwrappedSearchParams = use(searchParams);
+  const to = unwrappedSearchParams?.to;
+  const first = unwrappedSearchParams?.first;
 
   return (
     <App>

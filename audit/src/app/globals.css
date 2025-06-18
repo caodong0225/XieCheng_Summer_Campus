@@ -24,3 +24,319 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* 图片滑动优化 */
+.ant-carousel .slick-dots {
+  bottom: 12px;
+}
+
+.ant-carousel .slick-dots li button {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+  background: #1890ff;
+  width: 12px;
+  height: 12px;
+}
+
+/* 轮播图拖动优化 */
+.ant-carousel .slick-slide {
+  transition: all 0.3s ease;
+}
+
+.ant-carousel .slick-slide img {
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* 轮播图箭头样式 */
+.ant-carousel .slick-prev,
+.ant-carousel .slick-next {
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.ant-carousel .slick-prev:hover,
+.ant-carousel .slick-next:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.ant-carousel .slick-prev {
+  left: 20px;
+}
+
+.ant-carousel .slick-next {
+  right: 20px;
+}
+
+/* 轮播图指示器样式 */
+.ant-carousel .slick-dots-bottom {
+  bottom: 20px;
+}
+
+.ant-carousel .slick-dots li {
+  margin: 0 4px;
+}
+
+/* 图片悬停效果增强 */
+.image-hover {
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image-hover:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 缩略图网格优化 */
+.thumbnail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.thumbnail-item {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.thumbnail-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.thumbnail-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.thumbnail-item:hover img {
+  transform: scale(1.1);
+}
+
+/* 主轮播图容器 */
+.main-carousel {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.main-carousel .ant-carousel {
+  border-radius: 12px;
+}
+
+.main-carousel .slick-slide {
+  height: 400px;
+}
+
+.main-carousel .slick-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 响应式轮播图 */
+@media (max-width: 768px) {
+  .main-carousel .slick-slide {
+    height: 300px;
+  }
+  
+  .ant-carousel .slick-prev,
+  .ant-carousel .slick-next {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .ant-carousel .slick-prev {
+    left: 10px;
+  }
+  
+  .ant-carousel .slick-next {
+    right: 10px;
+  }
+}
+
+/* Markdown 内容样式 */
+.prose {
+  line-height: 1.6;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+.prose p {
+  margin-bottom: 1em;
+}
+
+.prose ul,
+.prose ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.prose li {
+  margin-bottom: 0.25em;
+}
+
+.prose blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.prose code {
+  background: #f3f4f6;
+  padding: 0.125em 0.25em;
+  border-radius: 0.25em;
+  font-size: 0.875em;
+}
+
+.prose pre {
+  background: #1f2937;
+  color: #f9fafb;
+  padding: 1em;
+  border-radius: 0.5em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5em;
+  margin: 1em 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5em;
+  text-align: left;
+}
+
+.prose th {
+  background: #f9fafb;
+  font-weight: 600;
+}
+
+/* 图片模态框优化 */
+.ant-modal-content {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.ant-modal-close {
+  color: white;
+}
+
+.ant-modal-close:hover {
+  color: #1890ff;
+}
+
+/* 全屏模态框样式 */
+.fullscreen-modal .ant-modal-content {
+  background: rgba(0, 0, 0, 0.95);
+  height: 100vh;
+  border-radius: 0;
+}
+
+.fullscreen-modal .ant-modal-body {
+  height: 100vh;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-modal .ant-modal-close {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-modal .ant-modal-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* 响应式图片网格 */
+@media (max-width: 640px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 769px) {
+  .grid-cols-6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* 文本截断 */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}

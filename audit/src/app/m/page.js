@@ -1,105 +1,259 @@
 'use client';
 
 import ReactMarkdown from 'react-markdown';
-import { Tag, Select, Input, Button, Form, Skeleton, Table, Pagination, message } from "antd";
+import { Tag, List, Avatar, Skeleton, message, Pagination, Space, Typography } from "antd";
 import remarkGfm from 'remark-gfm';
-import { useState, useEffect, createContext, useContext } from 'react';
-import TextArea from 'antd/lib/input/TextArea';
+import { useState, useEffect } from 'react';
+import { getNoteAll } from '../../api/note';
 
-// 创建上下文用于共享刷新函数
-const JobsContext = createContext({
-  refreshJobs: () => {},
-});
+const { Text, Title } = Typography;
 
-const WelcomeContent = () => {
-  const [isWelcomeLoading, setIsWelcomeLoading] = useState(true);
-  const [welcomeData, setWelcomeData] = useState(null);
-  
-
+const ArchitectureSection = () => {
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // 模拟加载数据
     setTimeout(() => {
-      setIsWelcomeLoading(false);
+      setIsLoading(false);
     }, 500);
   }, []);
 
-  if (isWelcomeLoading) {
-      return (
-          <div className="bg-white p-4 shadow-md rounded w-full">
-              <Skeleton active />
-          </div>
-      );
+  if (isLoading) {
+    return (
+      <div className="bg-white p-6 shadow-lg rounded-lg mb-8">
+        <Skeleton active />
+      </div>
+    );
   }
 
-  const defaultContent = `
-本平台是一个招聘平台，用来整理招聘公司信息。
+  const architectureContent = `
+# 技术架构说明
 
-平台手搓RPC架构，注册中心采用Tomcat+Redis的结构，客户端采用前后端分离的架构，前端使用NextJS+Tailwindcss的架构，后端使用Springboot，通过Feign的方式访问远程服务器的方法，服务端采用Springboot+MybatisPlus的架构，由JWT的方式实现跨平台数据访问。
+## 平台概述
+携程集团前端大作业
+
   `;
 
   return (
-      <div className="bg-white p-4 shadow-md rounded w-full">
-          <h2 className="text-2xl font-bold">{welcomeData?.title || "欢迎来到求职网站"}</h2>
-          <div className="mt-5 markdown-content">
-              <ReactMarkdown 
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                      // 自定义链接在新标签页打开
-                      a: ({node, ...props}) => (
-                          <a target="_blank" rel="noopener noreferrer" {...props} />
-                      ),
-                      // 保持段落的样式
-                      p: ({node, ...props}) => (
-                          <p className="mb-4" {...props} />
-                      ),
-                      // 保持标题的样式
-                      h1: ({node, ...props}) => (
-                          <h1 className="text-2xl font-bold mb-4" {...props} />
-                      ),
-                      h2: ({node, ...props}) => (
-                          <h2 className="text-xl font-bold mb-3" {...props} />
-                      ),
-                      h3: ({node, ...props}) => (
-                          <h3 className="text-lg font-bold mb-2" {...props} />
-                      ),
-                      // 保持列表的样式
-                      ul: ({node, ...props}) => (
-                          <ul className="list-disc list-inside mb-4" {...props} />
-                      ),
-                      ol: ({node, ...props}) => (
-                          <ol className="list-decimal list-inside mb-4" {...props} />
-                      ),
-                      // 保持代码块的样式
-                      code: ({node, inline, ...props}) => (
-                          inline ? 
-                          <code className="bg-gray-100 px-1 rounded" {...props} /> :
-                          <code className="block bg-gray-100 p-4 rounded mb-4" {...props} />
-                      )
-                  }}
-              >
-                  {welcomeData?.contentExt?.contentMarkdown || defaultContent}
-              </ReactMarkdown>
-          </div>
+    <div className="bg-white p-6 shadow-lg rounded-lg mb-8">
+      <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">技术架构说明</h1>
+      <div className="markdown-content">
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm]}
+          components={{
+            h1: ({node, ...props}) => (
+              <h1 className="text-2xl font-bold mb-4 text-blue-600" {...props} />
+            ),
+            h2: ({node, ...props}) => (
+              <h2 className="text-xl font-bold mb-3 text-gray-800" {...props} />
+            ),
+            h3: ({node, ...props}) => (
+              <h3 className="text-lg font-bold mb-2 text-gray-700" {...props} />
+            ),
+            p: ({node, ...props}) => (
+              <p className="mb-4 text-gray-600 leading-relaxed" {...props} />
+            ),
+            ul: ({node, ...props}) => (
+              <ul className="list-disc list-inside mb-4 text-gray-600" {...props} />
+            ),
+            li: ({node, ...props}) => (
+              <li className="mb-1" {...props} />
+            ),
+            strong: ({node, ...props}) => (
+              <strong className="font-semibold text-gray-800" {...props} />
+            )
+          }}
+        >
+          {architectureContent}
+        </ReactMarkdown>
       </div>
+    </div>
   );
 };
 
+const NotesSection = () => {
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0
+  });
 
-export default function Home() {
-  // 创建一个ref用于存储刷新函数
-  const refreshJobsRef = { current: () => {} };
+  const fetchNotes = async (page = 1, pageSize = 10) => {
+    try {
+      setLoading(true);
+      const params = {
+        pageNum: page,
+        pageSize: pageSize
+      };
+      
+      const response = await getNoteAll(params);
+      
+      if (response.success) {
+        setNotes(response.list || []);
+        setPagination({
+          current: page,
+          pageSize: pageSize,
+          total: response.total || 0
+        });
+      } else {
+        message.error('获取游记列表失败');
+      }
+    } catch (error) {
+      console.error('获取游记列表错误:', error);
+      message.error('获取游记列表失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  const handlePageChange = (page, pageSize) => {
+    fetchNotes(page, pageSize);
+  };
+
+  const getStatusTag = (status) => {
+    const statusMap = {
+      'checking': { color: 'orange', text: '审核中' },
+      'approved': { color: 'green', text: '已通过' },
+      'rejected': { color: 'red', text: '已拒绝' },
+      'draft': { color: 'default', text: '草稿' }
+    };
+    
+    const statusInfo = statusMap[status] || { color: 'default', text: status };
+    return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-white p-6 shadow-lg rounded-lg">
+        <h2 className="text-2xl font-bold mb-6 text-center text-green-600">游记列表</h2>
+        <List
+          itemLayout="horizontal"
+          dataSource={[1, 2, 3, 4, 5]}
+          renderItem={() => (
+            <List.Item>
+              <Skeleton active avatar paragraph={{ rows: 2 }} />
+            </List.Item>
+          )}
+        />
+      </div>
+    );
+  }
 
   return (
-    <JobsContext.Provider value={{ refreshJobs: refreshJobsRef }}>
-      <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/bg.jpg')" }}>
-        <div className="flex max-w-screen-xl mx-auto flex-wrap pb-5">
-          <div className="w-full md:w-1/2 p-5 lg:w-1/3 gap-5 flex flex-col">
-            <WelcomeContent />
-          </div>
+    <div className="bg-white p-6 shadow-lg rounded-lg">
+      <h2 className="text-2xl font-bold mb-6 text-center text-green-600">游记列表</h2>
+      
+      {notes.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          暂无游记数据
         </div>
+      ) : (
+        <>
+          <List
+            itemLayout="horizontal"
+            dataSource={notes}
+            renderItem={(note) => (
+              <List.Item
+                actions={[
+                  getStatusTag(note.status),
+                  <Text key="author" type="secondary" className="text-sm">
+                    {note.username}
+                  </Text>
+                ]}
+              >
+                <List.Item.Meta
+                  avatar={
+                    <div className="flex items-center space-x-3">
+                      {note.attachments && note.attachments.length > 0 && (
+                        <div className="relative w-16 h-16 rounded overflow-hidden">
+                          <img
+                            alt={note.title}
+                            src={note.attachments[0].value}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src = '/placeholder-image.jpg';
+                            }}
+                          />
+                          {note.attachments.length > 1 && (
+                            <div className="absolute top-0 right-0 bg-black bg-opacity-50 text-white px-1 py-0.5 rounded text-xs">
+                              +{note.attachments.length - 1}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  }
+                  title={
+                    <div className="flex items-center space-x-2">
+                      <Title level={4} className="mb-0 line-clamp-1">
+                        {note.title}
+                      </Title>
+                    </div>
+                  }
+                  description={
+                    <div className="space-y-2">
+                      <Text className="line-clamp-2 text-gray-600">
+                        {note.description}
+                      </Text>
+                      <div className="flex items-center space-x-4 text-xs text-gray-400">
+                        <span>创建时间: {formatDate(note.created_at)}</span>
+                        <span>更新时间: {formatDate(note.updated_at)}</span>
+                        <span>作者: {note.username}</span>
+                        <span>邮箱: {note.email}</span>
+                      </div>
+                    </div>
+                  }
+                />
+              </List.Item>
+            )}
+          />
+          
+          <div className="mt-6 flex justify-center">
+            <Pagination
+              current={pagination.current}
+              pageSize={pagination.pageSize}
+              total={pagination.total}
+              onChange={handlePageChange}
+              showSizeChanger={false}
+              showQuickJumper
+              showTotal={(total, range) => 
+                `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
+              }
+            />
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+      <div className="container mx-auto px-4 py-8">
+        {/* 上部分：技术架构说明 */}
+        <ArchitectureSection />
+        
+        {/* 下部分：游记列表 */}
+        <NotesSection />
       </div>
-    </JobsContext.Provider>
+    </div>
   );
 }
-  

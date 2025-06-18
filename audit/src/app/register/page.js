@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { message, theme, Form, Tabs } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import {HomeTwoTone, IdcardTwoTone, LockOutlined, UserOutlined, MailOutlined} from "@ant-design/icons";
 import {
@@ -198,7 +198,8 @@ const Page = ({ data = null, router, to }) => {
 
 export default function Register({ searchParams }) {
   const router = useRouter();
-  let { to, data } = searchParams;
+  const unwrappedSearchParams = use(searchParams);
+  let { to, data } = unwrappedSearchParams;
   if (data) {
     console.log("data", data);
   }

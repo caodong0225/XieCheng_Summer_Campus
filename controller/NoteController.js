@@ -20,6 +20,7 @@ class NoteController {
         this.toggleCollection = this.toggleCollection.bind(this);
         this.toggleFavorite = this.toggleFavorite.bind(this);
         this.getNoteThreads = this.getNoteThreads.bind(this);
+        this.getNoteAll = this.getNoteAll.bind(this);
     }
 
     async createNote(req, res) {
@@ -108,6 +109,17 @@ class NoteController {
                 }
             }
 
+            const notes = await this.noteService.getNoteList(req.query);
+            response.success(res, notes, '游记列表获取成功');
+        } catch (error) {
+            response.error(res, error.message, 400);
+        }
+    }
+
+    // 获取所有游记列表
+    async getNoteAll(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
             const notes = await this.noteService.getNoteList(req.query);
             response.success(res, notes, '游记列表获取成功');
         } catch (error) {

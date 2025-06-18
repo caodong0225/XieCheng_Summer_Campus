@@ -220,6 +220,64 @@ class UserMapper {
         );
         return rows.length > 0;
     }
+
+    // 查找用户喜爱的帖子列表
+    async getFavoriteThreads(userId, { page = 1, pageSize = 10 }) {
+        page = parseInt(page, 10);
+        pageSize = parseInt(pageSize, 10);
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(pageSize) || pageSize < 1) pageSize = 10;
+
+        const offset = (page - 1) * pageSize;
+
+        const query = `
+            SELECT t.*, u.username, u.email 
+            FROM note_emoji_reactions uf
+            JOIN notes t ON uf.note_id = t.id
+            JOIN users u ON t.created_by = u.id
+            WHERE uf.user_id = ? and uf.emoji = ?
+            ORDER BY t.created_at DESC
+            LIMIT ? OFFSET ?`;
+
+        const [rows] = await pool.query(query, [userId, '💖', pageSize, offset]);
+
+        return {
+            pageNum: page,
+            pageSize: pageSize,
+            total: rows.length,
+            pages: Math.ceil(rows.length / pageSize),
+            list: rows
+        };
+    }
+
+    // 查找用户收藏的帖子列表
+    async getCollectionThreads(userId, { page = 1, pageSize = 10 }) {
+        page = parseInt(page, 10);
+        pageSize = parseInt(pageSize, 10);
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(pageSize) || pageSize < 1) pageSize = 10;
+
+        const offset = (page - 1) * pageSize;
+
+        const query = `
+            SELECT t.*, u.username, u.email 
+            FROM note_emoji_reactions uf
+            JOIN notes t ON uf.note_id = t.id
+            JOIN users u ON t.created_by = u.id
+            WHERE uf.user_id = ? and uf.emoji = ?
+            ORDER BY t.created_at DESC
+            LIMIT ? OFFSET ?`;
+
+        const [rows] = await pool.query(query, [userId, '🌟', pageSize, offset]);
+
+        return {
+            pageNum: page,
+            pageSize: pageSize,
+            total: rows.length,
+            pages: Math.ceil(rows.length / pageSize),
+            list: rows
+        };
+    }
 }
 
 module.exports = UserMapper;

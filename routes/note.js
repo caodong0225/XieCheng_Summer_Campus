@@ -78,6 +78,15 @@ router.get('/list',
     NoteController.getNoteList
 );
 
+// 获取所有游记列表
+router.get('/all',
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    NoteController.getNoteAll
+);
+
 // 通过游记id获取游记
 router.get('/:noteId',
     verifyJWT,

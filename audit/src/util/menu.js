@@ -12,6 +12,19 @@ export const PUBLIC_MENU = [
     href: "/m",
     icon: "",
   },
+  {
+    key: "audit",
+    label: "审批",
+    href: "/m/audit",
+    children: [
+      {
+        key: "audit",
+        label: "审批游记",
+        href: "/m/audit/*",
+        hidden: true,
+      },
+    ],
+  },
 ];
 
 // 通用递归查找

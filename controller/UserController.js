@@ -19,6 +19,8 @@ class UserController {
         this.updateExtras = this.updateExtras.bind(this);
         this.changeUserRole = this.changeUserRole.bind(this);
         this.updateUserProfile = this.updateUserProfile.bind(this);
+        this.getUserFavorites = this.getUserFavorites.bind(this);
+        this.getUserCollections = this.getUserCollections.bind(this);
     }
 
     // 用户注册
@@ -184,6 +186,34 @@ class UserController {
                 error.message,
                 error.statusCode || 500
             );
+        }
+    }
+
+    //  获取用户喜欢的帖子
+    async getUserFavorites(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+
+            const userId = contextUser.userId;
+            const filter = req.query; // 可根据需要添加过滤条件
+
+            const favorites = await this.userService.getUserFavorites(userId, filter);
+            response.success(res, favorites);
+        } catch (error) {
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 获取用户收藏的帖子
+    async getUserCollections(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+            const userId = contextUser.userId;
+            const filter = req.query; // 可根据需要添加过滤条件
+            const collections = await this.userService.getUserCollections(userId, filter);
+            response.success(res, collections);
+        } catch (error) {
+            response.error(res, error.message, 500);
         }
     }
 }

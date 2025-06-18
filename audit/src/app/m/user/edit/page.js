@@ -1,6 +1,6 @@
 "use client";
 import { Button, Spin } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { ProForm, ProFormText } from "@ant-design/pro-components";
 import { useRouter } from '@bprogress/next';
 import { user } from "@/api/index";
@@ -18,7 +18,10 @@ export default function UserEdit({ searchParams }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = ProForm.useForm();
   const [updating, setUpdating] = useState(false);
-  const { userId } = searchParams;
+  
+  // 使用 React.use() 解包 searchParams
+  const unwrappedSearchParams = use(searchParams);
+  const { userId } = unwrappedSearchParams;
   const { data, error, isLoading } = useSWR(refreshKey, (key) => {
     if (!userId) {
       return {};

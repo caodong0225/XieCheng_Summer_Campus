@@ -15,6 +15,28 @@ router.post('/login', UserController.login);
 // 分页查询用户列表
 router.get('/list', UserController.listUsers);
 
+
+// 获取用户喜欢列表
+router.get('/favorites',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    UserController.getUserFavorites
+);
+
+// 获取用户收藏列表
+router.get('/collections',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    UserController.getUserCollections
+);
+
+
 router.put('/update',
     verifyJWT,
     (req, res, next) => {
@@ -71,5 +93,6 @@ router.put('/update/:userId/password',
     roleCheck('super-admin'),
     UserController.updateUserProfile
 );
+
 
 module.exports = router;
