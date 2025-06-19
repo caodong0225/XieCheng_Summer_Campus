@@ -98,7 +98,6 @@ const VideoController = require('../controller/VideoController');
 router.post('/upload',
     verifyJWT,
     videoUpload,
-    handleUploadErrors,
     (req, res, next) => {
         // 将用户信息注入上下文
         runInContext(req, next);

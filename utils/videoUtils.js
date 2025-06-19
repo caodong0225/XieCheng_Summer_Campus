@@ -1,5 +1,4 @@
 // src/utils/videoUtils.js
-const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
 const { promisify } = require('util');
@@ -7,7 +6,12 @@ const mkdirp = require('mkdirp');
 const stream = require('stream');
 const minioClient = require('./minioClient');
 const unlinkAsync = promisify(fs.unlink);
+const ffmpeg = require('fluent-ffmpeg');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffprobePath = require('@ffprobe-installer/ffprobe').path;
 
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
 // 创建缩略图临时目录
 const thumbnailDir = path.join(__dirname, '../temp_thumbnails');
 if (!fs.existsSync(thumbnailDir)) {
@@ -29,6 +33,9 @@ async function generateThumbnail(videoPath) {
     try {
         const filename = path.basename(videoPath, path.extname(videoPath));
         const thumbnailPath = path.join(thumbnailDir, `${filename}.jpg`);
+        console.log(
+            `🔍 生成缩略图: ${thumbnailPath} (视频路径: ${videoPath})`
+        )
 
         return new Promise((resolve, reject) => {
             ffmpeg(videoPath)

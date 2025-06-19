@@ -14,6 +14,7 @@ class VideoController {
             if (!req.file) {
                 return response.error(res, '请选择要上传的视频文件', 400);
             }
+            console.log('上传的视频文件:', req.file);
 
             const contextUser = getContext()?.get('user');
             const { title = '未命名视频' } = req.body;

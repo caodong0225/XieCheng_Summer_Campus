@@ -2,7 +2,7 @@
 const path = require('path');
 const fs = require('fs');
 const { promisify } = require('util');
-const { generateThumbnail } = require('../utils/videoUtils');
+const { generateThumbnail, getVideoMetadata} = require('../utils/videoUtils');
 const minioClient = require('../utils/minioClient');
 
 const unlinkAsync = promisify(fs.unlink);
@@ -51,12 +51,12 @@ class VideoService {
                     'Content-Type': file.mimetype,
                     'x-amz-meta-original-filename': originalName,
                     'x-amz-meta-user-id': userId,
-                    'x-amz-meta-title': title
+                    // 'x-amz-meta-title': title
                 }
             );
 
             // 2. 获取视频元数据
-            const metadata = await this.getVideoMetadata(filePath);
+            const metadata = await getVideoMetadata(filePath);
 
             // 3. 生成缩略图并上传
             const thumbnailPath = await generateThumbnail(filePath);
@@ -81,8 +81,8 @@ class VideoService {
                 size: fileSize,
                 duration: metadata.duration,
                 format: metadata.format,
-                videoUrl: `${this.endpoint}/${this.videoBucket}/${filename}`,
-                thumbnailUrl: `${this.endpoint}/${this.thumbnailBucket}/${thumbnailName}`,
+                videoUrl: `https://${this.endpoint}/${this.videoBucket}/${filename}`,
+                thumbnailUrl: `https://${this.endpoint}/${this.thumbnailBucket}/${thumbnailName}`,
                 bucket: this.videoBucket,
                 thumbnailBucket: this.thumbnailBucket
             };
@@ -111,9 +111,6 @@ class VideoService {
         }
     }
 
-    async getVideoMetadata(filePath) {
-        // ... 同之前代码 ...
-    }
 }
 
 module.exports = VideoService;

@@ -188,9 +188,9 @@ export function newDel(url: string, isAuth = true) {
   );
 }
 
-export function upload(url: string, file: File, additionalData?: Record<string, any>, isAuth = true) {
+export function upload(url: string, type: string, file: File, additionalData?: Record<string, any>, isAuth = true) {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append(type, file);
   
   if (additionalData) {
     Object.entries(additionalData).forEach(([key, value]) => {
