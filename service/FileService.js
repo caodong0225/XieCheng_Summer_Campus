@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 
 class FileService {
     constructor() {
-        this.bucketName = process.env.MINIO_BUCKET || 'xiecheng';
+        this.bucketName = process.env.MINIO_BUCKET;
         this.initBucket();
     }
 

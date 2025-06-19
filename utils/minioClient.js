@@ -6,7 +6,11 @@ const minioClient = new Minio.Client({
     port: parseInt(process.env.MINIO_PORT) || 9000,
     useSSL: process.env.MINIO_USE_SSL === 'true',
     accessKey: process.env.MINIO_ACCESS_KEY,
-    secretKey: process.env.MINIO_SECRET_KEY
+    secretKey: process.env.MINIO_SECRET_KEY,
+    buckets: {
+        videos: process.env.MINIO_VIDEO_BUCKET || 'videos',
+        thumbnails: process.env.MINIO_THUMBNAIL_BUCKET || 'thumbnails'
+    }
 });
 
 module.exports = minioClient;
