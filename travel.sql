@@ -213,3 +213,41 @@ CREATE TABLE `users`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+DROP TABLE IF EXISTS `videos`;
+create table videos
+(
+    id          int auto_increment comment '主键'
+        primary key,
+    created_at  timestamp default current_timestamp not null comment '创建时间',
+    updated_at  timestamp default current_timestamp not null on update current_timestamp comment '更新时间',
+    description varchar(255)                        null comment '视频描述',
+    created_by  int                                 not null comment '创建者id',
+    link        varchar(255)                        not null comment '视频地址',
+    thumbnail   varchar(255)                        not null comment '缩略图地址',
+    constraint videos_pk_2
+        unique (link),
+    constraint videos_pk_3
+        unique (thumbnail),
+    constraint videos_users_id_fk
+        foreign key (created_by) references users (id)
+            on delete cascade
+)
+    comment '视频列表';
+
+DROP TABLE IF EXISTS `video_emoji_reactions`;
+create table video_emoji_reactions
+(
+    id      int auto_increment comment '主键'
+        primary key,
+    user_id int          not null comment '用户id',
+    video_id int          not null comment '帖子id',
+    emoji   varchar(255) null comment '表情',
+    constraint video_emoji_reactions_videos_id_fk
+        foreign key (video_id) references videos (id)
+            on delete cascade,
+    constraint video_emoji_reactions_users_id_fk
+        foreign key (user_id) references users (id)
+            on delete cascade
+)
+    comment '视频的表情回复' row_format = DYNAMIC;

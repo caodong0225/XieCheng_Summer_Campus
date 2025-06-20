@@ -4,6 +4,7 @@ const fs = require('fs');
 const { promisify } = require('util');
 const { generateThumbnail, getVideoMetadata} = require('../utils/videoUtils');
 const minioClient = require('../utils/minioClient');
+const VideoMapper = require("../mapper/VideoMapper");
 
 const unlinkAsync = promisify(fs.unlink);
 
@@ -11,7 +12,8 @@ class VideoService {
     constructor() {
         this.videoBucket = process.env.MINIO_VIDEO_BUCKET;
         this.thumbnailBucket = process.env.MINIO_THUMBNAIL_BUCKET;
-        this.endpoint = process.env.MINIO_ENDPOINT
+        this.endpoint = process.env.MINIO_ENDPOINT;
+        this.mapper = new VideoMapper();
         this.ensureBucketsExist();
     }
 
@@ -35,7 +37,7 @@ class VideoService {
         }
     }
 
-    async uploadVideoToMinio(userId, file, title) {
+    async uploadVideoToMinio(userId, file, description) {
         try {
             const filePath = file.path;
             const filename = file.filename;
@@ -75,7 +77,7 @@ class VideoService {
             // 4. 保存到数据库
             const videoData = {
                 userId,
-                title,
+                description,
                 filename,
                 originalName,
                 size: fileSize,
@@ -86,6 +88,14 @@ class VideoService {
                 bucket: this.videoBucket,
                 thumbnailBucket: this.thumbnailBucket
             };
+
+            // 处理数据库操作
+            await this.mapper.create({
+                description: description,
+                created_by: userId, // 用户ID
+                link: videoData.videoUrl,
+                thumbnail: videoData.thumbnailUrl,
+            })
 
             // 5. 清理临时文件
             await this.cleanupTempFiles([filePath, thumbnailPath]);
@@ -109,6 +119,20 @@ class VideoService {
         } catch (error) {
             console.error('清理临时文件失败:', error);
         }
+    }
+
+    // 分页查询用户上传的视频
+    async getUserVideos(userId, page = 1, limit = 10) {
+
+        const videos = await this.mapper.findByUserId(userId, { page, limit });
+        const total = await this.mapper.countByUserId(userId);
+
+        return {
+            videos,
+            total,
+            page,
+            limit
+        };
     }
 
 }

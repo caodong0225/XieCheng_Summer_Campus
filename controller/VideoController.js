@@ -17,13 +17,13 @@ class VideoController {
             console.log('上传的视频文件:', req.file);
 
             const contextUser = getContext()?.get('user');
-            const { title = '未命名视频' } = req.body;
+            const { description = '暂无描述' } = req.body;
 
             // 上传到 Minio
             const videoInfo = await this.videoService.uploadVideoToMinio(
                 contextUser.userId,
                 req.file,
-                title
+                description
             );
 
             response.success(res, videoInfo, '视频上传成功');
