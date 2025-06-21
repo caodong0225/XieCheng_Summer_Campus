@@ -84,6 +84,7 @@ router.get('/all',
         // 将用户信息注入上下文
         runInContext(req, next);
     },
+    roleCheck('admin','super-admin'),
     NoteController.getNoteAll
 );
 

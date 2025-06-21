@@ -12,7 +12,7 @@ const config: Record<Environment, Config> = {
     API_URL: 'http://localhost:3000/',
   },
   production: {
-    API_URL: '/api/',
+    API_URL: '/',
   },
   test: { // 新增 test 环境配置
     API_URL: 'http://test-api.example.com/',

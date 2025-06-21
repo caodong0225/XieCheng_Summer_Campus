@@ -25,6 +25,15 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
       )}
+
+      {/* 游记详情页面 */}
+      <Stack.Screen
+        name="note-detail"
+        options={{ 
+          headerShown: false,
+          presentation: 'modal'
+        }}
+      />
     </Stack>
   );
 }

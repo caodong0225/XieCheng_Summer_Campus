@@ -105,4 +105,61 @@ router.post('/upload',
     VideoController.uploadVideo
 );
 
+router.get('/list/me',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    VideoController.getVideoList
+);
+
+router.post('/like/:videoId',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    VideoController.toggleVideoLike
+);
+
+
+// 获取未读视频
+router.get('/unread',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    VideoController.getUnreadVideos
+);
+
+router.post('/collect/:videoId',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    VideoController.toggleVideoCollection
+);
+
+router.post('/watch/:videoId',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    VideoController.watchVideo
+);
+
+// 观看视频
+router.get('/:videoId',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    VideoController.getVideoDetails
+);
+
 module.exports = router;

@@ -2,9 +2,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Alert, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatlist';
+import Toast from 'react-native-toast-message';
 import tw from 'twrnc';
 import { createNote } from '../../api/note';
 import { newUpload } from '../../api/upload';
@@ -29,16 +30,17 @@ export default function PostScreen() {
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
 
   const pickMedia = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
     if (status !== 'granted') {
-      Alert.alert(
-        '权限请求',
-        '需要访问您的相册权限才能选择图片',
-        [{ text: '确定' }]
-      );
+      Toast.show({
+        type: 'error',
+        text1: '权限请求',
+        text2: '需要访问您的相册权限才能选择图片',
+      });
       return;
     }
 
@@ -51,6 +53,9 @@ export default function PostScreen() {
 
     if (!result.canceled) {
       try {
+        // 设置上传状态
+        setIsUploading(true);
+
         // Upload each selected media file immediately
         const uploadPromises = result.assets.map(async (asset, index) => {
           const response = await fetch(asset.uri);
@@ -73,14 +78,25 @@ export default function PostScreen() {
         });
 
         const newItems = await Promise.all(uploadPromises);
-        setMediaItems([...mediaItems, ...newItems]);
+        const updatedMediaItems = [...mediaItems, ...newItems];
+        setMediaItems(updatedMediaItems);
+        setIsUploading(false);
+
+        // 上传成功后显示提示
+        Toast.show({
+          type: 'success',
+          text1: '上传成功',
+          text2: `成功上传 ${newItems.length} 个文件！`,
+        });
+
       } catch (error) {
         console.error('上传失败：', error);
-        Alert.alert(
-          '上传失败',
-          '图片上传失败，请重试',
-          [{ text: '确定' }]
-        );
+        setIsUploading(false);
+        Toast.show({
+          type: 'error',
+          text1: '上传失败',
+          text2: '图片上传失败，请重试',
+        });
       }
     }
   };
@@ -103,27 +119,27 @@ export default function PostScreen() {
 
   const handlePublish = async () => {
     if (!title.trim()) {
-      Alert.alert(
-        '提示',
-        '请输入标题',
-        [{ text: '确定' }]
-      );
+      Toast.show({
+        type: 'error',
+        text1: '提示',
+        text2: '请输入标题',
+      });
       return;
     }
     if (!content.trim()) {
-      Alert.alert(
-        '提示',
-        '请输入内容',
-        [{ text: '确定' }]
-      );
+      Toast.show({
+        type: 'error',
+        text1: '提示',
+        text2: '请输入内容',
+      });
       return;
     }
     if (mediaItems.length === 0) {
-      Alert.alert(
-        '提示',
-        '请至少添加一张图片',
-        [{ text: '确定' }]
-      );
+      Toast.show({
+        type: 'error',
+        text1: '提示',
+        text2: '请至少添加一张图片',
+      });
       return;
     }
 
@@ -142,26 +158,39 @@ export default function PostScreen() {
       console.log('发布数据：', noteData);
       const result = await createNote(noteData);
       
-      if (result.success) {
-        Alert.alert(
-          '成功',
-          '发布成功！',
-          [{ text: '确定', onPress: () => router.back() }]
-        );
+      // 检查API响应格式
+      if (result && result.code === 200) {
+        // 显示成功提示
+        Toast.show({
+          type: 'success',
+          text1: '🎉 发布成功',
+          text2: `${result.message || '游记创建成功！'}`,
+          onShow: () => {
+            // 如果开启自动跳转，2秒后自动跳转到游记详情页面
+            setTimeout(() => {
+              router.push({
+                pathname: '/note-detail',
+                params: {
+                  noteId: result.data.noteId.toString()
+                }
+              });
+            }, 1000);
+          }
+        });
       } else {
-        Alert.alert(
-          '发布失败',
-          result.message || '发布失败，请稍后重试',
-          [{ text: '确定' }]
-        );
+        Toast.show({
+          type: 'error',
+          text1: '发布失败',
+          text2: result?.message || '发布失败，请稍后重试',
+        });
       }
     } catch (error) {
       console.error('发布失败：', error);
-      Alert.alert(
-        '发布失败',
-        '发布失败，请稍后重试',
-        [{ text: '确定' }]
-      );
+      Toast.show({
+        type: 'error',
+        text1: '发布失败',
+        text2: '发布失败，请稍后重试',
+      });
     }
   };
 
@@ -190,122 +219,135 @@ export default function PostScreen() {
 
 
   return (
-    <ScrollView style={tw`flex-1 bg-white`}>
-      <View style={tw`px-4 py-3 border-b border-gray-100`}>
-        <Text style={tw`text-lg font-bold text-center text-gray-800`}>发布游记</Text>
-      </View>
+    <>
+      <ScrollView style={tw`flex-1 bg-white`}>
+        <View style={tw`px-4 py-3 border-b border-gray-100`}>
+          <Text style={tw`text-lg font-bold text-center text-gray-800`}>发布游记</Text>
+        </View>
 
-      <View style={tw`p-4`}>
-        <TextInput
-          style={tw`text-xl font-bold mb-4 pb-2 border-b border-gray-200 text-gray-800`}
-          placeholder="添加标题会被更多人看到"
-          placeholderTextColor="#9CA3AF"
-          value={title}
-          onChangeText={setTitle}
-        />
-
-        <TextInput
-          style={tw`text-base min-h-[150px] p-3 border border-gray-200 rounded-lg mb-4 text-gray-700`}
-          placeholder="分享你的旅行故事..."
-          placeholderTextColor="#9CA3AF"
-          value={content}
-          onChangeText={setContent}
-          multiline
-          textAlignVertical="top"
-        />
-
-        <View style={tw`mb-4`}>
-          <DraggableFlatList
-            data={mediaItems}
-            renderItem={renderMediaItem}
-            keyExtractor={(item) => item.id}
-            onDragEnd={({ data }) => {
-              // 更新数据时重新设置weight
-              const updatedData = data.map((item, index) => ({
-                ...item,
-                weight: index
-              }));
-              setMediaItems(updatedData);
-            }}
-            horizontal
-            showsHorizontalScrollIndicator={false}
+        <View style={tw`p-4`}>
+          <TextInput
+            style={tw`text-xl font-bold mb-4 pb-2 border-b border-gray-200 text-gray-800`}
+            placeholder="添加标题会被更多人看到"
+            placeholderTextColor="#9CA3AF"
+            value={title}
+            onChangeText={setTitle}
           />
 
-          <TouchableOpacity 
-            style={tw`w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg justify-center items-center mt-2 bg-gray-50`}
-            onPress={pickMedia}
-          >
-            <Ionicons name="add-circle-outline" size={32} color="#9CA3AF" />
-            <Text style={tw`text-xs text-gray-500 mt-1`}>添加图片/视频</Text>
-          </TouchableOpacity>
-        </View>
+          <TextInput
+            style={tw`text-base min-h-[150px] p-3 border border-gray-200 rounded-lg mb-4 text-gray-700`}
+            placeholder="分享你的旅行故事..."
+            placeholderTextColor="#9CA3AF"
+            value={content}
+            onChangeText={setContent}
+            multiline
+            textAlignVertical="top"
+          />
 
-        <View style={tw`flex-row gap-3`}>
-          <TouchableOpacity 
-            style={tw`flex-1 bg-gray-100 py-4 rounded-lg items-center`}
-            activeOpacity={0.8}
-            onPress={() => handlePreview(0)}
-          >
-            <Text style={tw`text-gray-600 text-base font-bold`}>预览</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={tw`flex-1 bg-blue-500 py-4 rounded-lg items-center shadow-sm`}
-            activeOpacity={0.8}
-            onPress={handlePublish}
-          >
-            <Text style={tw`text-white text-base font-bold`}>发布</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+          <View style={tw`mb-4`}>
+            <DraggableFlatList
+              data={mediaItems}
+              renderItem={renderMediaItem}
+              keyExtractor={(item) => item.id}
+              onDragEnd={({ data }) => {
+                // 更新数据时重新设置weight
+                const updatedData = data.map((item, index) => ({
+                  ...item,
+                  weight: index
+                }));
+                setMediaItems(updatedData);
+              }}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
 
-      <Modal
-        visible={previewVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setPreviewVisible(false)}
-      >
-        <View style={tw`flex-1 bg-black`}>
-          <TouchableOpacity 
-            style={tw`absolute top-12 right-4 z-10 bg-black/50 rounded-full p-2`}
-            onPress={() => setPreviewVisible(false)}
-          >
-            <Ionicons name="close" size={24} color="white" />
-          </TouchableOpacity>
-          
-          <ScrollView 
-            horizontal 
-            pagingEnabled 
-            showsHorizontalScrollIndicator={false}
-            onMomentumScrollEnd={(e) => {
-              const newIndex = Math.round(e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width);
-              setCurrentPreviewIndex(newIndex);
-            }}
-            style={tw`flex-1`}
-          >
-            {mediaItems.map((item, index) => (
-              <View key={item.id} style={tw`w-full h-full justify-center items-center`}>
-                <Image
-                  source={{ uri: item.uri }}
-                  style={tw`w-full h-full`}
-                  contentFit="contain"
-                />
-              </View>
-            ))}
-          </ScrollView>
+            <TouchableOpacity 
+              style={tw`w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg justify-center items-center mt-2 bg-gray-50 ${isUploading ? 'opacity-50' : ''}`}
+              onPress={pickMedia}
+              disabled={isUploading}
+            >
+              {isUploading ? (
+                <View style={tw`items-center`}>
+                  <Ionicons name="cloud-upload" size={32} color="#3B82F6" />
+                  <Text style={tw`text-xs text-blue-500 mt-1`}>上传中...</Text>
+                </View>
+              ) : (
+                <View style={tw`items-center`}>
+                  <Ionicons name="add-circle-outline" size={32} color="#9CA3AF" />
+                  <Text style={tw`text-xs text-gray-500 mt-1`}>添加图片/视频</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
 
-          <View style={tw`absolute bottom-8 left-0 right-0 flex-row justify-center`}>
-            {mediaItems.map((_, index) => (
-              <View
-                key={index}
-                style={tw`w-2 h-2 rounded-full mx-1 ${
-                  index === currentPreviewIndex ? 'bg-white' : 'bg-white/50'
-                }`}
-              />
-            ))}
+          <View style={tw`flex-row gap-3`}>
+            <TouchableOpacity 
+              style={tw`flex-1 bg-gray-100 py-4 rounded-lg items-center`}
+              activeOpacity={0.8}
+              onPress={() => handlePreview(0)}
+            >
+              <Text style={tw`text-gray-600 text-base font-bold`}>预览</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={tw`flex-1 bg-blue-500 py-4 rounded-lg items-center shadow-sm`}
+              activeOpacity={0.8}
+              onPress={handlePublish}
+            >
+              <Text style={tw`text-white text-base font-bold`}>发布</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
-    </ScrollView>
+
+        <Modal
+          visible={previewVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setPreviewVisible(false)}
+        >
+          <View style={tw`flex-1 bg-black`}>
+            <TouchableOpacity 
+              style={tw`absolute top-12 right-4 z-10 bg-black/50 rounded-full p-2`}
+              onPress={() => setPreviewVisible(false)}
+            >
+              <Ionicons name="close" size={24} color="white" />
+            </TouchableOpacity>
+            
+            <ScrollView 
+              horizontal 
+              pagingEnabled 
+              showsHorizontalScrollIndicator={false}
+              onMomentumScrollEnd={(e) => {
+                const newIndex = Math.round(e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width);
+                setCurrentPreviewIndex(newIndex);
+              }}
+              style={tw`flex-1`}
+            >
+              {mediaItems.map((item, index) => (
+                <View key={item.id} style={tw`w-full h-full justify-center items-center`}>
+                  <Image
+                    source={{ uri: item.uri }}
+                    style={tw`w-full h-full`}
+                    contentFit="contain"
+                  />
+                </View>
+              ))}
+            </ScrollView>
+
+            <View style={tw`absolute bottom-8 left-0 right-0 flex-row justify-center`}>
+              {mediaItems.map((_, index) => (
+                <View
+                  key={index}
+                  style={tw`w-2 h-2 rounded-full mx-1 ${
+                    index === currentPreviewIndex ? 'bg-white' : 'bg-white/50'
+                  }`}
+                />
+              ))}
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
+      <Toast />
+    </>
   );
 }

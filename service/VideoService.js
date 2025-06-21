@@ -5,6 +5,9 @@ const { promisify } = require('util');
 const { generateThumbnail, getVideoMetadata} = require('../utils/videoUtils');
 const minioClient = require('../utils/minioClient');
 const VideoMapper = require("../mapper/VideoMapper");
+const VideoEmojiMapper = require("../mapper/VideoEmojiMapper");
+const UserMapper = require("../mapper/UserMapper");
+const VideoViewMapper = require("../mapper/VideoViewMapper");
 
 const unlinkAsync = promisify(fs.unlink);
 
@@ -14,6 +17,9 @@ class VideoService {
         this.thumbnailBucket = process.env.MINIO_THUMBNAIL_BUCKET;
         this.endpoint = process.env.MINIO_ENDPOINT;
         this.mapper = new VideoMapper();
+        this.videoEmojiMapper = new VideoEmojiMapper();
+        this.userMapper = new UserMapper();
+        this.viewMapper = new VideoViewMapper();
         this.ensureBucketsExist();
     }
 
@@ -122,10 +128,10 @@ class VideoService {
     }
 
     // 分页查询用户上传的视频
-    async getUserVideos(userId, page = 1, limit = 10) {
+    async getUserVideos(userId, page = 1, limit = 10, description = null) {
 
-        const videos = await this.mapper.findByUserId(userId, { page, limit });
-        const total = await this.mapper.countByUserId(userId);
+        const videos = await this.mapper.findByUserId(userId,  page, limit, description );
+        const total = await this.mapper.countByUserId(userId,description);
 
         return {
             videos,
@@ -133,6 +139,158 @@ class VideoService {
             page,
             limit
         };
+    }
+
+    // ================= 点赞和收藏功能 =================
+
+    // 视频收藏操作
+    async toggleCollection(userId, videoId) {
+        // 验证视频是否存在
+        const video = await this.mapper.findById(videoId);
+        if (!video) {
+            throw new Error('视频不存在');
+        }
+
+        // 验证用户是否存在
+        const user = await this.userMapper.findById(userId);
+        if (!user) {
+            throw new Error('用户不存在');
+        }
+
+        const isCollected = await this.videoEmojiMapper.isCollection(userId, videoId);
+
+        try {
+            await this.videoEmojiMapper.beginTransaction();
+
+            if (isCollected) {
+                await this.videoEmojiMapper.cancelCollection(userId, videoId);
+            } else {
+                await this.videoEmojiMapper.collection(userId, videoId);
+            }
+
+            await this.videoEmojiMapper.commit();
+
+            return {
+                collected: !isCollected,
+                videoId,
+                collectionCount: await this.videoEmojiMapper.getCollectionCount(videoId)
+            };
+        } catch (error) {
+            await this.videoEmojiMapper.rollback();
+            throw new Error('收藏操作失败: ' + error.message);
+        }
+    }
+
+    // 视频点赞操作
+    async toggleFavorite(userId, videoId) {
+        // 验证视频是否存在
+        const video = await this.mapper.findById(videoId);
+        if (!video) {
+            throw new Error('视频不存在');
+        }
+
+        // 验证用户是否存在
+        const user = await this.userMapper.findById(userId);
+        if (!user) {
+            throw new Error('用户不存在');
+        }
+
+        const isFavorited = await this.videoEmojiMapper.isFavorite(userId, videoId);
+
+        try {
+            await this.videoEmojiMapper.beginTransaction();
+
+            if (isFavorited) {
+                await this.videoEmojiMapper.cancelFavorite(userId, videoId);
+            } else {
+                await this.videoEmojiMapper.favorite(userId, videoId);
+            }
+
+            await this.videoEmojiMapper.commit();
+
+            return {
+                favorited: !isFavorited,
+                videoId,
+                favoriteCount: await this.videoEmojiMapper.getFavoriteCount(videoId)
+            };
+        } catch (error) {
+            await this.videoEmojiMapper.rollback();
+            throw new Error('点赞操作失败: ' + error.message);
+        }
+    }
+
+    // 通过id删除视频
+    async deleteVideoById(videoId) {
+        try{
+            await this.mapper.delete(videoId);
+        }catch (error) {
+            console.error('删除视频失败:', error);
+            throw new Error('删除视频失败: ' + error.message);
+        }
+    }
+
+    /**
+     * 记录视频观看行为
+     * @param {number} userId 用户ID
+     * @param {number} videoId 视频ID
+     */
+    async recordView(userId, videoId) {
+        try {
+            await this.viewMapper.beginTransaction();
+            const success = await this.viewMapper.recordView(userId, videoId);
+            await this.viewMapper.commit();
+            return success;
+        } catch (error) {
+            await this.viewMapper.rollback();
+            console.error('记录观看失败:', error);
+            return false;
+        }
+    }
+
+    // 通过视频id获取视频详情，要求包括点赞数，收藏数，观看数等
+    async getVideoDetails(videoId,userId) {
+        try {
+            const video = await this.mapper.findById(videoId);
+            if (!video) {
+                throw new Error('视频不存在');
+            }
+
+            const [likeCount, collectionCount,isCollected,isLiked, viewCount] = await Promise.all([
+                this.videoEmojiMapper.getFavoriteCount(videoId),
+                this.videoEmojiMapper.getCollectionCount(videoId),
+                this.videoEmojiMapper.isCollection(userId, videoId),
+                this.videoEmojiMapper.isFavorite(userId, videoId),
+                this.viewMapper.getVideoViewStats(videoId)
+            ]);
+
+            return {
+                ...video,
+                likeCount,
+                collectionCount,
+                isCollected,
+                isLiked,
+                viewCount
+            };
+        } catch (error) {
+            console.error('获取视频详情失败:', error);
+            throw new Error('获取视频详情失败: ' + error.message);
+        }
+    }
+
+    // 获取未读视频
+    async getUnreadVideos(userId, page = 1, limit = 10) {
+        try {
+            const unreadVideos = await this.mapper.getUnreadVideos(userId, page, limit);
+
+            return {
+                videos: unreadVideos,
+                page,
+                limit
+            };
+        } catch (error) {
+            console.error('获取未读视频失败:', error);
+            throw new Error('获取未读视频失败: ' + error.message);
+        }
     }
 
 }

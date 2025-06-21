@@ -95,30 +95,46 @@ class VideoMapper {
 
     /**
      * 根据用户ID查询其上传的所有视频
-     * @param {number} userId 用户ID
-     * @param {Object} options 分页选项
-     * @param {number} options.page 页码
-     * @param {number} options.pageSize 每页数量
-     * @returns {Promise<Array>} 视频列表
      */
-    async findByUserId(userId, { page = 1, pageSize = 10 } = {}) {
+    async findByUserId(userId, page = 1, pageSize = 10, description = null) {
         const offset = (page - 1) * pageSize;
         const executor = this.connection || pool;
 
-        const [rows] = await executor.query(`
+        if (description == null) {
+            const [rows] = await executor.query(`
             SELECT 
                 v.id, 
                 v.created_at, 
                 v.description, 
                 v.link, 
-                v.thumbnail
+                v.thumbnail,
+                IFNULL(SUM(vv.view_count), 0) AS play_count
             FROM videos v
+            LEFT JOIN video_views vv ON v.id = vv.video_id
             WHERE v.created_by = ?
+            GROUP BY v.id
             ORDER BY v.created_at DESC
             LIMIT ? OFFSET ?
         `, [userId, pageSize, offset]);
-
-        return rows;
+            return rows;
+        }else{
+            const [rows] = await executor.query(`
+            SELECT 
+                v.id, 
+                v.created_at, 
+                v.description, 
+                v.link, 
+                v.thumbnail,
+                IFNULL(SUM(vv.view_count), 0) AS play_count
+            FROM videos v
+            LEFT JOIN video_views vv ON v.id = vv.video_id
+            WHERE v.created_by = ? AND v.description LIKE ?
+            GROUP BY v.id
+            ORDER BY v.created_at DESC
+            LIMIT ? OFFSET ?
+        `, [userId, `%${description}%`, pageSize, offset]);
+            return rows;
+        }
     }
 
     /**
@@ -126,14 +142,23 @@ class VideoMapper {
      * @param {number} userId 用户ID
      * @returns {Promise<number>} 视频总数
      */
-    async countByUserId(userId) {
+    async countByUserId(userId,description = null) {
         const executor = this.connection || pool;
-        const [rows] = await executor.query(`
+        if (description == null) {
+            const [rows] = await executor.query(`
             SELECT COUNT(*) AS total 
             FROM videos 
             WHERE created_by = ?
         `, [userId]);
-        return rows[0]?.total || 0;
+            return rows[0]?.total || 0;
+        }else{
+            const [rows] = await executor.query(`
+            SELECT COUNT(*) AS total 
+            FROM videos 
+            WHERE created_by = ? AND description LIKE ?
+        `, [userId, `%${description}%`]);
+            return rows[0]?.total || 0;
+        }
     }
 
     /**
@@ -237,6 +262,24 @@ class VideoMapper {
         `, [description, ids]);
 
         return result.affectedRows > 0;
+    }
+
+    // 获取未读视频列表
+    async getUnreadVideos(userId, page = 1, pageSize = 10) {
+        const offset = (page - 1) * pageSize;
+        const executor = this.connection || pool;
+
+        const [rows] = await executor.query(`
+            SELECT v.id, v.created_at, v.description, v.link, v.thumbnail
+            FROM videos v
+            WHERE v.id not IN (
+                SELECT video_id FROM video_views WHERE user_id = ?
+            )
+            ORDER BY v.created_at DESC
+            LIMIT ? OFFSET ?
+        `, [userId, pageSize, offset]);
+
+        return rows;
     }
 }
 

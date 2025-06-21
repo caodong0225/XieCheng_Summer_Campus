@@ -7,6 +7,12 @@ class VideoController {
     constructor() {
         this.videoService = new VideoService();
         this.uploadVideo = this.uploadVideo.bind(this);
+        this.toggleVideoCollection = this.toggleVideoCollection.bind(this);
+        this.toggleVideoLike = this.toggleVideoLike.bind(this);
+        this.getVideoList = this.getVideoList.bind(this);
+        this.watchVideo = this.watchVideo.bind(this);
+        this.getVideoDetails = this.getVideoDetails.bind(this);
+        this.getUnreadVideos = this.getUnreadVideos.bind(this);
     }
 
     async uploadVideo(req, res) {
@@ -41,6 +47,120 @@ class VideoController {
             }
 
             response.error(res, message, status);
+        }
+    }
+
+    // 收藏视频
+    async toggleVideoCollection(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+            const videoId = req.params.videoId;
+
+            const result = await this.videoService.toggleCollection(contextUser.userId, videoId);
+            response.success(res, result, '视频收藏状态切换成功');
+        } catch (error) {
+            console.error('切换视频收藏状态失败:', error);
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 点赞视频
+    async toggleVideoLike(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+            const videoId = req.params.videoId;
+
+            const result = await this.videoService.toggleFavorite(contextUser.userId, videoId);
+            response.success(res, result, '视频点赞状态切换成功');
+        } catch (error) {
+            console.error('切换视频点赞状态失败:', error);
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 获取视频列表
+    async getVideoList(req, res) {
+        try {
+            const { page = 1, pageSize = 10, description = null } = req.query;
+            const contextUser = getContext()?.get('user');
+
+            const videos = await this.videoService.getUserVideos(
+                contextUser?.userId,
+                parseInt(page, 10),
+                parseInt(pageSize, 10),
+                description
+            );
+
+            response.success(res, videos, '视频列表获取成功');
+        } catch (error) {
+            console.error('获取视频列表失败:', error);
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 观看视频
+    async watchVideo(req, res) {
+        try {
+            const videoId = req.params.videoId;
+            const contextUser = getContext()?.get('user');
+
+            if (!videoId) {
+                return response.error(res, '视频ID不能为空', 400);
+            }
+
+            // 记录观看记录
+            await this.videoService.recordView(contextUser.userId, videoId);
+
+            // 获取视频详情
+            const videoDetails = await this.videoService.getVideoDetails(videoId,contextUser.userId);
+            if (!videoDetails) {
+                return response.error(res, '视频不存在或已被删除', 404);
+            }
+
+            response.success(res, videoDetails, '视频详情获取成功');
+        } catch (error) {
+            console.error('观看视频失败:', error);
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 通过视频id获取视频详情
+    async getVideoDetails(req, res) {
+        try {
+            const videoId = req.params.videoId;
+            if (!videoId) {
+                return response.error(res, '视频ID不能为空', 400);
+            }
+            const contextUser = getContext()?.get('user');
+
+            const videoDetails = await this.videoService.getVideoDetails(videoId,contextUser.userId);
+            if (!videoDetails) {
+                return response.error(res, '视频不存在或已被删除', 404);
+            }
+
+            response.success(res, videoDetails, '视频详情获取成功');
+        } catch (error) {
+            console.error('获取视频详情失败:', error);
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 获取未读视频
+    async getUnreadVideos(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+            const { page = 1, pageSize = 10 } = req.query;
+
+            const unreadVideos = await this.videoService.getUnreadVideos(
+                contextUser.userId,
+                parseInt(page, 10),
+                parseInt(pageSize, 10)
+            );
+
+            response.success(res, unreadVideos, '未读视频列表获取成功');
+        } catch (error) {
+            console.error('获取未读视频失败:', error);
+            response.error(res, error.message, 500);
         }
     }
 }

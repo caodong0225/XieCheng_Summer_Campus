@@ -251,3 +251,27 @@ create table video_emoji_reactions
             on delete cascade
 )
     comment '视频的表情回复' row_format = DYNAMIC;
+
+DROP TABLE IF EXISTS `video_views`;
+create table video_views
+(
+    id              int auto_increment comment '主键'
+        primary key,
+    video_id        int                                 not null comment '视频id',
+    user_id         int                                 not null comment '用户id',
+    last_visited_at timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '最后访问时间',
+    created_at      timestamp default CURRENT_TIMESTAMP not null comment '创建时间',
+    view_count      int       default 1                 not null comment '观看数',
+    constraint video_views_pk_2
+        unique (video_id, user_id),
+    constraint video_views_users_id_fk
+        foreign key (user_id) references users (id)
+            on delete cascade,
+    constraint video_views_videos_id_fk
+        foreign key (video_id) references videos (id)
+            on delete cascade
+)
+    comment '视频观看记录';
+
+
+

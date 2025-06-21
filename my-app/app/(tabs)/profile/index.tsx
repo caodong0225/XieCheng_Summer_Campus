@@ -149,6 +149,24 @@ export default function ProfileScreen() {
           <Text style={tw`text-gray-500`}>查看我发布的游记</Text>
         </TouchableOpacity>
 
+        {/* 我的视频 */}
+        <TouchableOpacity
+          style={tw`bg-white p-4 rounded-lg border border-gray-200 mb-4`}
+          onPress={() => router.push('/(tabs)/profile/my-videos')}
+        >
+          <Text style={tw`text-lg font-semibold`}>我的视频</Text>
+          <Text style={tw`text-gray-500`}>查看我发布的视频</Text>
+        </TouchableOpacity>
+
+        {/* 上传视频 */}
+        <TouchableOpacity
+          style={tw`bg-white p-4 rounded-lg border border-gray-200 mb-4`}
+          onPress={() => router.push('/(tabs)/profile/upload-video')}
+        >
+          <Text style={tw`text-lg font-semibold`}>上传视频</Text>
+          <Text style={tw`text-gray-500`}>发布新的视频内容</Text>
+        </TouchableOpacity>
+
         {/* 应用信息 */}
         <TouchableOpacity
           style={tw`bg-white p-4 rounded-lg border border-gray-200 mb-4`}
