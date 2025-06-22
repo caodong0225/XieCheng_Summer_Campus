@@ -293,6 +293,33 @@ class VideoService {
         }
     }
 
+    // 获取用户历史观看视频列表
+    async getUserHistoryVideos(userId, page = 1, limit = 10) {
+        try {
+            const historyVideos = await this.viewMapper.getRecentViewedVideos(userId, page, limit);
+
+            return {
+                videos: historyVideos,
+                page,
+                limit
+            };
+        } catch (error) {
+            console.error('获取用户历史观看视频失败:', error);
+            throw new Error('获取用户历史观看视频失败: ' + error.message);
+        }
+    }
+
+    // 删除视频访问记录
+    async deleteVideoViewRecord(userId, videoId) {
+        try {
+            const success = await this.viewMapper.deleteVideoViews(userId, videoId);
+            return success;
+        } catch (error) {
+            console.error('删除视频访问记录失败:', error);
+            throw new Error('删除视频访问记录失败: ' + error.message);
+        }
+    }
+
 }
 
 module.exports = VideoService;

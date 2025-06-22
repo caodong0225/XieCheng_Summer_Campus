@@ -1,5 +1,5 @@
 // api/video.ts
-import { get, post } from "./request";
+import { del, get, post } from "./request";
 
 export async function likeVideo(id: any) {
     try {
@@ -127,4 +127,36 @@ export async function watchVideo(id: any) {
             message: '观看视频时发生错误'
         };
     }
+}
+
+export async function getVideoHistory(params: any) {
+    try {
+        const urlParams = new URLSearchParams(params);
+        const response = await get(`video/history/views?${urlParams.toString()}`);
+        
+        if (response && response.code === 200) {
+            return {
+                success: true,
+                list: response.data?.videos || [],
+                message: response.message
+            };
+        } else {
+            return {
+                success: false,
+                list: [],
+                message: response.message || '获取观看历史失败'
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            list: [],
+            message: '获取观看历史时发生错误'
+        };
+    }
+}
+
+// 删除视频观看记录
+export async function deleteVideoHistory(id: any) {
+    return del(`video/history/views/${id}`);
 }

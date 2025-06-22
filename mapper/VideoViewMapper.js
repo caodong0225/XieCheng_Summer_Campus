@@ -125,11 +125,8 @@ class VideoViewMapper {
 
     /**
      * 获取用户最近观看的视频
-     * @param {number} userId 用户ID
-     * @param {number} limit 限制数量
-     * @returns {Promise<Array>} 最近观看的视频列表
      */
-    async getRecentViewedVideos(userId, limit = 5) {
+    async getRecentViewedVideos(userId, page = 1, pageSize = 10) {
         const executor = this.connection || pool;
 
         const [rows] = await executor.query(`
@@ -142,8 +139,8 @@ class VideoViewMapper {
             INNER JOIN videos v ON vv.video_id = v.id
             WHERE vv.user_id = ?
             ORDER BY vv.last_visited_at DESC
-            LIMIT ?
-        `, [userId, limit]);
+            LIMIT ? OFFSET ?
+        `, [userId, pageSize, (page - 1) * pageSize]);
 
         return rows;
     }
@@ -311,6 +308,17 @@ class VideoViewMapper {
             totalViews: totalViews[0]?.total_views || 0,
             uniqueUsers: uniqueUsers[0]?.unique_users || 0
         };
+    }
+
+    // 删除视频观看记录
+    async deleteVideoViews(userId,videoId) {
+        const executor = this.connection || pool;
+        const [result] = await executor.query(`
+            DELETE FROM video_views 
+            WHERE video_id = ? AND user_id = ?
+        `, [videoId, userId]);
+
+        return result.affectedRows > 0;
     }
 }
 

@@ -261,6 +261,196 @@ class NoteMapper {
         return threads;
     }
 
+    // 获取用户收藏/点赞帖子的总数
+    async getFavoriteThreadsCount(userId) {
+        const conn = this.connection || pool;
+        const [result] = await conn.query(
+            `SELECT COUNT(*) as total 
+        FROM note_emoji_reactions 
+        WHERE user_id = ? AND emoji = ?`,
+            [userId, '💖']
+        );
+        return result[0].total;
+    }
+
+    async getCollectionThreadsCount(userId) {
+        const conn = this.connection || pool;
+        const [result] = await conn.query(
+            `SELECT COUNT(*) as total 
+        FROM note_emoji_reactions 
+        WHERE user_id = ? AND emoji = ?`,
+            [userId, '🌟']
+        );
+        return result[0].total;
+    }
+
+// 查找用户喜爱的帖子列表（带附件信息）
+    async getFavoriteThreads(userId, { page = 1, pageSize = 10 }) {
+        page = parseInt(page, 10);
+        pageSize = parseInt(pageSize, 10);
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(pageSize) || pageSize < 1) pageSize = 10;
+
+        const offset = (page - 1) * pageSize;
+        const conn = this.connection || pool; // 使用事务连接或普通连接
+
+        // 1. 查询帖子基本信息
+        const query = `
+        SELECT 
+            n.id, n.title, n.description, n.created_at, n.updated_at,
+            u.id AS user_id, u.username, u.email
+        FROM note_emoji_reactions uf
+        JOIN notes n ON uf.note_id = n.id
+        JOIN users u ON n.created_by = u.id
+        WHERE uf.user_id = ? AND uf.emoji = ? AND n.del_flag = 0
+        ORDER BY uf.id DESC
+        LIMIT ? OFFSET ?`;
+
+        const [rows] = await conn.query(query, [userId, '💖', pageSize, offset]);
+
+        if (rows.length === 0) {
+            return {
+                pageNum: page,
+                pageSize: pageSize,
+                total: 0,
+                pages: 0,
+                list: []
+            };
+        }
+
+        // 2. 获取帖子ID列表
+        const noteIds = rows.map(row => row.id);
+
+        // 3. 批量查询附件信息
+        const attachments = await this.getAttachmentsByNoteIds(noteIds);
+
+        // 4. 按帖子ID分组获取weight最小的附件
+        const attachmentsMap = new Map();
+        attachments.forEach(attachment => {
+            if (!attachmentsMap.has(attachment.note_id) || attachment.weight < attachmentsMap.get(attachment.note_id).weight) {
+                attachmentsMap.set(attachment.note_id, attachment);
+            }
+        });
+
+        // 5. 合并帖子基本信息和附件信息
+        const enrichedList = rows.map(row => {
+            return {
+                id: row.id,
+                title: row.title,
+                created_at: row.created_at,
+                updated_at: row.updated_at,
+                description: row.description,
+                created_by: row.user_id,
+                username: row.username,
+                email: row.email,
+                attachments: attachmentsMap.get(row.id) || []
+            };
+        });
+
+        // 6. 获取总记录数
+        const total = await this.getFavoriteThreadsCount(userId);
+        const pages = Math.ceil(total / pageSize);
+
+        return {
+            pageNum: page,
+            pageSize: pageSize,
+            total: total,
+            pages: pages,
+            list: enrichedList
+        };
+    }
+
+// 查找用户收藏的帖子列表（带附件信息）
+    async getCollectionThreads(userId, { page = 1, pageSize = 10 }) {
+        page = parseInt(page, 10);
+        pageSize = parseInt(pageSize, 10);
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(pageSize) || pageSize < 1) pageSize = 10;
+
+        const offset = (page - 1) * pageSize;
+        const conn = this.connection || pool; // 使用事务连接或普通连接
+
+        // 1. 查询帖子基本信息
+        const query = `
+        SELECT 
+            n.id, n.title, n.description, n.created_at, n.updated_at,
+            u.id AS user_id, u.username, u.email
+        FROM note_emoji_reactions uf
+        JOIN notes n ON uf.note_id = n.id
+        JOIN users u ON n.created_by = u.id
+        WHERE uf.user_id = ? AND uf.emoji = ? AND n.del_flag = 0
+        ORDER BY uf.id DESC
+        LIMIT ? OFFSET ?`;
+
+        const [rows] = await conn.query(query, [userId, '🌟', pageSize, offset]);
+
+        if (rows.length === 0) {
+            return {
+                pageNum: page,
+                pageSize: pageSize,
+                total: 0,
+                pages: 0,
+                list: []
+            };
+        }
+
+        // 2. 获取帖子ID列表
+        const noteIds = rows.map(row => row.id);
+
+        // 3. 批量查询附件信息
+        const attachments = await this.getAttachmentsByNoteIds(noteIds);
+
+        // 4. 按帖子ID分组获取weight最小的附件
+        const attachmentsMap = new Map();
+        attachments.forEach(attachment => {
+            if (!attachmentsMap.has(attachment.note_id) || attachment.weight < attachmentsMap.get(attachment.note_id).weight) {
+                attachmentsMap.set(attachment.note_id, attachment);
+            }
+        });
+
+        // 5. 合并帖子基本信息和附件信息
+        const enrichedList = rows.map(row => {
+            return {
+                id: row.id,
+                title: row.title,
+                created_at: row.created_at,
+                updated_at: row.updated_at,
+                description: row.description,
+                created_by: row.user_id,
+                username: row.username,
+                email: row.email,
+                attachments: attachmentsMap.get(row.id) || []
+            };
+        });
+
+        // 6. 获取总记录数
+        const total = await this.getCollectionThreadsCount(userId);
+        const pages = Math.ceil(total / pageSize);
+
+        return {
+            pageNum: page,
+            pageSize: pageSize,
+            total: total,
+            pages: pages,
+            list: enrichedList
+        };
+    }
+
+// 新增方法：批量获取帖子附件
+    async getAttachmentsByNoteIds(noteIds) {
+        if (noteIds.length === 0) return [];
+
+        const conn = this.connection || pool;
+        const [attachments] = await conn.query(
+            `SELECT * 
+        FROM notes_attachment 
+        WHERE note_id IN (?) 
+        ORDER BY weight ASC`,
+            [noteIds]
+        );
+
+        return attachments;
+    }
 }
 
 module.exports = NoteMapper;

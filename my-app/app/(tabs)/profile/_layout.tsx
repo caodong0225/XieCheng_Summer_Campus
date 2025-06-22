@@ -55,6 +55,20 @@ export default function ProfileLayout() {
           animation: 'slide_from_right',
         }}
       />
+      <Stack.Screen 
+        name="my-likes" 
+        options={{
+          headerShown: false,
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen 
+        name="my-favorites" 
+        options={{
+          headerShown: false,
+          animation: 'slide_from_right',
+        }}
+      />
     </Stack>
   );
 } 

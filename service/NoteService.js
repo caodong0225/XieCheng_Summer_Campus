@@ -232,6 +232,38 @@ class NoteService {
         }));
     }
 
+    // 查询用户喜欢的帖子
+    async getUserFavorites(userId, filter) {
+        try {
+            // 验证用户ID
+            if (!userId || typeof userId !== 'number') {
+                throw new Error('无效的用户ID');
+            }
+
+            // 获取喜欢的帖子列表
+            return await this.mapper.getFavoriteThreads(userId, filter);
+        } catch (error) {
+            console.error('获取用户喜欢帖子失败:', error);
+            throw new Error('获取用户喜欢帖子失败: ' + error.message);
+        }
+    }
+
+    // 查询用户收藏的帖子
+    async getUserCollections(userId, filter) {
+        try {
+            // 验证用户ID
+            if (!userId || typeof userId !== 'number') {
+                throw new Error('无效的用户ID');
+            }
+
+            // 获取收藏的帖子列表
+            return await this.mapper.getCollectionThreads(userId, filter);
+        } catch (error) {
+            console.error('获取用户收藏帖子失败:', error);
+            throw new Error('获取用户收藏帖子失败: ' + error.message);
+        }
+    }
+
 }
 
 module.exports = NoteService;

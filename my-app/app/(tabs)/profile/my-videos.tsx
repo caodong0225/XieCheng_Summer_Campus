@@ -90,7 +90,7 @@ export default function MyVideosScreen() {
   const handleVideoPress = (video: Video) => {
     // 跳转到视频详情页面，传递视频ID
     router.push({
-      pathname: '/(tabs)/video',
+      pathname: '/video-detail',
       params: { 
         videoId: video.id.toString()
       }

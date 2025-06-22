@@ -5,6 +5,7 @@ const { verifyJWT } = require("../utils/jwt");
 const { runInContext } = require('../utils/requestContext');
 const { single: videoUpload, handleUploadErrors } = require('../middlewares/videoUpload');
 const VideoController = require('../controller/VideoController');
+const roleCheck = require("../middlewares/roleCheck");
 
 /**
  * @swagger
@@ -160,6 +161,37 @@ router.get('/:videoId',
         runInContext(req, next);
     },
     VideoController.getVideoDetails
+);
+
+// 删除视频
+router.delete('/:videoId',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    roleCheck('admin','super-admin'),
+    VideoController.deleteVideo
+);
+
+// 获取观看记录
+router.get('/history/views',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    VideoController.getViewedVideos
+);
+
+// 删除视频观看记录
+router.delete('/history/views/:videoId',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    VideoController.deleteVideoView
 );
 
 module.exports = router;

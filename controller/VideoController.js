@@ -13,6 +13,9 @@ class VideoController {
         this.watchVideo = this.watchVideo.bind(this);
         this.getVideoDetails = this.getVideoDetails.bind(this);
         this.getUnreadVideos = this.getUnreadVideos.bind(this);
+        this.deleteVideo = this.deleteVideo.bind(this);
+        this.getViewedVideos = this.getViewedVideos.bind(this);
+        this.deleteVideoView = this.deleteVideoView.bind(this);
     }
 
     async uploadVideo(req, res) {
@@ -160,6 +163,69 @@ class VideoController {
             response.success(res, unreadVideos, '未读视频列表获取成功');
         } catch (error) {
             console.error('获取未读视频失败:', error);
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 通过id删除视频
+    async deleteVideo(req, res) {
+        try {
+            const videoId = req.params.videoId;
+            if (!videoId) {
+                return response.error(res, '视频ID不能为空', 400);
+            }
+
+            const success = await this.videoService.deleteVideoById(videoId);
+
+            if (success) {
+                response.success(res, null, '视频删除成功');
+            } else {
+                response.error(res, '视频删除失败或视频不存在', 404);
+            }
+        } catch (error) {
+            console.error('删除视频失败:', error);
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 获取用户观看过的视频列表
+    async getViewedVideos(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+            const { page = 1, pageSize = 10 } = req.query;
+
+            const viewedVideos = await this.videoService.getUserHistoryVideos(
+                contextUser.userId,
+                parseInt(page, 10),
+                parseInt(pageSize, 10)
+            );
+
+            response.success(res, viewedVideos, '用户观看过的视频列表获取成功');
+        } catch (error) {
+            console.error('获取用户观看过的视频列表失败:', error);
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 删除视频访问记录
+    async deleteVideoView(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+            const videoId = req.params.videoId;
+
+            if (!videoId) {
+                return response.error(res, '视频ID不能为空', 400);
+            }
+
+            const success = await this.videoService.deleteVideoViewRecord(contextUser.userId, videoId);
+
+            if (success) {
+                response.success(res, null, '视频观看记录删除成功');
+            } else {
+                response.error(res, '视频观看记录删除失败或记录不存在', 404);
+            }
+        } catch (error) {
+            console.error('删除视频观看记录失败:', error);
             response.error(res, error.message, 500);
         }
     }

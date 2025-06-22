@@ -1,4 +1,4 @@
-import { AntDesign, Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Dimensions, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -42,6 +42,7 @@ export default function VideoScreen() {
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [videoIds, setVideoIds] = useState<number[]>([]);
+  const [hasWatched, setHasWatched] = useState(false);
   
   const flatListRef = useRef<FlatList>(null);
   const currentVideoId = useRef<number | null>(null);
@@ -416,6 +417,7 @@ const VideoItem: React.FC<{
   const [paused, setPaused] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const videoRef = useRef<any>(null);
+  const [hasWatched, setHasWatched] = useState(false);
 
   const formatCount = (count: string | number) => {
     const num = typeof count === 'string' ? parseInt(count) : count;
@@ -430,10 +432,13 @@ const VideoItem: React.FC<{
     onVideoEnd(index);
   };
 
-  const handleVideoLoad = () => {
+  const handleVideoLoad = async () => {
     setIsLoading(false);
     setPaused(false);
-    // 视频开始播放时不发送watch请求，避免重复
+    if (!hasWatched) {
+      setHasWatched(true);
+      await watchVideo(item.id);
+    }
   };
 
   return (
@@ -485,13 +490,6 @@ const VideoItem: React.FC<{
             color={item.isLiked ? "#e74c3c" : "#fff"} 
           />
           <Text style={styles.actionText}>{formatCount(item.likeCount)}</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity onPress={() => {}} style={styles.actionBtn}>
-          <FontAwesome name="commenting-o" size={32} color="#fff" />
-          <Text style={tw`text-white text-sm opacity-80 ml-4`}>
-            {new Date(item.created_at).toLocaleDateString()}
-          </Text>
         </TouchableOpacity>
         
         <TouchableOpacity 

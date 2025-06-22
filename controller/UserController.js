@@ -4,10 +4,12 @@ const response = require('../utils/response');
 const UserEntity = require('../entity/UserEntity');
 const { generateJWT } = require('../utils/jwt');
 const {getContext} = require("../utils/requestContext");
+const NoteService = require("../service/NoteService");
 
 class UserController {
     constructor() {
         this.userService = new UserService();
+        this.noteService = new NoteService();
 
         // 绑定 this，否则路由里调用时 this 会丢失
         this.register = this.register.bind(this);
@@ -197,7 +199,7 @@ class UserController {
             const userId = contextUser.userId;
             const filter = req.query; // 可根据需要添加过滤条件
 
-            const favorites = await this.userService.getUserFavorites(userId, filter);
+            const favorites = await this.noteService.getUserFavorites(userId, filter);
             response.success(res, favorites);
         } catch (error) {
             response.error(res, error.message, 500);
@@ -210,7 +212,7 @@ class UserController {
             const contextUser = getContext()?.get('user');
             const userId = contextUser.userId;
             const filter = req.query; // 可根据需要添加过滤条件
-            const collections = await this.userService.getUserCollections(userId, filter);
+            const collections = await this.noteService.getUserCollections(userId, filter);
             response.success(res, collections);
         } catch (error) {
             response.error(res, error.message, 500);

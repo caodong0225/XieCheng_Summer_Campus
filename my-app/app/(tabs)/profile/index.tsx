@@ -138,6 +138,47 @@ export default function ProfileScreen() {
               </TouchableOpacity>
             </View>
           )}
+
+            {/* 我的点赞和收藏快捷入口 */}
+            <View style={tw`flex-row justify-around mb-4 pt-4`}>
+            <TouchableOpacity
+              style={tw`items-center flex-1`}
+              onPress={() => router.push('/(tabs)/profile/my-likes')}
+            >
+              <View style={tw`bg-pink-100 p-3 rounded-full mb-1`}>
+                <Text>
+                  {/* ❤️ */}
+                  <Text style={{fontSize: 24}}>❤️</Text>
+                </Text>
+              </View>
+              <Text style={tw`text-base font-semibold`}>我的点赞</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={tw`items-center flex-1`}
+              onPress={() => router.push('/(tabs)/profile/my-favorites')}
+            >
+              <View style={tw`bg-yellow-100 p-3 rounded-full mb-1`}>
+                <Text>
+                  {/* ⭐ */}
+                  <Text style={{fontSize: 24}}>⭐</Text>
+                </Text>
+              </View>
+              <Text style={tw`text-base font-semibold`}>我的收藏</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={tw`items-center flex-1`}
+              onPress={() => router.push('/(tabs)/profile/my-history')}
+            >
+              <View style={tw`bg-gray-100 p-3 rounded-full mb-1`}>
+                <Text>
+                  <Text style={{fontSize: 24}}>
+                  ⏰
+                  </Text>
+                </Text>
+              </View>
+              <Text style={tw`text-base font-semibold`}>观看历史</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* 我的游记 */}

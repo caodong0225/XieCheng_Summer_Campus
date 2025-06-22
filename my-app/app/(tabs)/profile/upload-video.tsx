@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import Video from 'react-native-video';
 import tw from 'twrnc';
 import { videoUploadWithProgress } from '../../api/upload';
 
@@ -20,6 +21,9 @@ export default function UploadVideoScreen() {
   const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [videoPaused, setVideoPaused] = useState(true);
+  const [isVideoLoading, setIsVideoLoading] = useState(false);
+  const videoRef = useRef<any>(null);
 
   const pickVideo = async () => {
     try {
@@ -38,6 +42,8 @@ export default function UploadVideoScreen() {
         };
 
         setSelectedVideo(videoFile);
+        setVideoPaused(true); // 重置视频暂停状态
+        setIsVideoLoading(true); // 开始加载新视频
       }
     } catch (error) {
       console.error('选择视频失败:', error);
@@ -50,7 +56,7 @@ export default function UploadVideoScreen() {
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i]);
   };
 
   const handleUpload = async () => {
@@ -109,6 +115,7 @@ export default function UploadVideoScreen() {
     setSelectedVideo(null);
     setDescription('');
     setUploadProgress(0);
+    setVideoPaused(true);
   };
 
   return (
@@ -173,9 +180,74 @@ export default function UploadVideoScreen() {
               </View>
               
               {/* 视频预览区域 */}
-              <View style={tw`w-full h-32 rounded-lg overflow-hidden mb-3 bg-gray-200 items-center justify-center`}>
-                <Ionicons name="play-circle" size={48} color="#666" />
-                <Text style={tw`text-gray-500 text-sm mt-2`}>视频预览</Text>
+              <View style={tw`w-full h-48 rounded-lg overflow-hidden mb-3 bg-gray-200 relative`}>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={tw`w-full h-full`}
+                  onPress={() => setVideoPaused(!videoPaused)}
+                  disabled={uploading}
+                >
+                  {/* 视频加载指示器 */}
+                  {isVideoLoading && (
+                    <View style={tw`absolute inset-0 bg-black bg-opacity-20 justify-center items-center`}>
+                      <ActivityIndicator size="large" color="#3b82f6" />
+                    </View>
+                  )}
+                  
+                  <Video
+                    ref={videoRef}
+                    source={{ uri: selectedVideo.uri }}
+                    style={tw`w-full h-full`}
+                    resizeMode="cover"
+                    repeat={true}
+                    paused={videoPaused || uploading}
+                    controls={false}
+                    onLoad={() => setIsVideoLoading(false)}
+                    onError={(error) => {
+                      console.error('视频预览错误:', error);
+                      setIsVideoLoading(false);
+                      Alert.alert('错误', '无法加载视频预览');
+                    }}
+                  />
+                  
+                  {/* 视频播放控制覆盖层 */}
+                  {(videoPaused || isVideoLoading) && (
+                    <View style={tw`absolute inset-0 bg-black bg-opacity-30 justify-center items-center`}>
+                      <Ionicons 
+                        name={isVideoLoading ? "refresh" : "play"} 
+                        size={48} 
+                        color="white" 
+                      />
+                    </View>
+                  )}
+                </TouchableOpacity>
+              </View>
+              
+              {/* 视频控制按钮 */}
+              <View style={tw`flex-row justify-center gap-4`}>
+                <TouchableOpacity
+                  onPress={() => setVideoPaused(!videoPaused)}
+                  style={tw`bg-blue-500 px-4 py-2 rounded-full`}
+                  disabled={uploading}
+                >
+                  <Ionicons 
+                    name={videoPaused ? "play" : "pause"} 
+                    size={20} 
+                    color="white" 
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (videoRef.current) {
+                      videoRef.current.seek(0);
+                      setVideoPaused(true);
+                    }
+                  }}
+                  style={tw`bg-gray-300 px-4 py-2 rounded-full`}
+                  disabled={uploading}
+                >
+                  <Ionicons name="refresh" size={20} color="black" />
+                </TouchableOpacity>
               </View>
             </View>
           )}
@@ -191,7 +263,7 @@ export default function UploadVideoScreen() {
             onChangeText={setDescription}
             multiline
             numberOfLines={4}
-            maxLength={500}
+            maxLength={250}
             editable={!uploading}
             placeholderTextColor="#999"
           />
@@ -247,4 +319,4 @@ export default function UploadVideoScreen() {
       </ScrollView>
     </View>
   );
-} 
+}
