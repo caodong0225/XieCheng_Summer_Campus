@@ -91,6 +91,17 @@ export async function getNoteAll(params: any, sort: any, filter: any) {
   return data;
 }
 
+// 获取所有审批通过的游记
+export async function getNoteApproved(params: any) {
+
+  const urlParams = new URLSearchParams(params);
+  const data = await get(`note/approved?${urlParams.toString()}`);
+
+  data.success = true;
+  data.list = data?.data?.list;
+  return data;
+}
+
 export async function getMyFavouriteNote(params: any){
   try {
     const urlParams = new URLSearchParams(params);

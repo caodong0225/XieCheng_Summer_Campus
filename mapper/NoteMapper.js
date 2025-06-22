@@ -451,6 +451,54 @@ class NoteMapper {
 
         return attachments;
     }
+// 获取审批通过的游记列表
+    async getApprovedNotes({ page = 1, pageSize = 10, description = null }) {
+        page = parseInt(page, 10);
+        pageSize = parseInt(pageSize, 10);
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(pageSize) || pageSize < 1) pageSize = 10;
+
+        const offset = (page - 1) * pageSize;
+
+        let query = `
+        SELECT n.id, n.title, n.description, n.created_at, n.updated_at, 
+               u.username, u.email, ns.status
+        FROM notes n
+        JOIN users u ON n.created_by = u.id
+        JOIN notes_status ns ON ns.note_id = n.id
+        WHERE n.del_flag = 0 AND ns.status = 'approved'`;
+
+        let countQuery = `
+        SELECT COUNT(*) as total 
+        FROM notes n
+        JOIN notes_status ns ON ns.note_id = n.id
+        WHERE n.del_flag = 0 AND ns.status = 'approved'`;
+
+        const params = [];
+        const countParams = [];
+
+        if (description) {
+            query += ` AND n.description LIKE ?`;
+            countQuery += ` AND n.description LIKE ?`;
+            const likeDescription = `%${description}%`;
+            params.push(likeDescription);
+            countParams.push(likeDescription);
+        }
+
+        query += ` ORDER BY n.created_at DESC LIMIT ? OFFSET ?`;
+        params.push(pageSize, offset);
+
+        const [rows] = await pool.query(query, params);
+        const [[{ total }]] = await pool.query(countQuery, countParams);
+
+        return {
+            pageNum: page,
+            pageSize: pageSize,
+            total,
+            pages: Math.ceil(total / pageSize),
+            list: rows
+        };
+    }
 }
 
 module.exports = NoteMapper;

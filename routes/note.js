@@ -6,6 +6,11 @@ const {verifyJWT} = require("../utils/jwt");
 const roleCheck = require("../middlewares/roleCheck");
 const { runInContext } = require('../utils/requestContext');
 
+// 获取审批通过的游记列表
+router.get('/approved',
+    NoteController.getNoteThreadsApproved
+);
+
 router.post('/create',
     verifyJWT,
     (req, res, next) => {

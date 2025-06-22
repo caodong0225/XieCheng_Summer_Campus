@@ -21,6 +21,7 @@ class NoteController {
         this.toggleFavorite = this.toggleFavorite.bind(this);
         this.getNoteThreads = this.getNoteThreads.bind(this);
         this.getNoteAll = this.getNoteAll.bind(this);
+        this.getNoteThreadsApproved = this.getNoteThreadsApproved.bind(this);
     }
 
     async createNote(req, res) {
@@ -173,6 +174,16 @@ class NoteController {
         try {
             const threads = await this.noteService.getThreadsWithRepliesByNote(req.params.noteId);
             response.success(res, threads, '评论列表获取成功');
+        } catch (error) {
+            response.error(res, error.message, 400);
+        }
+    }
+    // 获取审批通过的游记列表，通过Service的getApprovedNotes方法
+    async getNoteThreadsApproved(req, res) {
+        try {
+            const filter = req.query;
+            const threads = await this.noteService.getApprovedNotes(filter);
+            response.success(res, threads, '游记列表获取成功');
         } catch (error) {
             response.error(res, error.message, 400);
         }

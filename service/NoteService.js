@@ -264,6 +264,26 @@ class NoteService {
         }
     }
 
+    // 获取所有审批通过的游记
+    async getApprovedNotes(filter) {
+        try {
+            // 获取所有审批通过的游记,包括图片等相信信息
+            const notes = await this.mapper.getApprovedNotes(filter);
+            for (const note of notes.list) {
+                // 获取游记附件并筛选出weight最小的附件
+                const attachments = await this.mapper.getAttachmentListByNoteId(note.id);
+                const smallestAttachment = attachments.reduce((min, attachment) => {
+                    return !min || attachment.weight < min.weight ? attachment : min;
+                }, null);
+                note.attachments = smallestAttachment ? [smallestAttachment] : [];
+            }
+            return notes;
+        } catch (error) {
+            console.error('获取审批通过的游记失败:', error);
+            throw new Error('获取审批通过的游记失败: ' + error.message);
+        }
+    }
+
 }
 
 module.exports = NoteService;
