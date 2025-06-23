@@ -240,8 +240,15 @@ class NoteService {
                 throw new Error('无效的用户ID');
             }
 
-            // 获取喜欢的帖子列表
-            return await this.mapper.getFavoriteThreads(userId, filter);
+            const type = filter?.type
+            delete filter.type;
+
+            if(!type || type === 'note') {
+                // 获取喜欢的帖子列表
+                return await this.mapper.getFavoriteThreads(userId, filter);
+            }else{
+
+            }
         } catch (error) {
             console.error('获取用户喜欢帖子失败:', error);
             throw new Error('获取用户喜欢帖子失败: ' + error.message);

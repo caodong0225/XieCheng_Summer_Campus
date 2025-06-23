@@ -90,10 +90,6 @@ const VideoManagementPage = () => {
     }
   };
 
-  const handleViewVideo = (video_id) => {
-    router.push(`/m/video/${video_id}`);
-  }
-
   useEffect(() => {
     fetchVideos();
   }, [filters]);
@@ -154,6 +150,11 @@ const VideoManagementPage = () => {
 
   const handleViewUser = (user_id) => {
     router.push(`/m/user/${user_id}`);
+  }
+
+  // 新功能：跳转到视频详情页
+  const handleViewVideoDetail = (videoId) => {
+    router.push(`/m/video/${videoId}`);
   }
 
   const getSortIcon = (field) => {
@@ -265,7 +266,10 @@ const VideoManagementPage = () => {
                     key={video.id}
                     hoverable
                     cover={
-                      <div className="relative h-48 overflow-hidden">
+                      <div 
+                        className="relative h-48 overflow-hidden cursor-pointer"
+                        onClick={() => handleViewVideoDetail(video.id)}
+                      >
                         <img
                           alt={video.description}
                           src={video.thumbnail}
@@ -275,8 +279,11 @@ const VideoManagementPage = () => {
                           }}
                         />
                         <div 
-                          className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                          onClick={() => handleViewVideo(video.id)}
+                          className="absolute inset-0 flex items-center justify-center"
+                          onClick={(e) => {
+                            e.stopPropagation(); // 阻止事件冒泡
+                            window.open(video.link, '_blank');
+                          }}
                         >
                           <PlayCircleOutlined className="text-4xl text-white opacity-80 hover:opacity-100 transition-opacity" />
                         </div>
@@ -295,20 +302,29 @@ const VideoManagementPage = () => {
                       <Button 
                         type="text" 
                         icon={<PlayCircleOutlined />}
-                        onClick={() => handleViewVideo(video.id)}
+                        onClick={() => window.open(video.link, '_blank')}
                       >
                         播放
                       </Button>
                     ]}
+                    // 添加卡片主体区域的点击事件
+                    bodyStyle={{ cursor: 'pointer' }}
+                    onClick={() => handleViewVideoDetail(video.id)}
                   >
                     <div className="min-h-[120px]">
                       <div className="mb-3">
                         <p className="text-gray-700 line-clamp-2">{video.description}</p>
                       </div>
                       
-                      <div className="flex items-center text-sm text-gray-500 mb-2">
+                      <div 
+                        className="flex items-center text-sm text-gray-500 mb-2"
+                        onClick={(e) => {
+                          e.stopPropagation(); // 阻止事件冒泡到卡片
+                          handleViewUser(video.user_id);
+                        }}
+                      >
                         <UserAvatar user={video} size={20} />
-                        <Button type="text" className="mr-3 pl-2" onClick={() => handleViewUser(video.user_id)}>{video.username}</Button>
+                        <Button type="text" className="mr-3 pl-2">{video.username}</Button>
                       </div>
                       
                       <div className="flex items-center text-sm text-gray-500">

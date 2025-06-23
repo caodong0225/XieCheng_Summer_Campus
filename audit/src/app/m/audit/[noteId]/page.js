@@ -30,14 +30,10 @@ import {
   CheckOutlined,
   CloseOutlined,
   LeftOutlined,
-  RightOutlined,
-  ZoomInOutlined,
-  FullscreenOutlined
+  RightOutlined
 } from '@ant-design/icons';
 import { useRouter, useParams } from 'next/navigation';
-import { getNoteById, deleteNote, reviewNote } from '../../../../api/note';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { getNoteById, deleteNote, reviewNote, deleteAttachment } from '../../../../api/note';
 import UserAvatar from "@/components/common/user_avatar";
 
 const { Title, Text } = Typography;
@@ -52,7 +48,6 @@ const NoteDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [fullscreenMode, setFullscreenMode] = useState(false);
   
   // 拒绝理由相关状态
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
@@ -82,17 +77,12 @@ const NoteDetailPage = () => {
           e.preventDefault();
           setImageModalVisible(false);
           break;
-        case 'f':
-        case 'F':
-          e.preventDefault();
-          setFullscreenMode(!fullscreenMode);
-          break;
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [imageModalVisible, fullscreenMode, note?.attachments?.length]);
+  }, [imageModalVisible, note?.attachments?.length]);
 
   const fetchNoteDetail = async () => {
     try {
@@ -204,7 +194,6 @@ const NoteDetailPage = () => {
   const openImageModal = (index) => {
     setCurrentImageIndex(index);
     setImageModalVisible(true);
-    setFullscreenMode(false);
   };
 
   const handlePrevImage = useCallback(() => {
@@ -222,10 +211,6 @@ const NoteDetailPage = () => {
       );
     }
   }, [note?.attachments?.length]);
-
-  const handleCarouselChange = (from, to) => {
-    setCurrentImageIndex(to);
-  };
 
   if (loading) {
     return (
@@ -362,176 +347,125 @@ const NoteDetailPage = () => {
                   <Text type="secondary" className="text-sm">共 {note.attachments.length} 张图片</Text>
                 </div>
                 
-                
-                {/* 缩略图网格 */}
-                <div className="thumbnail-grid">
+                {/* 缩略图网格 - 使用Row/Col布局 */}
+                <Row gutter={[16, 16]}>
                   {note.attachments.map((attachment, index) => (
-                    <div 
-                      key={attachment.id}
-                      className="thumbnail-item"
-                      onClick={() => openImageModal(index)}
-                    >
-                      <img
-                        src={attachment.value}
-                        alt={`缩略图 ${index + 1}`}
-                        onError={(e) => {
-                          e.target.src = '/placeholder-image.jpg';
-                        }}
-                      />
-                      <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded-full">
-                        {index + 1}
+                    <Col key={attachment.id} xs={24} sm={12} md={8} lg={6}>
+                      <div 
+                        className="relative rounded-lg overflow-hidden cursor-pointer h-48"
+                        onClick={() => openImageModal(index)}
+                      >
+                        <Image
+                          src={attachment.value}
+                          alt={`缩略图 ${index + 1}`}
+                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                          fallback="/placeholder-image.jpg"
+                          preview={false}
+                        />
+                        <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded-full">
+                          {index + 1}
+                        </div>
                       </div>
-                    </div>
+                    </Col>
                   ))}
-                </div>
+                </Row>
               </div>
             )}
 
-            {/* 游记描述 */}
+            {/* 游记描述 - 使用普通文本显示 */}
             <div className="mb-8">
               <Title level={3} className="mb-6 text-gray-700">游记内容</Title>
               <Card className="bg-gray-50 border-0 shadow-sm">
-                <div className="prose max-w-none">
-                  <ReactMarkdown 
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      p: ({ children, ...props }) => (
-                        <p className="mb-4 text-gray-700 leading-relaxed" {...props}>
-                          {children}
-                        </p>
-                      ),
-                      h1: ({ children, ...props }) => (
-                        <h1 className="text-2xl font-bold mb-4 mt-6 text-gray-800" {...props}>
-                          {children}
-                        </h1>
-                      ),
-                      h2: ({ children, ...props }) => (
-                        <h2 className="text-xl font-bold mb-3 mt-5 text-gray-800" {...props}>
-                          {children}
-                        </h2>
-                      ),
-                      h3: ({ children, ...props }) => (
-                        <h3 className="text-lg font-bold mb-2 mt-4 text-gray-800" {...props}>
-                          {children}
-                        </h3>
-                      ),
-                      ul: ({ children, ...props }) => (
-                        <ul className="list-disc pl-6 mb-4 text-gray-700" {...props}>
-                          {children}
-                        </ul>
-                      ),
-                      ol: ({ children, ...props }) => (
-                        <ol className="list-decimal pl-6 mb-4 text-gray-700" {...props}>
-                          {children}
-                        </ol>
-                      ),
-                      li: ({ children, ...props }) => (
-                        <li className="mb-1" {...props}>
-                          {children}
-                        </li>
-                      ),
-                      blockquote: ({ children, ...props }) => (
-                        <blockquote className="border-l-4 border-blue-300 pl-4 italic text-gray-600 mb-4 bg-blue-50 py-2 rounded-r" {...props}>
-                          {children}
-                        </blockquote>
-                      ),
-                      code: ({ children, ...props }) => (
-                        <code className="bg-gray-200 px-2 py-1 rounded text-sm font-mono" {...props}>
-                          {children}
-                        </code>
-                      ),
-                      pre: ({ children, ...props }) => (
-                        <pre className="bg-gray-800 text-white p-4 rounded-lg overflow-x-auto mb-4" {...props}>
-                          {children}
-                        </pre>
-                      ),
-                      img: ({ src, alt, ...props }) => (
-                        <img 
-                          src={src} 
-                          alt={alt} 
-                          className="max-w-full h-auto rounded-lg my-4 shadow-md" 
-                          {...props}
-                        />
-                      ),
-                    }}
-                  >
-                    {note.description || '暂无内容'}
-                  </ReactMarkdown>
+                <div className="text-gray-700 whitespace-pre-wrap">
+                  {note.description || '暂无内容'}
                 </div>
               </Card>
             </div>
           </div>
         </div>
       </div>
-
-      {/* 图片查看模态框 */}
+      {/* 图片查看模态框 - 优化版本 */}
       <Modal
         open={imageModalVisible}
         onCancel={() => setImageModalVisible(false)}
         footer={null}
-        width={fullscreenMode ? '100vw' : '90vw'}
+        width="auto"
         centered
         destroyOnClose
-        className={fullscreenMode ? 'fullscreen-modal' : ''}
-        style={fullscreenMode ? { top: 0, padding: 0 } : {}}
+        className="image-view-modal"
+        style={{ maxWidth: '90vw' }}
       >
         <div className="relative">
+          {/* 删除按钮 */}
+          <Button
+            type="text"
+            icon={<DeleteOutlined />}
+            className="absolute top-4 right-4 z-20 text-white bg-black bg-opacity-40 hover:bg-opacity-60 border-none"
+            onClick={async () => {
+              const attachment = note.attachments?.[currentImageIndex];
+              if (!attachment) return;
+
+              try {
+                await deleteAttachment(attachment.id);
+                message.success('删除成功');
+
+                // 更新图片数组或关闭弹窗
+                const newAttachments = [...note.attachments];
+                newAttachments.splice(currentImageIndex, 1);
+
+                if (newAttachments.length === 0) {
+                  setImageModalVisible(false);
+                } else {
+                  // 处理当前索引
+                  const newIndex = Math.min(currentImageIndex, newAttachments.length - 1);
+                  setCurrentImageIndex(newIndex);
+                }
+
+                // 更新 note 状态（取决于你怎么维护 note）
+                note.attachments = newAttachments;
+              } catch (err) {
+                message.error('删除失败');
+              }
+            }}
+          />
+
           {/* 导航按钮 */}
           <Button
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 border-none text-white hover:bg-opacity-70"
-            icon={<LeftOutlined />}
+            className="absolute left-10 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 border-none text-white hover:bg-opacity-70"
+            icon={<RightOutlined />}
             onClick={handlePrevImage}
             size="large"
           />
           <Button
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 border-none text-white hover:bg-opacity-70"
-            icon={<RightOutlined />}
+            className="absolute right-10 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 border-none text-white hover:bg-opacity-70"
+            icon={<LeftOutlined />}
             onClick={handleNextImage}
             size="large"
           />
-          
-          {/* 全屏切换按钮 */}
-          <Tooltip title={fullscreenMode ? '退出全屏 (F)' : '全屏 (F)'}>
-            <Button
-              className="absolute top-4 right-4 z-10 bg-black bg-opacity-50 border-none text-white hover:bg-opacity-70"
-              icon={<FullscreenOutlined />}
-              onClick={() => setFullscreenMode(!fullscreenMode)}
-              size="middle"
-            />
-          </Tooltip>
 
-          <Carousel 
-            dots={false} 
-            initialSlide={currentImageIndex}
-            beforeChange={handleCarouselChange}
-            effect="fade"
-          >
-            {note.attachments?.map((attachment, index) => (
-              <div key={attachment.id} className="flex justify-center items-center">
-                <img
-                  src={attachment.value}
-                  alt={`大图 ${index + 1}`}
-                  className="max-w-full max-h-[70vh] object-contain"
-                  onError={(e) => {
-                    e.target.src = '/placeholder-image.jpg';
-                  }}
-                />
-              </div>
-            ))}
-          </Carousel>
-          
+          {/* 当前图片 */}
+          <div className="flex justify-center items-center" style={{ maxHeight: '70vh' }}>
+            <img
+              src={note.attachments?.[currentImageIndex]?.value}
+              alt={`大图 ${currentImageIndex + 1}`}
+              className="max-w-[80vw] max-h-[70vh] object-contain"
+              onError={(e) => {
+                e.target.src = '/placeholder-image.jpg';
+              }}
+            />
+          </div>
+
           {/* 图片计数器 */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded">
+          <div className="text-center mt-4 text-gray-600">
             {currentImageIndex + 1} / {note.attachments?.length}
           </div>
-          
+
           {/* 键盘提示 */}
-          <div className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
-            ← → 切换 | ESC 关闭 | F 全屏
+          <div className="text-center mt-2 text-xs text-gray-400">
+            ← → 切换 | ESC 关闭
           </div>
         </div>
       </Modal>
-
       {/* 拒绝理由模态框 */}
       <Modal
         title="拒绝理由"
