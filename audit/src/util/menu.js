@@ -25,6 +25,19 @@ export const PUBLIC_MENU = [
       },
     ],
   },
+  {
+    key: "video",
+    label: "视频",
+    href: "/m/video",
+    children: [
+      {
+        key: "video",
+        label: "管理视频",
+        href: "/m/video/*",
+        hidden: true,
+      },
+    ],
+  }
 ];
 
 // 通用递归查找

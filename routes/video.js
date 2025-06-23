@@ -106,6 +106,17 @@ router.post('/upload',
     VideoController.uploadVideo
 );
 
+// 获取所有视频
+router.get('/all',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    roleCheck('admin','super-admin'),
+    VideoController.getAllVideos
+);
+
 router.get('/list/me',
     verifyJWT,
     (req, res, next) => {

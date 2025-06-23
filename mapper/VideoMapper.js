@@ -281,6 +281,51 @@ class VideoMapper {
 
         return rows;
     }
+
+    // 分页查询所有视频
+    async findAllVideos(page = 1, pageSize = 10, description = null) {
+        const offset = (page - 1) * pageSize;
+        const executor = this.connection || pool;
+
+        let query = `
+            SELECT 
+                v.id, 
+                v.created_at, 
+                v.description, 
+                v.link, 
+                v.thumbnail,
+                u.username,
+                u.id AS user_id,
+                u.email
+            FROM videos v
+            INNER JOIN users u ON v.created_by = u.id
+            ORDER BY v.created_at DESC
+            LIMIT ? OFFSET ?
+        `;
+
+        const params = [pageSize, offset];
+
+        if (description) {
+            query = `
+                SELECT 
+                    v.id, 
+                    v.created_at, 
+                    v.description, 
+                    v.link, 
+                    v.thumbnail,
+                    u.username
+                FROM videos v
+                INNER JOIN users u ON v.created_by = u.id
+                WHERE v.description LIKE ?
+                ORDER BY v.created_at DESC
+                LIMIT ? OFFSET ?
+            `;
+            params.unshift(`%${description}%`);
+        }
+
+        const [rows] = await executor.query(query, params);
+        return rows;
+    }
 }
 
 module.exports = VideoMapper;

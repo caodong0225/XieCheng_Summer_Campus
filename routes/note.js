@@ -85,6 +85,7 @@ router.get('/list',
 
 // 获取所有游记列表
 router.get('/all',
+    verifyJWT,
     (req, res, next) => {
         // 将用户信息注入上下文
         runInContext(req, next);

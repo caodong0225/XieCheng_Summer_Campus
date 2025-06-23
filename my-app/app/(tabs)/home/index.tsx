@@ -235,22 +235,19 @@ export default function HomeScreen() {
               )}
             </View>
             <View style={tw`p-3`}>
+              {/* 标题 - 显示两行，超出用省略号 */}
               <Text 
                 style={tw`text-base font-semibold text-gray-900 mb-1`}
-                numberOfLines={1}
+                numberOfLines={2}
                 ellipsizeMode="tail"
               >
                 {item.title || '暂无标题'}
               </Text>
-              <Text 
-                style={tw`text-sm text-gray-600 mb-2`}
-                numberOfLines={2}
-                ellipsizeMode="tail"
-              >
-                {item.description || '暂无描述'}
-              </Text>
-              <View style={tw`flex-row items-center justify-between`}>
-                <View style={tw`flex-row items-center`}>
+              
+              {/* 用户信息和日期 - 分两行显示 */}
+              <View style={tw`mt-2`}>
+                {/* 用户名一行 */}
+                <View style={tw`flex-row items-center mb-1`}>
                   <View style={tw`w-5 h-5 rounded-full bg-gray-300 mr-2 justify-center items-center`}>
                     <ExpoImage
                       source={{ uri: getAvatar(item) }}
@@ -258,11 +255,17 @@ export default function HomeScreen() {
                       contentFit="cover"
                     />
                   </View>
-                  <Text style={tw`text-xs text-gray-500`} numberOfLines={1} ellipsizeMode="tail">
+                  <Text 
+                    style={tw`text-xs text-gray-500 flex-1`} 
+                    numberOfLines={1} 
+                    ellipsizeMode="tail"
+                  >
                     {item.username || '未知用户'}
                   </Text>
                 </View>
-                <Text style={tw`text-xs text-gray-500`}>
+                
+                {/* 日期一行 */}
+                <Text style={tw`text-xs text-gray-400 text-right`}>
                   {item.created_at ? new Date(item.created_at).toLocaleDateString() : '未知日期'}
                 </Text>
               </View>

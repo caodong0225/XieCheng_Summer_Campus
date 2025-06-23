@@ -320,6 +320,22 @@ class VideoService {
         }
     }
 
+    // 获取所有视频
+    async getAllVideos(page = 1, limit = 10, description = null) {
+        try {
+            const videos = await this.mapper.findAllVideos(page, limit, description);
+
+            return {
+                videos,
+                page,
+                limit
+            };
+        } catch (error) {
+            console.error('获取所有视频失败:', error);
+            throw new Error('获取所有视频失败: ' + error.message);
+        }
+    }
+
 }
 
 module.exports = VideoService;

@@ -137,9 +137,9 @@ export default function PreviewScreen() {
             // 1秒后自动跳转到游记详情页面
             setTimeout(() => {
               router.push({
-                pathname: '/note-detail',
+                pathname: '/profile/note-detail',
                 params: {
-                  noteId: result.data.noteId.toString()
+                  id: result.data.noteId.toString()
                 }
               });
             }, 1000);

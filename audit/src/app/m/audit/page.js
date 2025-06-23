@@ -29,7 +29,7 @@ import {
   EyeOutlined
 } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
-import { getNoteAll, auditNote, deleteNote } from '../../../api/note';
+import { getNoteAll, reviewNote, deleteNote } from '../../../api/note';
 import { useRouter } from 'next/navigation';
 
 const { Text, Title } = Typography;
@@ -136,10 +136,10 @@ const AuditPage = () => {
     try {
       const auditData = { status: newStatus };
       if (newStatus === 'rejected' && rejectReason) {
-        auditData.rejectReason = rejectReason;
+        auditData.reason = rejectReason;
       }
       
-      const response = await auditNote(noteId, auditData);
+      const response = await reviewNote(noteId, auditData);
       if (response.success) {
         message.success('状态更新成功');
         // 更新本地状态

@@ -135,6 +135,34 @@ export default function CommentScreen() {
     return replyTree;
   };
 
+  // 在组件中添加这个函数
+  const getThreadIdForReply = (replyId: number): string => {
+    // 遍历所有评论和回复，找到该回复所属的thread_id
+    for (const comment of comments) {
+      // 检查一级评论的回复
+      const findInReplies = (replies: Reply[]): number | null => {
+        for (const reply of replies) {
+          if (reply.id === replyId) {
+            return comment.id; // 找到匹配的回复，返回所属的thread_id
+          }
+          if (reply.children && reply.children.length > 0) {
+            const found = findInReplies(reply.children);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+      
+      const threadId = findInReplies(comment.replies);
+      if (threadId) {
+        return threadId.toString();
+      }
+    }
+    
+    // 如果找不到，默认使用第一个评论ID（或根据您的业务逻辑处理）
+    return comments.length > 0 ? comments[0].id.toString() : '0';
+  };
+
   const handleSubmitComment = async () => {
     if (!commentText.trim()) return;
     
@@ -143,10 +171,20 @@ export default function CommentScreen() {
       const user = await getUser();
       
       if (replyTo) {
-        // 回复评论或回复
+        // 确定thread_id
+        let threadId: string;
+        
+        if (replyTo.type === 'comment') {
+          // 回复评论：thread_id就是该评论ID
+          threadId = replyTo.id.toString();
+        } else {
+          // 回复回复：查找所属的thread_id
+          threadId = getThreadIdForReply(replyTo.id);
+        }
+        
         const replyData = {
           content: commentText,
-          thread_id: replyTo.type === 'comment' ? replyTo.id.toString() : replyTo.id.toString(),
+          thread_id: threadId,
           reply_id: replyTo.type === 'reply' ? replyTo.id.toString() : undefined
         };
         
@@ -160,8 +198,8 @@ export default function CommentScreen() {
           });
           setCommentText('');
           setReplyTo(null);
-          // 重新获取评论列表，显示最新数据
-          await fetchComments(false);
+          // 重载数据
+          fetchComments(true);
         } else {
           Toast.show({
             type: 'error',
@@ -170,7 +208,7 @@ export default function CommentScreen() {
           });
         }
       } else {
-        // 评论游记
+        // 评论游记（创建一级评论）
         const commentData = {
           note_id: id,
           content: commentText
@@ -185,7 +223,6 @@ export default function CommentScreen() {
             text2: '评论已发布',
           });
           setCommentText('');
-          // 重新获取评论列表，显示最新数据
           await fetchComments(false);
         } else {
           Toast.show({
@@ -448,26 +485,22 @@ export default function CommentScreen() {
     return reactions[emoji].count || 0;
   };
 
-  // 递归渲染回复树
+  // 优化后的回复树渲染函数 - 最多两级缩进
   const renderReplyTree = (replies: Reply[], depth = 0, parentUsername?: string) => {
     if (!replies || replies.length === 0) return null;
     
-    // 限制最大嵌套深度
-    const maxDepth = 4;
-    if (depth >= maxDepth) return null;
-
     return (
-      <View style={tw`ml-${depth > 0 ? 6 : 8} mt-2 border-l-2 border-gray-100 pl-3`}>
+      <View style={tw`mt-2`}>
         {replies.map((reply) => (
           <View key={reply.id} style={tw`mb-3`}>
             <View style={tw`flex-row items-start`}>
-              <View style={tw`w-8 h-8 rounded-full bg-gray-200 mr-2 overflow-hidden`}>
-                <Image
-                  source={{ uri: getAvatar({ email: reply.email }) }}
-                  style={tw`w-full h-full`}
-                  contentFit="cover"
-                />
-              </View>
+              {/* 深度指示器 - 仅用于视觉效果 */}
+              {depth > 0 && (
+                <View style={tw`w-4 mr-1 justify-center items-center`}>
+                  <Ionicons name="return-down-forward" size={14} color="#9ca3af" />
+                </View>
+              )}
+              
               <View style={tw`flex-1`}>
                 <View style={tw`flex-row items-center justify-between mb-1`}>
                   <View style={tw`flex-row items-center flex-1`}>
@@ -478,7 +511,6 @@ export default function CommentScreen() {
                       {formatTime(reply.created_at)}
                     </Text>
                   </View>
-                  {/* 删除按钮 - 只有自己创建的回复才显示 */}
                   {reply.user_id === currentUserId && (
                     <TouchableOpacity 
                       style={tw`p-1`}
@@ -489,7 +521,6 @@ export default function CommentScreen() {
                   )}
                 </View>
                 
-                {/* 显示回复标识 */}
                 {reply.reply_id && parentUsername && (
                   <Text style={tw`text-blue-600 text-xs mb-1`}>
                     回复 @{parentUsername}
@@ -525,8 +556,12 @@ export default function CommentScreen() {
               </View>
             </View>
             
-            {/* 递归渲染子回复，传递当前回复的用户名 */}
-            {reply.children && reply.children.length > 0 && renderReplyTree(reply.children, depth + 1, reply.username)}
+            {/* 子回复 - 不再缩进，仅用图标表示层级关系 */}
+            {reply.children && reply.children.length > 0 && (
+              <View style={tw`mt-2 ml-4`}>
+                {renderReplyTree(reply.children, depth + 1, reply.username)}
+              </View>
+            )}
           </View>
         ))}
       </View>
@@ -645,7 +680,13 @@ export default function CommentScreen() {
                   </View>
                   
                   {/* 回复列表 - 使用树形结构 */}
-                  {renderReplyTree(comment.replies)}
+                  {/* {renderReplyTree(comment.replies)} */}
+                  {/* 回复列表 - 最多两级缩进 */}
+                  {comment.replies && comment.replies.length > 0 && (
+                    <View style={tw`mt-3 ml-2`}>
+                      {renderReplyTree(comment.replies, 0, comment.username)}
+                    </View>
+                  )}
                 </View>
               </View>
             </View>

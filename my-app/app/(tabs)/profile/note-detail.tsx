@@ -1,12 +1,9 @@
-import { getUserById } from '@/api/user';
-import { getUser } from '@/store/token';
 import { getAvatar } from '@/utils/string';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import Toast from 'react-native-toast-message';
 import tw from 'twrnc';
 import { collectionNote, getNoteDetail, likeNote } from '../../api/note';
 import ImageViewer from '../../components/ImageViewer';
@@ -59,30 +56,6 @@ export default function NoteDetailScreen() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isCollection, setIsCollection] = useState(false);
-  const [userInfo, setUserInfo] = useState<any>(null);
-
-  const loadUserInfo = async () => {
-    try {
-      const user = await getUser();
-      if (user) {
-        const userData = await getUserById(user.id);
-        setUserInfo(userData);
-      }
-    } catch (error) {
-      console.error('¼ÓÔØÓÃ»§ÐÅÏ¢Ê§°Ü:', error);
-      Toast.show({
-        type: 'error',
-        text1: '¼ÓÔØÓÃ»§ÐÅÏ¢Ê§°Ü',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchNoteDetail();
-    loadUserInfo();
-  }, [id]);
 
   const fetchNoteDetail = async () => {
     try {
@@ -94,15 +67,22 @@ export default function NoteDetailScreen() {
         setIsFavorite(response.data.isFavorite);
         setIsCollection(response.data.isCollection);
       } else {
-        setError(response.message || '»ñÈ¡ÓÎ¼ÇÏêÇéÊ§°Ü');
+        setError(response.message || 'ï¿½ï¿½È¡ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½');
       }
     } catch (err) {
-      setError('»ñÈ¡ÓÎ¼ÇÏêÇéÊ±·¢Éú´íÎó');
+      setError('ï¿½ï¿½È¡ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½');
       console.error('Error fetching note detail:', err);
     } finally {
       setLoading(false);
     }
   };
+
+  // ä½¿ç”¨fetchNoteDetailåˆå§‹åŒ–æ•°æ®
+  useEffect(() => {
+    fetchNoteDetail();
+  }
+   , [id]
+)
 
   const handleImagePress = (index: number) => {
     setSelectedImageIndex(index);
@@ -166,12 +146,12 @@ export default function NoteDetailScreen() {
   if (error || !note) {
     return (
       <View style={tw`flex-1 justify-center items-center bg-white`}>
-        <Text style={tw`text-red-500 text-center px-4`}>{error || 'ÓÎ¼Ç²»´æÔÚ'}</Text>
+        <Text style={tw`text-red-500 text-center px-4`}>{error || 'ï¿½Î¼Ç²ï¿½ï¿½ï¿½ï¿½ï¿½'}</Text>
         <TouchableOpacity 
           style={tw`mt-4 px-6 py-2 bg-blue-500 rounded-full`}
           onPress={fetchNoteDetail}
         >
-          <Text style={tw`text-white font-medium`}>ÖØÊÔ</Text>
+          <Text style={tw`text-white font-medium`}>ï¿½ï¿½ï¿½ï¿½</Text>
         </TouchableOpacity>
       </View>
     );
@@ -179,7 +159,7 @@ export default function NoteDetailScreen() {
 
   return (
     <View style={tw`flex-1 bg-white`}>
-      {/* ¶¥²¿µ¼º½À¸ */}
+      {/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */}
       <View style={tw`flex-row items-center p-4 border-b border-gray-200 bg-white`}>
         <TouchableOpacity 
           onPress={() => router.back()} 
@@ -194,11 +174,11 @@ export default function NoteDetailScreen() {
       </View>
 
       <ScrollView style={tw`flex-1`} showsVerticalScrollIndicator={false}>
-        {/* ×÷ÕßÐÅÏ¢ */}
+        {/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ */}
         <View style={tw`p-4 flex-row items-center bg-white`}>
           <View style={tw`w-12 h-12 rounded-full bg-gray-200 mr-3 overflow-hidden`}>
             <Image
-              source={{ uri: getAvatar(userInfo) }}
+              source={{ uri: getAvatar(note.user) }}
               style={tw`w-full h-full`}
               contentFit="cover"
             />
@@ -217,7 +197,7 @@ export default function NoteDetailScreen() {
           </View>
         </View>
 
-        {/* Í¼Æ¬»¬¶¯ÇøÓò */}
+        {/* Í¼Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */}
         {note.attachments && note.attachments.length > 0 && (
           <ScrollView
             horizontal
@@ -242,14 +222,14 @@ export default function NoteDetailScreen() {
           </ScrollView>
         )}
 
-        {/* ÄÚÈÝÇøÓò */}
+        {/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */}
         <View style={tw`p-4 bg-white`}>
           <Text style={tw`text-xl font-semibold mb-3`}>{note.title}</Text>
           <Text style={tw`text-gray-700 leading-6 text-base`}>{note.description}</Text>
         </View>
       </ScrollView>
 
-      {/* µ×²¿»¥¶¯À¸ */}
+      {/* ï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */}
       <View style={tw`flex-row items-center border-t border-gray-200 p-4 bg-white`}>
         <TouchableOpacity 
           style={tw`flex-1 items-center`}
@@ -289,7 +269,7 @@ export default function NoteDetailScreen() {
 
       </View>
 
-      {/* Í¼Æ¬²é¿´Æ÷ */}
+      {/* Í¼Æ¬ï¿½é¿´ï¿½ï¿½ */}
       {showImageViewer && note.attachments && (
         <ImageViewer
           images={note.attachments.map(att => ({

@@ -16,6 +16,7 @@ class VideoController {
         this.deleteVideo = this.deleteVideo.bind(this);
         this.getViewedVideos = this.getViewedVideos.bind(this);
         this.deleteVideoView = this.deleteVideoView.bind(this);
+        this.getAllVideos = this.getAllVideos.bind(this);
     }
 
     async uploadVideo(req, res) {
@@ -226,6 +227,24 @@ class VideoController {
             }
         } catch (error) {
             console.error('删除视频观看记录失败:', error);
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 获取所有视频
+    async getAllVideos(req, res) {
+        try {
+            const { page = 1, pageSize = 10, description = null } = req.query;
+
+            const videos = await this.videoService.getAllVideos(
+                parseInt(page, 10),
+                parseInt(pageSize, 10),
+                description
+            );
+
+            response.success(res, videos, '所有视频列表获取成功');
+        } catch (error) {
+            console.error('获取所有视频列表失败:', error);
             response.error(res, error.message, 500);
         }
     }

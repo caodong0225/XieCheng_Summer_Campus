@@ -35,9 +35,10 @@ import {
   FullscreenOutlined
 } from '@ant-design/icons';
 import { useRouter, useParams } from 'next/navigation';
-import { getNoteById, deleteNote, auditNote } from '../../../../api/note';
+import { getNoteById, deleteNote, reviewNote } from '../../../../api/note';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import UserAvatar from "@/components/common/user_avatar";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -144,7 +145,7 @@ const NoteDetailPage = () => {
         auditData.rejectReason = rejectReason;
       }
       
-      const response = await auditNote(noteId, auditData);
+      const response = await reviewNote(noteId, auditData);
       if (response.success) {
         message.success('状态更新成功');
         setNote(prev => ({ ...prev, status: newStatus }));
@@ -334,11 +335,10 @@ const NoteDetailPage = () => {
             {/* 作者信息 */}
             <Card className="mb-8 bg-gray-50 border-0 shadow-sm">
               <div className="flex items-center space-x-4">
-                <Avatar size={56} icon={<UserOutlined />} className="bg-blue-500" />
-                <div className="flex-1">
+                <UserAvatar user={note.user} size={50} />
+                <div className="flex-1 pl-4">
                   <div className="flex items-center space-x-3 mb-2">
                     <Text strong className="text-lg">{note.user?.username}</Text>
-                    <Tag color="blue" className="text-sm">{note.user?.role}</Tag>
                   </div>
                   <div className="flex items-center space-x-6 text-sm text-gray-500">
                     <span className="flex items-center">

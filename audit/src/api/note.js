@@ -5,7 +5,7 @@ export async function createNote(data) {
 }
 
 export async function reviewNote(noteId, data) {
-    return put(`note/${noteId}/review`, data);
+    return put(`note/review/${noteId}`, data);
 }
 
 export async function deleteNote(noteId) {
@@ -18,10 +18,6 @@ export async function updateNote(noteId, data) {
 
 export async function deleteAttachment(attachmentId) {
     return del(`note/attachment/${attachmentId}`);
-}
-
-export async function auditNote(noteId, data) {
-    return put(`note/${noteId}/audit`, data);
 }
 
 export async function getNoteList(params, sort, filter) {
