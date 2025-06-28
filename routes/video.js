@@ -185,6 +185,16 @@ router.delete('/:videoId',
     VideoController.deleteVideo
 );
 
+// 取消发布视频
+router.delete('/cancel/:videoId',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    VideoController.cancelVideoPublish
+);
+
 // 获取观看记录
 router.get('/history/views',
     verifyJWT,

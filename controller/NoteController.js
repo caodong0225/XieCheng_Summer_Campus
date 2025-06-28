@@ -22,6 +22,7 @@ class NoteController {
         this.getNoteThreads = this.getNoteThreads.bind(this);
         this.getNoteAll = this.getNoteAll.bind(this);
         this.getNoteThreadsApproved = this.getNoteThreadsApproved.bind(this);
+        this.insertAttachment = this.insertAttachment.bind(this);
     }
 
     async createNote(req, res) {
@@ -49,7 +50,11 @@ class NoteController {
 
     async deleteNote(req, res) {
         try {
+            const contextUser = getContext()?.get('user');
             const { noteId } = req.params;
+            if(contextUser.role !== 'admin' && contextUser.role !== 'super-admin'){
+                await this.noteService.checkNotePermission(contextUser.userId, noteId)
+            }
             await this.noteService.deleteNote(noteId);
             response.success(res, null, '游记已删除');
         } catch (error) {
@@ -184,6 +189,21 @@ class NoteController {
             const filter = req.query;
             const threads = await this.noteService.getApprovedNotes(filter);
             response.success(res, threads, '游记列表获取成功');
+        } catch (error) {
+            response.error(res, error.message, 400);
+        }
+    }
+
+    // 插入附件
+    async insertAttachment(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+            const { noteId } = req.params;
+            if(contextUser.role !== 'admin' && contextUser.role !== 'super-admin'){
+                await this.noteService.checkNotePermission(contextUser.userId, noteId)
+            }
+            const attachment = await this.noteService.insertAttachment(noteId, req.body);
+            response.success(res, attachment, '附件已上传');
         } catch (error) {
             response.error(res, error.message, 400);
         }

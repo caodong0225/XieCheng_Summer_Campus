@@ -13,13 +13,13 @@ export async function likeVideo(id: any) {
         } else {
             return {
                 success: false,
-                message: response.message || 'µãÔÞÊ§°Ü'
+                message: response.message || 'ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½'
             };
         }
     } catch (error) {
         return {
             success: false,
-            message: 'µãÔÞÊ±·¢Éú´íÎó'
+            message: 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'
         };
     }
 }
@@ -36,13 +36,13 @@ export async function collectVideo(id: any) {
         } else {
             return {
                 success: false,
-                message: response.message || 'ÊÕ²ØÊ§°Ü'
+                message: response.message || 'ï¿½Õ²ï¿½Ê§ï¿½ï¿½'
             };
         }
     } catch (error) {
         return {
             success: false,
-            message: 'ÊÕ²ØÊ±·¢Éú´íÎó'
+            message: 'ï¿½Õ²ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'
         };
     }
 }
@@ -67,13 +67,13 @@ export async function getVideoById(id: any) {
         } else {
             return {
                 success: false,
-                message: response.message || '»ñÈ¡ÊÓÆµÏêÇéÊ§°Ü'
+                message: response.message || 'ï¿½ï¿½È¡ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½'
             };
         }
     } catch (error) {
         return {
             success: false,
-            message: '»ñÈ¡ÊÓÆµÏêÇéÊ±·¢Éú´íÎó'
+            message: 'ï¿½ï¿½È¡ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'
         };
     }
 }
@@ -83,29 +83,29 @@ export async function getVideoList(params: any) {
         const urlParams = new URLSearchParams(params);
         const response = await get(`video/unread?${urlParams.toString()}`);
         if (response && response.code === 200 && response.data) {
-            // ¼ÙÉèÖ»·µ»ØÊÓÆµIDÁÐ±í£¬²»°üº¬ÍêÕûÏêÇé
+            // ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆµIDï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             return {
                 success: true,
-                list: response.data.videos || [], // ÕâÀïÖ»°üº¬IDºÍ»ù±¾ÐÅÏ¢
-                message: response.message || '»ñÈ¡ÊÓÆµÁÐ±í³É¹¦'
+                list: response.data.videos || [], // ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½IDï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+                message: response.message || 'ï¿½ï¿½È¡ï¿½ï¿½Æµï¿½Ð±ï¿½ï¿½É¹ï¿½'
             };
         } else {
             return {
                 success: false,
                 list: [],
-                message: response.message || '»ñÈ¡ÊÓÆµÁÐ±íÊ§°Ü'
+                message: response.message || 'ï¿½ï¿½È¡ï¿½ï¿½Æµï¿½Ð±ï¿½Ê§ï¿½ï¿½'
             };
         }
     } catch (error) {
         return {
             success: false,
             list: [],
-            message: '»ñÈ¡ÊÓÆµÁÐ±íÊ±·¢Éú´íÎó'
+            message: 'ï¿½ï¿½È¡ï¿½ï¿½Æµï¿½Ð±ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'
         };
     }
 }
 
-// ¹Û¿´ÊÓÆµ
+// ï¿½Û¿ï¿½ï¿½ï¿½Æµ
 export async function watchVideo(id: any) {
     try {
         const response = await post(`video/watch/${id}`, {});
@@ -118,13 +118,13 @@ export async function watchVideo(id: any) {
         } else {
             return {
                 success: false,
-                message: response.message || '¹Û¿´ÊÓÆµÊ§°Ü'
+                message: response.message || 'ï¿½Û¿ï¿½ï¿½ï¿½ÆµÊ§ï¿½ï¿½'
             };
         }
     } catch (error) {
         return {
             success: false,
-            message: '¹Û¿´ÊÓÆµÊ±·¢Éú´íÎó'
+            message: 'ï¿½Û¿ï¿½ï¿½ï¿½ÆµÊ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'
         };
     }
 }
@@ -144,19 +144,23 @@ export async function getVideoHistory(params: any) {
             return {
                 success: false,
                 list: [],
-                message: response.message || '»ñÈ¡¹Û¿´ÀúÊ·Ê§°Ü'
+                message: response.message || 'ï¿½ï¿½È¡ï¿½Û¿ï¿½ï¿½ï¿½Ê·Ê§ï¿½ï¿½'
             };
         }
     } catch (error) {
         return {
             success: false,
             list: [],
-            message: '»ñÈ¡¹Û¿´ÀúÊ·Ê±·¢Éú´íÎó'
+            message: 'ï¿½ï¿½È¡ï¿½Û¿ï¿½ï¿½ï¿½Ê·Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'
         };
     }
 }
 
-// É¾³ýÊÓÆµ¹Û¿´¼ÇÂ¼
+// É¾ï¿½ï¿½ï¿½ï¿½Æµï¿½Û¿ï¿½ï¿½ï¿½Â¼
 export async function deleteVideoHistory(id: any) {
     return del(`video/history/views/${id}`);
+}
+
+export async function deleteVideo(id: any) {
+    return del(`video/cancel/${id}`);
 }

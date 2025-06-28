@@ -25,6 +25,7 @@ interface Note {
   created_by: number;
   username: string;
   email: string;
+  reason: string;
   status: 'checking' | 'approved' | 'rejected';
   attachments: Attachment[];
 }
@@ -253,13 +254,32 @@ export default function MyTravelsScreen() {
             )}
             <View style={tw`flex-row justify-between items-center`}>
               <Text style={tw`text-lg font-semibold flex-1 mr-2`}>{item.title}</Text>
-              <Text style={tw`${getStatusColor(item.status)} text-sm`}>
-                {getStatusText(item.status)}
-              </Text>
+              <View style={tw`flex-row items-center`}>
+                <Text style={tw`${getStatusColor(item.status)} text-sm mr-2`}>
+                  {getStatusText(item.status)}
+                </Text>
+                {(item.status === 'checking' || item.status === 'rejected') && (
+                  <TouchableOpacity
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      router.push(`/profile/edit-note?id=${item.id}`);
+                    }}
+                    style={tw`p-1`}
+                  >
+                    <Ionicons name="create-outline" size={20} color="#3b82f6" />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
             <Text style={tw`text-gray-400 text-sm mt-2`}>
               {new Date(item.created_at).toLocaleDateString()}
             </Text>
+            {item.status === 'rejected' && item.reason && (
+              <View style={tw`mt-2 p-2 bg-red-50 border border-red-200 rounded-lg`}>
+                <Text style={tw`text-red-600 text-sm font-medium`}>拒绝原因：</Text>
+                <Text style={tw`text-red-500 text-sm mt-1`}>{item.reason}</Text>
+              </View>
+            )}
           </TouchableOpacity>
         )}
         ListEmptyComponent={

@@ -5,14 +5,18 @@ const NoteEmojiMapper = require("../mapper/NoteEmojiMapper");
 const UserMapper = require("../mapper/UserMapper");
 const ReplyEmojiMapper = require("../mapper/ReplyEmojiMapper");
 const ThreadMapper = require("../mapper/ThreadMapper");
+const NoteViewMapper = require("../mapper/NoteViewMapper");
+const VideoEmojiMapper = require("../mapper/VideoEmojiMapper");
 
 class NoteService {
     constructor() {
         this.mapper = new NoteMapper();
         this.noteEmojiMapper = new NoteEmojiMapper();
         this.replyEmojiMapper = new ReplyEmojiMapper();
+        this.videoEmojiMapper = new VideoEmojiMapper();
         this.userMapper = new UserMapper();
         this.threadMapper = new ThreadMapper();
+        this.noteViewMapper = new NoteViewMapper();
     }
 
     /**
@@ -58,6 +62,15 @@ class NoteService {
         }
     }
 
+    // 插入附件
+    async insertAttachment(noteId, attachment) {
+        // 先检查游记是否存在
+        if(!await this.mapper.checkNoteStatus(noteId)){
+            throw new Error('游记不存在');
+        }
+        return this.mapper.insertAttachment(noteId, attachment);
+    }
+
     /**
      * 审核游记
      */
@@ -94,9 +107,10 @@ class NoteService {
 
     // 更改游记内容
     async updateNote(noteId, noteData) {
+
         const { error } = NoteEntity.createSchema.validate(noteData);
         if (error) throw new Error(error.details[0].message);
-        if(await this.mapper.checkNoteStatus(noteId)){
+        if(!await this.mapper.checkNoteStatus(noteId)){
             throw new Error('游记不存在');
         }
         return this.mapper.updateNote(noteId, noteData);
@@ -161,6 +175,8 @@ class NoteService {
         const attachments = await this.mapper.getAttachmentListByNoteId(note.id);
         // 获取游记作者信息
         const user = await this.userMapper.findById(note.created_by);
+        // 记录游记访问记录
+        await this.noteViewMapper.recordView(userId, noteId)
         // 屏蔽用户敏感信息
         user.password = undefined;
         note.user = user;
@@ -246,12 +262,15 @@ class NoteService {
             if(!type || type === 'note') {
                 // 获取喜欢的帖子列表
                 return await this.mapper.getFavoriteThreads(userId, filter);
-            }else{
-
             }
+            // 获取喜欢的视频列表
+            if(type === 'video'){
+                return await this.videoEmojiMapper.getFavoriteVideos(userId, filter)
+            }
+            return null
         } catch (error) {
-            console.error('获取用户喜欢帖子失败:', error);
-            throw new Error('获取用户喜欢帖子失败: ' + error.message);
+            console.error('获取用户喜欢失败:', error);
+            throw new Error('获取用户喜欢失败: ' + error.message);
         }
     }
 
@@ -263,11 +282,21 @@ class NoteService {
                 throw new Error('无效的用户ID');
             }
 
-            // 获取收藏的帖子列表
-            return await this.mapper.getCollectionThreads(userId, filter);
+            const type = filter?.type
+            delete filter.type;
+            if(!type || type === 'note') {
+                // 获取收藏的帖子列表
+                return await this.mapper.getCollectionThreads(userId, filter);
+            }
+            // 获取收藏的视频列表
+            if(type === 'video'){
+                return await this.videoEmojiMapper.getCollectionVideos(userId, filter);
+            }
+
+            return null;
         } catch (error) {
-            console.error('获取用户收藏帖子失败:', error);
-            throw new Error('获取用户收藏帖子失败: ' + error.message);
+            console.error('获取用户收藏失败:', error);
+            throw new Error('获取用户收藏失败: ' + error.message);
         }
     }
 

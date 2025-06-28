@@ -2,9 +2,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image as ExpoImage } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { FlatList, RefreshControl, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Modal, RefreshControl, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import tw from 'twrnc';
-import { getMyVideos } from '../../api/video';
+import { deleteVideo, getMyVideos } from '../../api/video';
 
 interface Video {
   id: number;
@@ -35,6 +36,8 @@ export default function MyVideosScreen() {
   const [searchInput, setSearchInput] = useState('');
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [videoToDelete, setVideoToDelete] = useState<Video | null>(null);
   const pageSize = 12;
 
   const fetchVideos = async () => {
@@ -95,6 +98,49 @@ export default function MyVideosScreen() {
         videoId: video.id.toString()
       }
     });
+  };
+
+  const handleDeleteVideo = (video: Video) => {
+    setVideoToDelete(video);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!videoToDelete) return;
+    
+    try {
+      const result = await deleteVideo(videoToDelete.id);
+      if (result && result.code === 200) {
+        Toast.show({
+          type: 'success',
+          text1: '删除成功',
+          text2: '视频已成功删除',
+        });
+        // 从本地列表中移除
+        setVideos(videos.filter(v => v.id !== videoToDelete.id));
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: '删除失败',
+          text2: result?.message || '删除视频失败，请重试',
+        });
+      }
+    } catch (error) {
+      console.error('删除视频失败：', error);
+      Toast.show({
+        type: 'error',
+        text1: '删除失败',
+        text2: '删除视频失败，请重试',
+      });
+    } finally {
+      setShowDeleteModal(false);
+      setVideoToDelete(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setVideoToDelete(null);
   };
 
   const formatPlayCount = (count: string) => {
@@ -208,6 +254,15 @@ export default function MyVideosScreen() {
                   {formatPlayCount(item.play_count)} 播放
                 </Text>
               </View>
+              <TouchableOpacity
+                onPress={(e) => {
+                  e.stopPropagation();
+                  handleDeleteVideo(item);
+                }}
+                style={tw`absolute top-2 right-2 bg-red-500 rounded-full p-1`}
+              >
+                <Ionicons name="trash-outline" size={16} color="white" />
+              </TouchableOpacity>
             </View>
             <View style={tw`p-2`}>
               <Text 
@@ -242,6 +297,46 @@ export default function MyVideosScreen() {
         }
         contentContainerStyle={tw`pb-4`}
       />
+      <Toast />
+      
+      {/* 自定义删除确认对话框 */}
+      <Modal
+        visible={showDeleteModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={cancelDelete}
+      >
+        <View style={tw`flex-1 bg-black bg-opacity-50 justify-center items-center`}>
+          <View style={tw`bg-white rounded-lg p-6 mx-4 w-80`}>
+            <View style={tw`items-center mb-4`}>
+              <View style={tw`bg-red-100 rounded-full p-3 mb-3`}>
+                <Ionicons name="trash-outline" size={32} color="#ef4444" />
+              </View>
+              <Text style={tw`text-lg font-bold text-gray-800`}>确认删除</Text>
+            </View>
+            
+            <Text style={tw`text-gray-600 text-center mb-6`}>
+              确定要删除这个视频吗？删除后将无法恢复。
+            </Text>
+            
+            <View style={tw`flex-row gap-3`}>
+              <TouchableOpacity
+                style={tw`flex-1 py-3 px-4 border border-gray-300 rounded-lg`}
+                onPress={cancelDelete}
+              >
+                <Text style={tw`text-center text-gray-700 font-medium`}>取消</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={tw`flex-1 py-3 px-4 bg-red-500 rounded-lg`}
+                onPress={confirmDelete}
+              >
+                <Text style={tw`text-center text-white font-medium`}>删除</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

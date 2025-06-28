@@ -17,6 +17,7 @@ class VideoController {
         this.getViewedVideos = this.getViewedVideos.bind(this);
         this.deleteVideoView = this.deleteVideoView.bind(this);
         this.getAllVideos = this.getAllVideos.bind(this);
+        this.cancelVideoPublish = this.cancelVideoPublish.bind(this);
     }
 
     async uploadVideo(req, res) {
@@ -185,6 +186,27 @@ class VideoController {
             }
         } catch (error) {
             console.error('删除视频失败:', error);
+            response.error(res, error.message, 500);
+        }
+    }
+
+    // 取消视频发布
+    async cancelVideoPublish(req, res) {
+        try {
+            const videoId = req.params.videoId;
+            const contextUser = getContext()?.get('user');
+            if(await this.videoService.isUserVideo(contextUser.userId, videoId) === false){
+                return response.error(res, '您没有权限取消该视频发布', 403);
+            }
+            const success = await this.videoService.deleteVideoById(videoId);
+
+            if (success) {
+                response.success(res, null, '视频删除成功');
+            } else {
+                response.error(res, '视频删除失败或视频不存在', 404);
+            }
+        } catch (error) {
+            console.error('取消视频发布失败:', error);
             response.error(res, error.message, 500);
         }
     }

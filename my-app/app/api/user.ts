@@ -86,3 +86,58 @@ export async function updateUserRole(id: any, role: string) {
 export async function updateUser(id: any, data: any) {
   await put(`user/update/${id}/password`, data);
 }
+
+
+export async function getMyFavourite(params: any){
+  try {
+    const urlParams = new URLSearchParams(params);
+    const response = await get(`user/favorites?${urlParams.toString()}`);
+    if (response && response.code === 200 && response.data) {
+      // 假设只返回视频ID列表，不包含完整详情
+      return {
+          success: true,
+          list: response.data.list || [], // 这里只包含ID和基本信息
+          message: response.message || '获取游记列表成功'
+      };
+  } else {
+      return {
+          success: false,
+          list: [],
+          message: response.message || '获取游记列表失败'
+      };
+  }
+} catch (error) {
+  return {
+      success: false,
+      list: [],
+      message: '获取游记列表时发生错误'
+  };
+}
+}
+
+export async function getMyColllected(params: any){
+  try {
+    const urlParams = new URLSearchParams(params);
+    const response = await get(`user/collections?${urlParams.toString()}`);
+    if (response && response.code === 200 && response.data) {
+      // 假设只返回视频ID列表，不包含完整详情
+      return {
+          success: true,
+          list: response.data.list || [], // 这里只包含ID和基本信息
+          message: response.message || '获取游记列表成功'
+      };
+  } else {
+      return {
+          success: false,
+          list: [],
+          message: response.message || '获取游记列表失败'
+      };
+  }
+} catch (error) {
+  return {
+      success: false,
+      list: [],
+      message: '获取游记列表时发生错误'
+  };
+}
+}

@@ -113,6 +113,78 @@ class VideoEmojiMapper {
         );
         return rows[0].count;
     }
+
+    // 获取喜欢的视频
+    async getFavoriteVideos(userId, { page = 1, pageSize = 10 }) {
+        page = parseInt(page, 10);
+        pageSize = parseInt(pageSize, 10);
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(pageSize) || pageSize < 1) pageSize = 10;
+
+        const offset = (page - 1) * pageSize;
+        const conn = this.connection || pool; // 使用事务连接或普通连接
+
+        // Query to get the total count of favorite videos
+        const [[{ total }]] = await conn.query(`
+        SELECT COUNT(*) as total
+        FROM video_emoji_reactions r
+        JOIN videos v ON r.video_id = v.id
+        WHERE r.user_id = ? AND r.emoji = ?
+    `, [userId, '💖']);
+
+        // Query to get the paginated list of favorite videos
+        const [rows] = await conn.query(`
+        SELECT v.id, v.created_at, v.description, v.link, v.thumbnail
+        FROM video_emoji_reactions r
+        JOIN videos v ON r.video_id = v.id
+        WHERE r.user_id = ? AND r.emoji = ?
+        ORDER BY v.created_at DESC
+        LIMIT ? OFFSET ?
+    `, [userId, '💖', pageSize, offset]);
+
+        return {
+            pageNum: page,
+            pageSize: pageSize,
+            total: total, // Include the total count
+            list: rows
+        };
+    }
+
+    // 获取收藏的视频
+    async getCollectionVideos(userId, { page = 1, pageSize = 10 }) {
+        page = parseInt(page, 10);
+        pageSize = parseInt(pageSize, 10);
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(pageSize) || pageSize < 1) pageSize = 10;
+
+        const offset = (page - 1) * pageSize;
+        const conn = this.connection || pool; // 使用事务连接或普通连接
+
+        // Query to get the total count of collection videos
+        const [[{ total }]] = await conn.query(`
+        SELECT COUNT(*) as total
+        FROM video_emoji_reactions r
+        JOIN videos v ON r.video_id = v.id
+        WHERE r.user_id = ? AND r.emoji = ?
+    `, [userId, '🌟']);
+
+        // Query to get the paginated list of collection videos
+        const [rows] = await conn.query(`
+        SELECT v.id, v.created_at, v.description, v.link, v.thumbnail
+        FROM video_emoji_reactions r
+        JOIN videos v ON r.video_id = v.id
+        WHERE r.user_id = ? AND r.emoji = ?
+        ORDER BY v.created_at DESC
+        LIMIT ? OFFSET ?
+    `, [userId, '🌟', pageSize, offset]);
+
+        return {
+            pageNum: page,
+            pageSize: pageSize,
+            total: total, // Include the total count
+            list: rows
+        };
+    }
 }
 
 module.exports = VideoEmojiMapper;

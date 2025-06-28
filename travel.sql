@@ -273,5 +273,22 @@ create table video_views
 )
     comment '视频观看记录';
 
-
+DROP TABLE IF EXISTS `note_views`;
+create table note_views
+(
+    id              int auto_increment comment '主键'
+        primary key,
+    note_id         int                                 not null comment '帖子id',
+    user_id         int                                 not null comment '用户id',
+    last_visited_at timestamp default current_timestamp not null on update current_timestamp comment '最后访问时间',
+    created_at      timestamp default current_timestamp not null comment '创建时间',
+    view_count      int       default 1                 not null comment '观看数',
+    constraint note_views_notes_id_fk
+        foreign key (note_id) references notes (id)
+            on delete cascade,
+    constraint note_views_users_id_fk
+        foreign key (user_id) references users (id)
+            on delete cascade
+)
+    comment '帖子观看历史记录表';
 

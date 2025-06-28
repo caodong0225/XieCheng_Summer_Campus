@@ -223,9 +223,24 @@ class VideoService {
     async deleteVideoById(videoId) {
         try{
             await this.mapper.delete(videoId);
+            return true;
         }catch (error) {
             console.error('删除视频失败:', error);
             throw new Error('删除视频失败: ' + error.message);
+        }
+    }
+
+    // 判断视频是不是该用户发布的
+    async isUserVideo(userId, videoId) {
+        try {
+            const video = await this.mapper.findById(videoId);
+            if (!video) {
+                throw new Error('视频不存在');
+            }
+            return video.created_by === userId;
+        } catch (error) {
+            console.error('检查视频所有者失败:', error);
+            throw new Error('检查视频所有者失败: ' + error.message);
         }
     }
 

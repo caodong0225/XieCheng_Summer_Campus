@@ -1,4 +1,4 @@
-import { del, get, post } from "./request";
+import { del, get, post, put } from "./request";
 
 export async function createNote(data: any) {
     return post(
@@ -30,6 +30,10 @@ export async function getNoteList(params: any, sort: any, filter: any) {
     data.success = true;
     data.list = data?.data?.list;
     return data;
+}
+
+export async function deleteAttachment(id: any){
+    return del(`note/attachment/${id}`);
 }
 
 export async function getNoteDetail(id: any) {
@@ -91,6 +95,11 @@ export async function getNoteAll(params: any, sort: any, filter: any) {
   return data;
 }
 
+// 删除游记
+export async function deleteNote(id: any) {
+  return del(`note/${id}`);
+}
+
 // 获取所有审批通过的游记
 export async function getNoteApproved(params: any) {
 
@@ -102,56 +111,11 @@ export async function getNoteApproved(params: any) {
   return data;
 }
 
-export async function getMyFavouriteNote(params: any){
-  try {
-    const urlParams = new URLSearchParams(params);
-    const response = await get(`user/favorites?${urlParams.toString()}`);
-    if (response && response.code === 200 && response.data) {
-      // 假设只返回视频ID列表，不包含完整详情
-      return {
-          success: true,
-          list: response.data.list || [], // 这里只包含ID和基本信息
-          message: response.message || '获取游记列表成功'
-      };
-  } else {
-      return {
-          success: false,
-          list: [],
-          message: response.message || '获取游记列表失败'
-      };
-  }
-} catch (error) {
-  return {
-      success: false,
-      list: [],
-      message: '获取游记列表时发生错误'
-  };
-}
-}
-
-export async function getMyColllectedNote(params: any){
-  try {
-    const urlParams = new URLSearchParams(params);
-    const response = await get(`user/collections?${urlParams.toString()}`);
-    if (response && response.code === 200 && response.data) {
-      // 假设只返回视频ID列表，不包含完整详情
-      return {
-          success: true,
-          list: response.data.list || [], // 这里只包含ID和基本信息
-          message: response.message || '获取游记列表成功'
-      };
-  } else {
-      return {
-          success: false,
-          list: [],
-          message: response.message || '获取游记列表失败'
-      };
-  }
-} catch (error) {
-  return {
-      success: false,
-      list: [],
-      message: '获取游记列表时发生错误'
-  };
-}
+/**
+ * 更新游记
+ * @param id 游记ID
+ * @param data 更新数据
+ */
+export async function updateNote(id: any, data: any) {
+    return put(`note/upload/${id}`, data);
 }

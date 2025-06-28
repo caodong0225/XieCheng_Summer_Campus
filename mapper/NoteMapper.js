@@ -101,6 +101,7 @@ class NoteMapper {
 
     // 更改游记内容
     async updateNote(noteId, noteData) {
+        console.log(noteData)
         const [result] = await pool.query(
             `UPDATE notes SET 
        title = ?, description = ?
@@ -183,7 +184,7 @@ class NoteMapper {
 
         const offset = (page - 1) * pageSize;
 
-        let query = `SELECT notes.id, notes.title,notes.created_at,notes.updated_at,notes.description,notes.created_by, users.username, users.email,notes_status.status FROM notes join users on users.id = notes.created_by join notes_status on notes_status.note_id  = notes.id  where notes.del_flag = 0`;
+        let query = `SELECT notes.id, notes.title,notes.created_at,notes.updated_at,notes.description,notes.created_by, users.username, users.email,notes_status.status,notes_status.reason FROM notes join users on users.id = notes.created_by join notes_status on notes_status.note_id  = notes.id  where notes.del_flag = 0`;
 
         let countQuery = `SELECT COUNT(*) as total FROM notes join notes_status on notes_status.note_id  = notes.id  where notes.del_flag = 0`;
         const params = [];
