@@ -117,5 +117,5 @@ export async function getNoteApproved(params: any) {
  * @param data 更新数据
  */
 export async function updateNote(id: any, data: any) {
-    return put(`note/upload/${id}`, data);
+    return put(`note/update/${id}`, data);
 }

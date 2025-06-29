@@ -50,16 +50,17 @@ class VideoService {
             const originalName = file.originalname;
             const fileSize = file.size;
 
-            // 1. 上传视频到Minio
-            await minioClient.fPutObject(
+            // 1. 使用流式上传视频
+            const videoStream = fs.createReadStream(filePath);
+            await minioClient.putObject(
                 this.videoBucket,
                 filename,
-                filePath,
+                videoStream, // 使用流而不是文件路径
+                fileSize,
                 {
                     'Content-Type': file.mimetype,
                     'x-amz-meta-original-filename': originalName,
                     'x-amz-meta-user-id': userId,
-                    // 'x-amz-meta-title': title
                 }
             );
 
@@ -110,8 +111,15 @@ class VideoService {
                 ...videoData
             };
         } catch (error) {
-            console.error('Minio上传失败:', error);
-            throw new Error('视频上传到存储失败');
+            console.error('Minio上传失败详情:', {
+                message: error.message,
+                stack: error.stack,
+                bucket: this.videoBucket,
+                userId
+            });
+
+            // 保留原始错误信息
+            throw new Error(`视频上传失败: ${error.message}`);
         }
     }
 

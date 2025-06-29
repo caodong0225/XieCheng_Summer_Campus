@@ -43,42 +43,55 @@ export default function MyHistoryScreen() {
         setLoading(true);
       }
       setError(null);
-      
+  
       const currentPage = isRefresh ? 1 : page;
-      const params = {
-        page: currentPage,
-        limit: pageSize,
-      };
-
-      console.log('Fetching video history with params:', params);
+      const params = { page: currentPage, limit: pageSize };
+  
       const response = await getVideoHistory(params);
-      console.log('Video history response:', response);
-      
-      // 检查响应格式
+  
       if (response && response.success) {
         const newVideos = response.list || [];
-        console.log('Parsed videos:', newVideos);
-        
+  
         if (isRefresh) {
           setVideos(newVideos);
         } else {
           setVideos(prev => [...prev, ...newVideos]);
         }
-        
+  
         setPage(currentPage + 1);
         setHasMore(newVideos.length === pageSize);
+        
+        // 立即结束加载状态，确保数据更新后不再显示加载中
+        if (!isRefresh) {
+          setLoading(false);
+        }
       } else {
-        console.error('API response error:', response);
+        // ✨ 即使失败也要清空旧数据，避免卡 loading
+        if (isRefresh) {
+          setVideos([]);
+        }
+        setHasMore(false);
         setError(response?.message || '获取观看历史失败');
+        
+        // 失败时也要结束加载状态
+        if (!isRefresh) {
+          setLoading(false);
+        }
       }
     } catch (err) {
-      console.error('Error fetching video history:', err);
+      if (isRefresh) {
+        setVideos([]);
+      }
+      setHasMore(false);
       setError('获取观看历史时发生错误');
+      
+      // 异常时也要结束加载状态
+      if (!isRefresh) {
+        setLoading(false);
+      }
     } finally {
       if (isRefresh) {
         setRefreshing(false);
-      } else {
-        setLoading(false);
       }
     }
   };
@@ -146,7 +159,7 @@ export default function MyHistoryScreen() {
     }
   };
 
-  if (loading && !refreshing && videos.length === 0) {
+  if (loading && !refreshing && videos.length === 0 && page === 1) {
     return (
       <View style={tw`flex-1 justify-center items-center bg-white`}>
         <Text>加载中...</Text>

@@ -15,6 +15,7 @@ interface Note {
   username: string;
   email: string;
   status: string;
+  total_views: string;
   attachments: {
     id: number;
     note_id: number;
@@ -38,6 +39,17 @@ export default function HomeScreen() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const pageSize = 10;
+
+  // 格式化观看数
+  const formatViewCount = (count: string | number) => {
+    const num = typeof count === 'string' ? parseInt(count) : count;
+    if (num >= 10000) {
+      return (num / 10000).toFixed(1) + '万';
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'k';
+    }
+    return num.toString();
+  };
 
   const fetchNotes = async (pageNum: number = 1, isRefresh: boolean = false, keyword: string = '') => {
     try {
@@ -233,6 +245,7 @@ export default function HomeScreen() {
                   <Ionicons name="image-outline" size={40} color="#d1d5db" />
                 </View>
               )}
+              
             </View>
             <View style={tw`p-3`}>
               {/* 标题 - 显示两行，超出用省略号 */}
@@ -246,22 +259,30 @@ export default function HomeScreen() {
               
               {/* 用户信息和日期 - 分两行显示 */}
               <View style={tw`mt-2`}>
-                {/* 用户名一行 */}
-                <View style={tw`flex-row items-center mb-1`}>
-                  <View style={tw`w-5 h-5 rounded-full bg-gray-300 mr-2 justify-center items-center`}>
-                    <ExpoImage
-                      source={{ uri: getAvatar(item) }}
-                      style={tw`w-5 h-5 rounded-full`}
-                      contentFit="cover"
-                    />
+                {/* 用户名和观看数一行 */}
+                <View style={tw`flex-row items-center justify-between mb-1`}>
+                  <View style={tw`flex-row items-center flex-1`}>
+                    <View style={tw`w-5 h-5 rounded-full bg-gray-300 mr-2 justify-center items-center`}>
+                      <ExpoImage
+                        source={{ uri: getAvatar(item) }}
+                        style={tw`w-5 h-5 rounded-full`}
+                        contentFit="cover"
+                      />
+                    </View>
+                    <Text 
+                      style={tw`text-xs text-gray-500 flex-1`} 
+                      numberOfLines={1} 
+                      ellipsizeMode="tail"
+                    >
+                      {item.username || '未知用户'}
+                    </Text>
                   </View>
-                  <Text 
-                    style={tw`text-xs text-gray-500 flex-1`} 
-                    numberOfLines={1} 
-                    ellipsizeMode="tail"
-                  >
-                    {item.username || '未知用户'}
-                  </Text>
+                  <View style={tw`flex-row items-center`}>
+                    <Ionicons name="eye-outline" size={12} color="#9ca3af" style={tw`mr-1`} />
+                    <Text style={tw`text-xs text-gray-400`}>
+                      {formatViewCount(item.total_views || '0')}
+                    </Text>
+                  </View>
                 </View>
                 
                 {/* 日期一行 */}

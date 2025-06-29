@@ -133,6 +133,25 @@ class NoteMapper {
         return true;
     }
 
+    async getNoteStatus(noteId){
+        const [rows] = await pool.query(
+            `SELECT * FROM notes_status 
+       WHERE note_id = ?`,
+            [noteId]
+        );
+        return rows[0] || null;
+    }
+
+    async updateNoteStatusById(noteId,status){
+        const [rows] = await pool.query(
+            `UPDATE notes_status SET
+         status = ? 
+         WHERE note_id = ?`,
+            [status, noteId]
+        );
+        return rows.affectedRows > 0;
+    }
+
     // 通过id删除note附件
     async deleteAttachmentById(attachmentId) {
         const [result] = await pool.query(
@@ -170,6 +189,16 @@ class NoteMapper {
        status = ?, reason = ?
        WHERE note_id = ?`,
             [status, reason, noteId]
+        );
+        return result.affectedRows > 0;
+    }
+
+    // 发送消息推送
+    async sendNotification(userId,note_id, note_title, reason) {
+        const [result] = await pool.query(
+            `insert into notifications (title, content, user_id, sender) values
+       (?, ?, ?, ?)`,
+            ['游记审核未通过通知', '您的游记<note id = ' + note_id.toString() + '>' + note_title + '</note>审核未通过，未通过理由：' + reason, userId, 'system']
         );
         return result.affectedRows > 0;
     }
@@ -437,6 +466,18 @@ class NoteMapper {
         };
     }
 
+    // 判断游记状态是否为未审核通过
+    async getRejectedByNoteId(noteId){
+        const [rows] = await pool.query(
+            `SELECT * FROM notes_status 
+       WHERE note_id = ? AND status = 'rejected'`,
+            [noteId]
+        );
+        if (rows.length === 0) return null; // 没有未通过记录
+        // 返回最新的未通过记录
+        return rows[0];
+    }
+
 // 新增方法：批量获取帖子附件
     async getAttachmentsByNoteIds(noteIds) {
         if (noteIds.length === 0) return [];
@@ -463,11 +504,13 @@ class NoteMapper {
 
         let query = `
         SELECT n.id, n.title, n.description, n.created_at, n.updated_at, 
-               u.username, u.email, ns.status
+               u.username, u.email, ns.status, COALESCE(SUM(nv.view_count), 0) AS total_views
         FROM notes n
         JOIN users u ON n.created_by = u.id
         JOIN notes_status ns ON ns.note_id = n.id
-        WHERE n.del_flag = 0 AND ns.status = 'approved'`;
+        LEFT JOIN note_views nv ON nv.note_id = n.id
+        WHERE n.del_flag = 0 AND ns.status = 'approved'
+        GROUP BY n.id, u.username, u.email, ns.status`;
 
         let countQuery = `
         SELECT COUNT(*) as total 

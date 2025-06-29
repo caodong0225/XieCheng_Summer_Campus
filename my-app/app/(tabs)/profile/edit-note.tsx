@@ -35,6 +35,8 @@ export default function EditNoteScreen() {
   const [loading, setLoading] = useState(true);
   const [originalNote, setOriginalNote] = useState<any>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isRejected, setIsRejected] = useState(false);
+  const [rejectedReason, setRejectedReason] = useState('');
 
   // 获取游记详情
   const fetchNoteDetail = async () => {
@@ -46,6 +48,8 @@ export default function EditNoteScreen() {
         setOriginalNote(note);
         setTitle(note.title || '');
         setContent(note.description || '');
+        setIsRejected(note.isRejected || false); // 设置审核拒绝状态
+        setRejectedReason(note.rejectedReason || ''); // 设置拒绝原因
         
         // 转换附件为MediaItem格式
         const attachments = note.attachments || [];
@@ -305,6 +309,74 @@ export default function EditNoteScreen() {
     setShowDeleteModal(true);
   };
 
+  // 重新提交审核
+  const handleResubmit = async () => {
+    if (!title.trim()) {
+      Toast.show({
+        type: 'error',
+        text1: '提示',
+        text2: '请输入标题',
+      });
+      return;
+    }
+    if (!content.trim()) {
+      Toast.show({
+        type: 'error',
+        text1: '提示',
+        text2: '请输入内容',
+      });
+      return;
+    }
+    if (mediaItems.length === 0) {
+      Toast.show({
+        type: 'error',
+        text1: '提示',
+        text2: '请至少添加一张图片',
+      });
+      return;
+    }
+
+    try {
+      // 重新提交审核的数据
+      const noteData = {
+        title: title.trim(),
+        description: content.trim(),
+      };
+
+      console.log('重新提交审核数据：', noteData);
+      const result = await updateNote(id, noteData);
+      
+      if (result && result.code === 200) {
+        Toast.show({
+          type: 'success',
+          text1: '🎉 重新提交成功',
+          text2: '游记已重新提交审核，请耐心等待',
+          onShow: () => {
+            setTimeout(() => {
+              router.push({
+                pathname: '/profile/note-detail',
+                params: { id: id }
+              });
+            }, 1500);
+          }
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: '提交失败',
+          text2: result?.message || '重新提交失败，请稍后重试',
+        });
+      }
+    } catch (error) {
+      console.error('重新提交失败：', error);
+      Toast.show({
+        type: 'error',
+        text1: '提交失败',
+        text2: '重新提交失败，请稍后重试',
+      });
+    }
+  };
+
   const confirmDeleteNote = async () => {
     try {
       const result = await deleteNote(id);
@@ -393,6 +465,27 @@ export default function EditNoteScreen() {
         </View>
 
         <View style={tw`p-4`}>
+          {/* 被拒绝提示 */}
+          {isRejected && (
+            <View style={tw`mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg`}>
+              <View style={tw`flex-row items-center`}>
+                <Ionicons name="warning" size={20} color="#f97316" style={tw`mr-2`} />
+                <Text style={tw`text-orange-700 font-medium`}>游记审核未通过</Text>
+              </View>
+              <Text style={tw`text-orange-600 text-sm mt-1`}>
+                请修改内容后重新提交审核
+              </Text>
+              {rejectedReason && (
+                <View style={tw`mt-2 p-2 bg-white rounded border border-orange-100`}>
+                  <Text style={tw`text-orange-800 text-sm font-medium mb-1`}>拒绝原因：</Text>
+                  <Text style={tw`text-orange-700 text-sm leading-5`}>
+                    {rejectedReason}
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
+
           <TextInput
             style={tw`text-xl font-bold mb-4 pb-2 border-b border-gray-200 text-gray-800`}
             placeholder="添加标题会被更多人看到"
@@ -455,13 +548,25 @@ export default function EditNoteScreen() {
               <Text style={tw`text-gray-600 text-base font-bold`}>预览</Text>
             </TouchableOpacity>
             
-            <TouchableOpacity 
-              style={tw`flex-1 bg-blue-500 py-4 rounded-lg items-center shadow-sm`}
-              activeOpacity={0.8}
-              onPress={handleUpdate}
-            >
-              <Text style={tw`text-white text-base font-bold`}>更新</Text>
-            </TouchableOpacity>
+            {isRejected ? (
+              // 如果被拒绝，显示重新提交审核按钮
+              <TouchableOpacity 
+                style={tw`flex-1 bg-orange-500 py-4 rounded-lg items-center shadow-sm`}
+                activeOpacity={0.8}
+                onPress={handleResubmit}
+              >
+                <Text style={tw`text-white text-base font-bold`}>重新提交审核</Text>
+              </TouchableOpacity>
+            ) : (
+              // 正常状态显示更新按钮
+              <TouchableOpacity 
+                style={tw`flex-1 bg-blue-500 py-4 rounded-lg items-center shadow-sm`}
+                activeOpacity={0.8}
+                onPress={handleUpdate}
+              >
+                <Text style={tw`text-white text-base font-bold`}>更新</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 

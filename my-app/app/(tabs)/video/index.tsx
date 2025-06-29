@@ -1,7 +1,7 @@
 import { AntDesign, Feather, Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Dimensions, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Alert, AppState, AppStateStatus, Dimensions, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Video from 'react-native-video';
 import tw from 'twrnc';
 import { collectVideo, getVideoById, getVideoList, likeVideo, watchVideo } from '../../api/video';
@@ -43,9 +43,37 @@ export default function VideoScreen() {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [videoIds, setVideoIds] = useState<number[]>([]);
   const [hasWatched, setHasWatched] = useState(false);
+  const [isPageFocused, setIsPageFocused] = useState<boolean>(true);
   
   const flatListRef = useRef<FlatList>(null);
   const currentVideoId = useRef<number | null>(null);
+
+  // 使用 useFocusEffect 监听页面焦点状态
+  useFocusEffect(
+    useCallback(() => {
+      setIsPageFocused(true);
+      
+      return () => {
+        setIsPageFocused(false);
+      };
+    }, [])
+  );
+
+  // 监听应用状态变化（应用进入后台等）
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        // 应用回到前台时，只有在页面有焦点时才恢复播放
+        // 这里不直接设置 isPageFocused，因为 useFocusEffect 会处理
+      } else {
+        // 应用进入后台时暂停所有视频
+        setIsPageFocused(false);
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    return () => subscription?.remove();
+  }, []);
 
   // 初始化加载视频列表
   useEffect(() => {
@@ -327,6 +355,8 @@ export default function VideoScreen() {
       <VideoItem
         item={item}
         index={index}
+        isPageFocused={isPageFocused}
+        isCurrentVideo={index === currentIndex}
         onLike={handleLike}
         onCollect={handleCollect}
         onVideoEnd={handleVideoEnd}
@@ -409,15 +439,39 @@ export default function VideoScreen() {
 const VideoItem: React.FC<{
   item: VideoItem;
   index: number;
+  isPageFocused: boolean;
+  isCurrentVideo: boolean;
   onLike: (videoId: number, index: number) => void;
   onCollect: (videoId: number, index: number) => void;
   onVideoEnd: (index: number) => void;
   onVideoLoad: (videoId: number) => void;
-}> = ({ item, index, onLike, onCollect, onVideoEnd, onVideoLoad }) => {
-  const [paused, setPaused] = useState<boolean>(false);
+}> = ({ item, index, isPageFocused, isCurrentVideo, onLike, onCollect, onVideoEnd, onVideoLoad }) => {
+  const [paused, setPaused] = useState<boolean>(true); // 默认暂停状态
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const videoRef = useRef<any>(null);
   const [hasWatched, setHasWatched] = useState(false);
+
+  // 监听页面焦点和当前视频状态变化
+  useEffect(() => {
+    if (!isPageFocused) {
+      // 页面失去焦点时暂停视频
+      setPaused(true);
+    } else if (isCurrentVideo && !paused) {
+      // 页面获得焦点且是当前视频时，保持播放状态
+      setPaused(false);
+    }
+  }, [isPageFocused, isCurrentVideo]);
+
+  // 监听当前视频状态变化
+  useEffect(() => {
+    if (isCurrentVideo && isPageFocused) {
+      // 只有当前视频且页面有焦点时才播放
+      setPaused(false);
+    } else {
+      // 不是当前视频或页面无焦点时暂停
+      setPaused(true);
+    }
+  }, [isCurrentVideo, isPageFocused]);
 
   const formatCount = (count: string | number) => {
     const num = typeof count === 'string' ? parseInt(count) : count;
@@ -434,7 +488,10 @@ const VideoItem: React.FC<{
 
   const handleVideoLoad = async () => {
     setIsLoading(false);
-    setPaused(false);
+    // 只有在当前视频且页面有焦点时才自动播放
+    if (isCurrentVideo && isPageFocused) {
+      setPaused(false);
+    }
     if (!hasWatched) {
       setHasWatched(true);
       await watchVideo(item.id);
@@ -447,7 +504,12 @@ const VideoItem: React.FC<{
       <TouchableOpacity
         activeOpacity={1}
         style={styles.videoWrapper}
-        onPress={() => setPaused(p => !p)}
+        onPress={() => {
+          // 只有当前视频才能通过点击控制播放/暂停
+          if (isCurrentVideo) {
+            setPaused(p => !p);
+          }
+        }}
       >
         {isLoading && (
           <View style={styles.loadingOverlay}>

@@ -7,6 +7,7 @@ const ReplyEmojiMapper = require("../mapper/ReplyEmojiMapper");
 const ThreadMapper = require("../mapper/ThreadMapper");
 const NoteViewMapper = require("../mapper/NoteViewMapper");
 const VideoEmojiMapper = require("../mapper/VideoEmojiMapper");
+const NotificationMapper = require("../mapper/NotificationMapper");
 
 class NoteService {
     constructor() {
@@ -17,6 +18,7 @@ class NoteService {
         this.userMapper = new UserMapper();
         this.threadMapper = new ThreadMapper();
         this.noteViewMapper = new NoteViewMapper();
+        this.notificationMapper = new NotificationMapper();
     }
 
     /**
@@ -106,14 +108,42 @@ class NoteService {
     }
 
     // 更改游记内容
+// 更改游记内容
     async updateNote(noteId, noteData) {
-
         const { error } = NoteEntity.createSchema.validate(noteData);
         if (error) throw new Error(error.details[0].message);
-        if(!await this.mapper.checkNoteStatus(noteId)){
-            throw new Error('游记不存在');
+
+        try {
+            // 开启事务
+            await this.mapper.beginTransaction();
+
+            // 检查游记状态
+            const noteStatus = await this.mapper.getNoteStatus(noteId);
+            console.log("noteStatus",noteStatus)
+            if (!noteStatus) {
+                throw new Error('游记不存在');
+            }
+
+            if (noteStatus.status === 'approved') {
+                throw new Error('已审批通过的游记不能更新');
+            }
+
+            if (noteStatus.status === 'rejected') {
+                // 如果状态是rejected，更新为checking
+                await this.mapper.updateNoteStatusById(noteId, 'checking');
+            }
+
+            // 更新游记内容
+            const result = await this.mapper.updateNote(noteId, noteData);
+
+            // 提交事务
+            await this.mapper.commit();
+            return result;
+        } catch (error) {
+            // 回滚事务
+            await this.mapper.rollback();
+            throw error;
         }
-        return this.mapper.updateNote(noteId, noteData);
     }
 
     async checkNotePermission(userId, noteId) {
@@ -145,13 +175,30 @@ class NoteService {
 
     // 审计游记
     async auditNote(noteId, result) {
-        const note = await this.mapper.getNoteById(noteId);
-        if (!note) throw new Error('游记不存在');
-        if (note.del_flag == 1) throw new Error('游记已被删除');
-        const { error } = NoteEntity.statusSchema.validate(result);
-        if (error) throw new Error(error.details[0].message);
-
-        return this.mapper.auditNote(noteId, result.status, result.reason);
+        try {
+            await this.mapper.beginTransaction();
+            const note = await this.mapper.getNoteById(noteId);
+            if (!note) throw new Error('游记不存在');
+            if (note.del_flag == 1) throw new Error('游记已被删除');
+            const {error} = NoteEntity.statusSchema.validate(result);
+            if (error) throw new Error(error.details[0].message);
+            if(await this.mapper.auditNote(noteId, result.status, result.reason)){
+                // 如果审核通过，发送通知
+                if(result.status === 'rejected'){
+                    await this.mapper.sendNotification(note.created_by,noteId,note.title,result.reason)
+                }
+                // 提交事务
+                await this.mapper.commit();
+                return true;
+            }else{
+                throw new Error('审核失败');
+            }
+        }
+        catch (error) {
+            // 回滚事务
+            await this.mapper.rollback();
+            throw error;
+        }
     }
 
     // 获取游记列表
@@ -190,12 +237,19 @@ class NoteService {
         const isFavorite = await this.noteEmojiMapper.isFavorite(userId, note.id);
         // 是否用户有收藏
         const isCollection = await this.noteEmojiMapper.isCollection(userId, note.id);
+        const getRejected = await this.mapper.getRejectedByNoteId(note.id)
+        // 获取游记是否是被拒绝状态
+        const isRejected = getRejected != null;
+        if(isRejected){
+            note.rejectedReason = getRejected.reason;
+        }
         note.isFavorite = isFavorite;
         note.isCollection = isCollection;
         note.likes = likes;
         note.collections = collections;
         note.comments = comments;
         note.attachments = attachments;
+        note.isRejected = isRejected;
         return note;
     }
 

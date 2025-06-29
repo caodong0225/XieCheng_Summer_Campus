@@ -34,7 +34,7 @@ router.put('/:id/mark-as-read',
     NotificationController.markAsRead
 );
 
-router.put('/mark-all-as-read/:sender',
+router.put('/markAllAsRead/:sender',
     verifyJWT,
     (req, res, next) => {
         // 将用户信息注入上下文

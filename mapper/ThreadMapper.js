@@ -64,6 +64,14 @@ class ThreadMapper {
         );
         return this.findByIdWithUser(result.insertId);
     }
+    async sendNotification(userName,target_userId,note_id,note_title,remark_userId, remark) {
+        const [result] = await pool.query(
+            `INSERT INTO notifications (title, content, user_id, sender)
+             VALUES (?, ?, ?, 'user')`,
+            ["有用户评论了你的游记", "用户<user id=" + remark_userId + ">" + userName + "</user>评论<note id="+ note_id +">" + note_title + "</note>：" + remark, target_userId]
+        );
+        return result.affectedRows > 0;
+    }
 
     async findById(id) {
         const [rows] = await pool.query(

@@ -98,6 +98,7 @@ CREATE TABLE `notifications`  (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `user_id` int NOT NULL COMMENT '通知的对象',
   `is_read` tinyint NOT NULL DEFAULT 0 COMMENT '是否已读(0未读，1已读)',
+  `sender` varchar(255) not null comment '发送者',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `notifications_users_id_fk`(`user_id` ASC) USING BTREE,
   CONSTRAINT `notifications_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT

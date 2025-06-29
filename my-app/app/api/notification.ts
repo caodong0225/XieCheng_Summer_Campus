@@ -1,6 +1,6 @@
 // app/api/notification.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { del, get } from "./request";
+import { del, get, put } from "./request";
 
 interface NotificationParams {
   sender: 'system' | 'user';
@@ -35,6 +35,16 @@ export async function getNotificationList(params: NotificationParams) {
     ...data.data,
     list: data.data.list
   };
+}
+
+export async function markReadNotificationById(id: number) {
+  const result = await put(`notification/${id}/mark-as-read`,{});
+  return result;
+}
+
+export async function markReadNotificationAll(type: 'system' | 'user'){
+  const result = await put(`notification/markAllAsRead/${type}`,{});
+  return result;
 }
 
 export async function deleteNotificationById(id: number) {

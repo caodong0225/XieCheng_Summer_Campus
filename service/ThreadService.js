@@ -80,20 +80,39 @@ class ThreadService {
 
     // 创建评论
     async createThread(threadData) {
-        const { error, value } = createSchema.validate(threadData);
-        if (error) throw new Error(error.details[0].message);
+        await this.mapper.beginTransaction();
+        try {
+            const { error, value } = createSchema.validate(threadData);
+            if (error) throw new Error(error.details[0].message);
 
-        // 验证用户存在
-        if (!await this.userMapper.findById(value.user_id)) {
-            throw new Error('用户不存在');
+            // 验证用户存在
+            const user = await this.userMapper.findById(value.user_id);
+            if (!user) throw new Error('用户不存在');
+
+            // 验证游记存在
+            const note = await this.noteMapper.getNoteById(value.note_id);
+            if (!note) throw new Error('游记不存在');
+
+            // 创建评论
+            const thread = await this.mapper.create(value);
+
+            // 发送通知
+            await this.mapper.sendNotification(
+                user.username,
+                note.created_by,
+                note.id,
+                note.title,
+                value.user_id,
+                value.content
+            );
+
+            // 提交事务
+            await this.mapper.commit();
+            return thread;
+        } catch (error) {
+            await this.mapper.rollback();
+            throw new Error('创建评论失败: ' + error.message);
         }
-
-        // 验证游记存在
-        if (!await this.noteMapper.getNoteById(value.note_id)) {
-            throw new Error('游记不存在');
-        }
-
-        return this.mapper.create(value);
     }
 
     // 获取评论详情

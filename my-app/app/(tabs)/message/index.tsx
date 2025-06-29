@@ -1,252 +1,430 @@
-import { getNotificationList } from '@/api/notification';
+import {
+  deleteNotificationById,
+  getNotificationList,
+  markReadNotificationAll,
+  markReadNotificationById,
+  Notification
+} from '@/api/notification';
 import { useSocket } from '@/utils/useSocket';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
+import tw from 'twrnc';
 
-type MessageType = 'system' | 'user';
-
-interface Notification {
-  id: number;
-  title: string;
-  content: string;
-  created_at: string;
-  updated_at: string;
-  user_id: number;
-  is_read: number;
-  sender: MessageType;
-}
-
-interface GroupData {
-  key: MessageType;
-  name: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  lastMsg: string;
-  lastTime: string;
-  unread: number;
-}
-
-const GROUPS = [
-  {
-    key: 'system' as MessageType,
-    name: '系统消息',
-    icon: 'notifications' as keyof typeof Ionicons.glyphMap,
-  },
-  {
-    key: 'user' as MessageType,
-    name: '用户消息',
-    icon: 'person' as keyof typeof Ionicons.glyphMap,
-  },
-];
-
-export default function MessageScreen(): React.JSX.Element {
-  const [groupData, setGroupData] = useState<GroupData[]>([]);
+export default function NotificationScreen() {
+  const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'system' | 'user'>('system');
+  const [pageNum, setPageNum] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [markingAll, setMarkingAll] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const pageSize = 15;
+  
+  // 使用WebSocket监听新通知
+  const { socket } = useSocket('new_notification', () => {
+    if (isInitialized) {
+      fetchNotifications(activeTab, 1);
+    }
+  });
 
-  const { socket } = useSocket('new_notification', () => fetchData());
-
-  useFocusEffect(useCallback(() => {
-    fetchData();
-  }, []));
-
-  const fetchData = async () => {
+  // 获取通知数据
+  const fetchNotifications = async (type: 'system' | 'user' = activeTab, page: number = 1) => {
     try {
-      setRefreshing(true);
-      setLoading(true);
-
-      // 一次性获取所有消息，减少API请求
-      const [systemRes, userRes] = await Promise.all([
-        getNotificationList({ sender: 'system', page: 1, pageSize: 99 }),
-        getNotificationList({ sender: 'user', page: 1, pageSize: 99 }),
-      ]);
-
-      const systemMessages = systemRes.data?.list || [];
-      const userMessages = userRes.data?.list || [];
-
-      // 计算分组数据
-      const groups = GROUPS.map(group => {
-        const messages = group.key === 'system' ? systemMessages : userMessages;
-        const unreadCount = messages.filter((msg: Notification) => msg.is_read === 0).length;
-        const lastMessage = messages[0]; // 已按时间排序
-
-        return {
-          ...group,
-          lastMsg: lastMessage?.content || '暂无消息',
-          lastTime: lastMessage?.created_at || '',
-          unread: unreadCount,
-        };
-      });
-
-      setGroupData(groups);
-
-      // 合并所有消息并按时间排序
-      const allMessages = [...systemMessages, ...userMessages]
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-      setNotifications(allMessages);
-    } catch (error) {
-      console.error('加载失败:', error);
+      if (page === 1) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
+      setError(null);
+      
+      const params = {
+        sender: type,
+        page,
+        pageSize
+      };
+      
+      const response = await getNotificationList(params);
+      
+      if (response && response.list !== undefined) {
+        const newList = response.list || [];
+        
+        if (page === 1) {
+          setNotifications(newList);
+          setHasMore(newList.length >= pageSize);
+        } else {
+          setNotifications(prev => [...prev, ...newList]);
+          setHasMore(newList.length > 0);
+        }
+        setPageNum(page);
+      } else {
+        setError(response?.message || '获取通知失败，返回数据格式不正确');
+      }
+    } catch (err: any) {
+      setError(`获取通知时发生错误: ${err.message || '未知错误'}`);
+      console.error('Error fetching notifications:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   };
 
-  const formatTime = (dateStr: string) => {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const day = 1000 * 60 * 60 * 24;
+  // 处理下拉刷新
+  const onRefresh = useCallback(() => {
+    fetchNotifications(activeTab, 1);
+  }, [activeTab]);
 
-    if (diff < day) return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-    if (diff < 2 * day) return '昨天';
-    if (diff < 7 * day) return ['周日','周一','周二','周三','周四','周五','周六'][date.getDay()];
-    return `${date.getMonth() + 1}/${date.getDate()}`;
+  // 处理选项卡切换
+  const handleTabChange = (tab: 'system' | 'user') => {
+    setActiveTab(tab);
+    fetchNotifications(tab, 1);
   };
 
-  const renderCard = (group: GroupData) => (
-    <TouchableOpacity
-      key={group.key}
-      activeOpacity={0.7}
-      className="bg-white mb-3 mx-4 rounded-lg border border-gray-100"
+  // 标记单条通知为已读
+  const markAsRead = async (id: number) => {
+    try {
+      await markReadNotificationById(id);
+      setNotifications(prev => 
+        prev.map(n => n.id === id ? { ...n, is_read: 1 } : n)
+      );
+    } catch (err) {
+      console.error('标记已读失败:', err);
+    }
+  };
+
+  // 标记当前选项卡全部已读
+  const markAllAsRead = async () => {
+    try {
+      setMarkingAll(true);
+      await markReadNotificationAll(activeTab);
+      setNotifications(prev => 
+        prev.map(n => ({ ...n, is_read: 1 }))
+      );
+    } catch (err) {
+      console.error('标记全部已读失败:', err);
+    } finally {
+      setMarkingAll(false);
+    }
+  };
+
+  // 删除通知
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteNotificationById(id);
+      setNotifications(prev => prev.filter(n => n.id !== id));
+    } catch (err) {
+      console.error('删除通知失败:', err);
+    }
+  };
+
+  // 进入页面时加载数据
+  useFocusEffect(
+    useCallback(() => {
+      fetchNotifications(activeTab, 1);
+      setIsInitialized(true);
+      return () => {};
+    }, [activeTab])
+  );
+
+  // 格式化时间
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffHours < 1) {
+      return '刚刚';
+    } else if (diffHours < 24) {
+      return `${Math.floor(diffHours)}小时前`;
+    } else if (diffHours < 48) {
+      return '昨天';
+    } else {
+      return date.toLocaleDateString();
+    }
+  };
+
+  // 处理内容中的标签（支持 note 和 user）
+  const renderContentWithTags = (content: string) => {
+    // 匹配 <note id=...>...</note> 或 <user id=...>...</user>
+    const tagRegex = /<(note|user) id=(\d+)>(.*?)<\/\1>/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = tagRegex.exec(content)) !== null) {
+      // 添加标签前的文本
+      if (match.index > lastIndex) {
+        parts.push(
+          <Text key={`text-${lastIndex}`} style={tw`text-gray-500`}>
+            {content.substring(lastIndex, match.index)}
+          </Text>
+        );
+      }
+
+      // 提取标签信息
+      const tagType = match[1]; // 'note' 或 'user'
+      const id = match[2];
+      const displayText = match[3];
+      
+      // 根据标签类型渲染可点击元素
+      if (tagType === 'note') {
+        parts.push(
+          <TouchableOpacity 
+            key={`${tagType}-${id}`}
+            onPress={() => router.push(`/profile/note-detail?id=${id}`)}
+          >
+            <Text style={tw`text-blue-500 font-medium`}>{displayText}</Text>
+          </TouchableOpacity>
+        );
+      } else if (tagType === 'user') {
+        parts.push(
+          <TouchableOpacity 
+            key={`${tagType}-${id}`}
+            //onPress={() => router.push(`/profile/user-detail?id=${id}`)}
+          >
+            <Text style={tw`text-purple-500 font-medium`}>{displayText}</Text>
+          </TouchableOpacity>
+        );
+      }
+
+      lastIndex = tagRegex.lastIndex;
+    }
+
+    // 添加剩余的文本
+    if (lastIndex < content.length) {
+      parts.push(
+        <Text key={`text-${lastIndex}`} style={tw`text-gray-500`}>
+          {content.substring(lastIndex)}
+        </Text>
+      );
+    }
+
+    return parts;
+  };
+
+  // 计算未读数量
+  const unreadCount = notifications.filter(n => n.is_read === 0).length;
+
+  // 渲染空状态
+  const renderEmpty = () => (
+    <View style={tw`flex-1 justify-center items-center p-6 bg-white`}>
+      <Ionicons 
+        name={activeTab === 'system' ? "notifications-outline" : "chatbubble-ellipses-outline"} 
+        size={64} 
+        color="#d1d5db" 
+        style={tw`mb-4`} 
+      />
+      <Text style={tw`text-gray-600 text-lg mb-1`}>
+        {activeTab === 'system' ? '暂无系统消息' : '暂无用户消息'}
+      </Text>
+      <Text style={tw`text-gray-500 text-sm text-center px-8`}>
+        {activeTab === 'system' 
+          ? '系统通知将在这里显示' 
+          : '用户私信将在这里显示'}
+      </Text>
+    </View>
+  );
+
+  // 渲染通知项
+  const renderItem = ({ item }: { item: Notification }) => (
+    <TouchableOpacity 
+      style={tw`bg-white px-4 py-3 border-b border-gray-100`}
+      onPress={() => markAsRead(item.id)}
     >
-      <View className="flex-row items-center p-4">
-        <View className={`w-10 h-10 rounded-lg items-center justify-center mr-3 ${
-          group.key === 'system' ? 'bg-blue-50' : 'bg-green-50'
-        }`}>
-          <Ionicons 
-            name={group.icon} 
-            size={20} 
-            color={group.key === 'system' ? '#3B82F6' : '#10B981'} 
-          />
+      <View style={tw`flex-row items-start`}>
+        {/* 图标 */}
+        <View style={tw`mr-3`}>
+          {activeTab === 'system' ? (
+            <View style={tw`bg-blue-50 rounded-full p-2`}>
+              <Ionicons 
+                name="notifications" 
+                size={24} 
+                color={item.is_read ? "#9ca3af" : "#3b82f6"} 
+              />
+            </View>
+          ) : (
+            <View style={tw`bg-purple-50 rounded-full p-2`}>
+              <Ionicons 
+                name="person-circle" 
+                size={24} 
+                color={item.is_read ? "#9ca3af" : "#8b5cf6"} 
+              />
+            </View>
+          )}
         </View>
-        <View className="flex-1">
-          <View className="flex-row items-center justify-between">
-            <Text className="text-base font-medium text-gray-900">{group.name}</Text>
-            {group.unread > 0 && (
-              <View className="bg-red-500 w-5 h-5 rounded-full items-center justify-center">
-                <Text className="text-white text-xs">{group.unread}</Text>
-              </View>
-            )}
+
+        {/* 内容区域 */}
+        <View style={tw`flex-1`}>
+          <View style={tw`flex-row justify-between items-start`}>
+            <Text 
+              style={tw`font-medium text-base ${
+                item.is_read ? 'text-gray-600' : 'text-gray-900'
+              }`}
+              numberOfLines={1}
+            >
+              {item.title}
+            </Text>
+            <Text style={tw`text-gray-400 text-xs`}>
+              {formatTime(item.created_at)}
+            </Text>
           </View>
-          <Text className="text-gray-500 text-sm mt-1" numberOfLines={1}>{group.lastMsg}</Text>
-          <Text className="text-xs text-gray-400 mt-1">{formatTime(group.lastTime)}</Text>
+
+          <View style={tw`mt-1 flex-row flex-wrap`}>
+            {renderContentWithTags(item.content)}
+          </View>
         </View>
+
+        {/* 未读标记 */}
+        {item.is_read === 0 && (
+          <View style={tw`ml-2 self-center`}>
+            <View style={tw`w-2 h-2 rounded-full bg-red-500`} />
+          </View>
+        )}
+      </View>
+
+      {/* 操作按钮 */}
+      <View style={tw`flex-row justify-end mt-2`}>
+        <TouchableOpacity 
+          style={tw`px-3 py-1 rounded-full bg-gray-100`}
+          onPress={() => handleDelete(item.id)}
+        >
+          <Text style={tw`text-gray-500 text-sm`}>删除</Text>
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
 
-  const renderItem = ({ item }: { item: Notification }) => (
-    <TouchableOpacity
-      activeOpacity={0.7}
-      className="bg-white mb-2 mx-4 rounded-lg border border-gray-100"
-    >
-      <View className={`p-4 ${!item.is_read ? 'border-l-4 border-blue-500' : ''}`}>
-        <View className="flex-row items-start">
-          <View className={`w-8 h-8 rounded-lg items-center justify-center mr-3 ${
-            item.sender === 'system' ? 'bg-blue-50' : 'bg-green-50'
-          }`}>
-            <Ionicons
-              name={item.sender === 'system' ? 'notifications' : 'chatbubble'}
-              size={16}
-              color={item.sender === 'system' ? '#3B82F6' : '#10B981'}
-            />
-          </View>
-          <View className="flex-1">
-            <View className="flex-row justify-between items-start">
-              <Text className={`text-sm font-medium ${item.is_read ? 'text-gray-700' : 'text-gray-900'}`}>
-                {item.title || (item.sender === 'system' ? '系统消息' : '用户消息')}
-              </Text>
-              <Text className="text-xs text-gray-400 ml-2">{formatTime(item.created_at)}</Text>
-            </View>
-            <Text 
-              className={`mt-1 text-sm ${item.is_read ? 'text-gray-600' : 'text-gray-800'}`} 
-              numberOfLines={2}
-            >
-              {item.content}
-            </Text>
-            {!item.is_read && (
-              <View className="mt-2 flex-row items-center">
-                <View className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-1.5" />
-                <Text className="text-xs text-blue-500">未读</Text>
-              </View>
-            )}
-          </View>
-        </View>
+  // 加载更多指示器
+  const renderFooter = () => {
+    if (!loading || !hasMore) return null;
+    return (
+      <View style={tw`py-4`}>
+        <ActivityIndicator size="small" color="#3b82f6" />
       </View>
-    </TouchableOpacity>
-  );
+    );
+  };
+
+  if (loading && !refreshing && notifications.length === 0) {
+    return (
+      <View style={tw`flex-1 justify-center items-center bg-white`}>
+        <ActivityIndicator size="large" color="#3b82f6" />
+        <Text style={tw`mt-2 text-gray-500`}>加载中...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={tw`flex-1 justify-center items-center bg-white`}>
+        <Ionicons name="warning" size={48} color="#ef4444" style={tw`mb-4`} />
+        <Text style={tw`text-red-500 text-center px-6 mb-4`}>{error}</Text>
+        <TouchableOpacity 
+          style={tw`px-6 py-3 bg-blue-500 rounded-full flex-row items-center`}
+          onPress={onRefresh}
+        >
+          <Ionicons name="refresh" size={20} color="white" style={tw`mr-2`} />
+          <Text style={tw`text-white font-medium`}>重新加载</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <StatusBar barStyle="dark-content" backgroundColor="#f9fafb" />
-      
+    <View style={tw`flex-1 bg-gray-100`}>
       {/* 顶部导航栏 */}
-      <View className="pt-12 pb-4 px-4 bg-white border-b border-gray-200">
-        <View className="flex-row justify-between items-center">
-          <Text className="text-xl font-semibold text-gray-900">消息</Text>
-          <TouchableOpacity 
-            onPress={() => {
-              setGroupData(groupData.map(g => ({ ...g, unread: 0 })));
-              setNotifications(notifications.map(n => ({ ...n, is_read: 1 })));
-            }}
-            className="bg-blue-500 px-3 py-1.5 rounded-md"
-          >
-            <Text className="text-white text-sm">全部已读</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={tw`bg-white py-4 px-4 border-b border-gray-200 flex-row justify-between items-center`}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={tw`p-1`}
+        >
+          <Ionicons name="arrow-back" size={24} color="#000" />
+        </TouchableOpacity>
+        <Text style={tw`text-xl font-bold text-gray-900`}>消息通知</Text>
+        
+        {/* 全部已读按钮 */}
+        <TouchableOpacity 
+          onPress={markAllAsRead}
+          disabled={markingAll || unreadCount === 0}
+          style={tw`px-3 py-1 rounded-full bg-blue-100 flex-row items-center`}
+        >
+          {markingAll ? (
+            <ActivityIndicator size="small" color="#3b82f6" />
+          ) : (
+            <>
+              <Ionicons name="checkmark-done" size={16} color="#3b82f6" style={tw`mr-1`} />
+              <Text style={tw`text-blue-500 text-sm`}>全部已读</Text>
+            </>
+          )}
+        </TouchableOpacity>
       </View>
 
-      {/* 消息分类 */}
-      <View className="py-3">
-        <Text className="text-sm font-medium text-gray-700 px-4 mb-2">消息分类</Text>
-        {groupData.map(renderCard)}
+      {/* 选项卡 */}
+      <View style={tw`flex-row bg-white border-b border-gray-200`}>
+        <TouchableOpacity
+          style={tw`flex-1 py-4 items-center ${
+            activeTab === 'system' ? 'border-b-2 border-blue-500' : ''
+          }`}
+          onPress={() => handleTabChange('system')}
+        >
+          <Text style={tw`text-base font-medium ${
+            activeTab === 'system' ? 'text-blue-500' : 'text-gray-500'
+          }`}>
+            系统通知
+          </Text>
+          {unreadCount > 0 && activeTab === 'system' && (
+            <View style={tw`absolute top-2 right-6 bg-red-500 rounded-full w-5 h-5 justify-center items-center`}>
+              <Text style={tw`text-white text-xs`}>{unreadCount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={tw`flex-1 py-4 items-center ${
+            activeTab === 'user' ? 'border-b-2 border-blue-500' : ''
+          }`}
+          onPress={() => handleTabChange('user')}
+        >
+          <Text style={tw`text-base font-medium ${
+            activeTab === 'user' ? 'text-blue-500' : 'text-gray-500'
+          }`}>
+            用户消息
+          </Text>
+          {unreadCount > 0 && activeTab === 'user' && (
+            <View style={tw`absolute top-2 right-6 bg-red-500 rounded-full w-5 h-5 justify-center items-center`}>
+              <Text style={tw`text-white text-xs`}>{unreadCount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
       {/* 消息列表 */}
-      <View className="px-4 mt-2 mb-2">
-        <Text className="text-sm font-medium text-gray-700">近期消息</Text>
-      </View>
-
-      {loading ? (
-        <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#3b82f6" />
-          <Text className="text-gray-500 mt-3">加载中...</Text>
-        </View>
-      ) : notifications.length === 0 ? (
-        <View className="flex-1 items-center justify-center px-8">
-          <Ionicons name="chatbubbles-outline" size={48} color="#9CA3AF" />
-          <Text className="text-gray-500 text-base mt-3">暂无消息</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={notifications}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={fetchData}
-              colors={['#3b82f6']}
-              tintColor="#3b82f6"
-            />
+      <FlatList
+        data={notifications}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        ListEmptyComponent={renderEmpty}
+        ListFooterComponent={renderFooter}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#3b82f6']}
+            tintColor="#3b82f6"
+          />
+        }
+        contentContainerStyle={notifications.length === 0 ? tw`flex-1` : tw`pb-4`}
+        onEndReached={() => {
+          if (hasMore && !loading) {
+            fetchNotifications(activeTab, pageNum + 1);
           }
-          contentContainerStyle={{ paddingBottom: 80 }}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+        }}
+        onEndReachedThreshold={0.1}
+      />
     </View>
   );
 }
