@@ -27,6 +27,7 @@ class NoteService {
     async createNote(userId, noteData) {
         const { error } = NoteEntity.createSchema.validate(noteData);
         if (error) throw new Error(error.details[0].message);
+        const user = await this.userMapper.findById(userId);
 
         try {
             // 开启事务
@@ -53,6 +54,9 @@ class NoteService {
             }
             // 设置默认审核状态
             await this.mapper.setDefaultStatus(noteId);
+
+            // 告知管理员审核通知
+            await this.mapper.sendToAdminNotification(noteId,noteData.title, userId, user.username)
 
             // 提交事务
             await this.mapper.commit();

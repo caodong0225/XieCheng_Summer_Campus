@@ -1,137 +1,100 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import { 
-  List, 
-  Avatar, 
+  Card, 
+  Typography, 
+  Space, 
+  Tag, 
+  Button, 
   Skeleton, 
   message, 
-  Pagination, 
-  Space, 
-  Typography, 
-  Input, 
-  Button, 
-  Card, 
-  Row, 
-  Col,
   Modal,
-  Popconfirm,
-  Select,
-  Tag
-} from "antd";
+  Row,
+  Col,
+  Avatar,
+  Statistic,
+  Divider,
+  Alert
+} from 'antd';
 import { 
-  SearchOutlined, 
-  DeleteOutlined,
+  ArrowLeftOutlined, 
+  HeartOutlined,
+  HeartFilled,
+  StarOutlined,
+  StarFilled,
   PlayCircleOutlined,
-  CalendarOutlined,
   UserOutlined,
-  SortAscendingOutlined,
-  SortDescendingOutlined
+  CalendarOutlined,
+  EyeOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons';
-import { useState, useEffect } from 'react';
-import { getVideoAll, deleteVideoById } from '@/api/video';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
+import { getVideoById, deleteVideoById } from '@/api/video';
 import UserAvatar from "@/components/common/user_avatar";
 
-const { Text, Title } = Typography;
-const { Search } = Input;
+const { Title, Text, Paragraph } = Typography;
 
-const VideoManagementPage = () => {
+const VideoDetailPage = () => {
   const router = useRouter();
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0
-  });
+  const params = useParams();
+  const videoId = params.videoId;
   
-  // 筛选状态
-  const [filters, setFilters] = useState({
-    description: '',
-    sortField: 'created_at',
-    sortOrder: 'desc'
-  });
+  const [video, setVideo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
 
-  const fetchVideos = async (page = 1, pageSize = 10) => {
+  useEffect(() => {
+    if (videoId) {
+      fetchVideoDetail();
+    }
+  }, [videoId]);
+
+  const fetchVideoDetail = async () => {
     try {
       setLoading(true);
-      const params = {
-        page: page,
-        limit: pageSize,
-        sortField: filters.sortField,
-        sortOrder: filters.sortOrder,
-        description: filters.description
-      };
-      
-      // 移除空值
-      Object.keys(params).forEach(key => {
-        if (params[key] === '' || params[key] === null || params[key] === undefined) {
-          delete params[key];
-        }
-      });
-      
-      const response = await getVideoAll(params);
-      
-      if (response.code === 200) {
-        setVideos(response.data.videos || []);
-        setPagination({
-          current: page,
-          pageSize: pageSize,
-          total: response.data.total || 0
-        });
+      setError(null);
+      const data = await getVideoById(videoId);
+      if (data) {
+        setVideo(data);
       } else {
-        message.error('获取视频列表失败');
+        throw new Error('获取视频详情失败');
       }
     } catch (error) {
-      console.error('获取视频列表错误:', error);
-      message.error('获取视频列表失败');
+      console.error('获取视频详情错误:', error);
+      setError(error.message || '获取视频详情失败');
+      setErrorModalVisible(true);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchVideos();
-  }, [filters]);
-
-  const handlePageChange = (page, pageSize) => {
-    fetchVideos(page, pageSize);
+  const handleBack = () => {
+    router.back();
   };
 
-  const handleSearch = (value) => {
-    setFilters(prev => ({
-      ...prev,
-      description: value
-    }));
-  };
-
-  const handleSortChange = (field) => {
-    const order = filters.sortField === field && filters.sortOrder === 'desc' ? 'asc' : 'desc';
-    setFilters(prev => ({
-      ...prev,
-      sortField: field,
-      sortOrder: order
-    }));
-  };
-
-  const handleDelete = (videoId) => {
+  const handleDelete = () => {
     Modal.confirm({
       title: '确认删除',
       content: '确定要删除这个视频吗？此操作不可恢复。',
       okText: '确认',
       cancelText: '取消',
+      okButtonProps: { danger: true },
       onOk: async () => {
         try {
           const response = await deleteVideoById(videoId);
-          if (response.success) {
+          if (response.code === 200) {
             message.success('删除成功');
-            fetchVideos(pagination.current, pagination.pageSize);
+            router.back();
           } else {
-            message.error('删除失败');
+            throw new Error(response.message || '删除失败');
           }
         } catch (error) {
           console.error('删除错误:', error);
-          message.error('删除失败');
+          setError(error.message || '删除失败');
+          setErrorModalVisible(true);
         }
       }
     });
@@ -148,35 +111,39 @@ const VideoManagementPage = () => {
     });
   };
 
-  const handleViewUser = (user_id) => {
-    router.push(`/m/user/${user_id}`);
-  }
-
-  // 新功能：跳转到视频详情页
-  const handleViewVideoDetail = (videoId) => {
-    router.push(`/m/video/${videoId}`);
-  }
-
-  const getSortIcon = (field) => {
-    if (filters.sortField !== field) return null;
-    
-    return filters.sortOrder === 'asc' ? 
-      <SortAscendingOutlined className="text-blue-500" /> : 
-      <SortDescendingOutlined className="text-blue-500" />;
-  };
-
-  if (loading && videos.length === 0) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="container mx-auto px-4 py-8">
-          <div className="bg-white p-6 shadow-lg rounded-lg">
-            <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600">视频管理</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map(item => (
-                <Card key={item}>
-                  <Skeleton active avatar paragraph={{ rows: 3 }} />
-                </Card>
-              ))}
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="p-6 bg-gradient-to-r from-blue-500 to-purple-600">
+              <Button icon={<ArrowLeftOutlined />} onClick={handleBack} className="text-white border-white hover:bg-white hover:text-blue-500">
+                返回
+              </Button>
+            </div>
+            <div className="p-8">
+              <Skeleton active paragraph={{ rows: 10 }} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!video) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="p-6 bg-gradient-to-r from-blue-500 to-purple-600">
+              <Button icon={<ArrowLeftOutlined />} onClick={handleBack} className="text-white border-white hover:bg-white hover:text-blue-500">
+                返回
+              </Button>
+            </div>
+            <div className="p-8 text-center">
+              <div className="text-6xl mb-4">🎬</div>
+              <Title level={3} className="text-gray-600">视频不存在或已被删除</Title>
+              <Text type="secondary">请检查链接是否正确</Text>
             </div>
           </div>
         </div>
@@ -185,176 +152,115 @@ const VideoManagementPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white p-6 shadow-lg rounded-lg">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-indigo-600">视频管理</h1>
-          </div>
-          
-          {/* 筛选区域 */}
-          <Card className="mb-6" bodyStyle={{ padding: '16px 24px' }}>
-            <Row gutter={[16, 16]} align="middle">
-              <Col xs={24} md={12} lg={8}>
-                <Search
-                  placeholder="搜索视频描述"
-                  enterButton={<Button type="primary" icon={<SearchOutlined />} />}
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          {/* 头部操作栏 */}
+          <div className="p-6 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-600 relative overflow-hidden">
+            <div className="absolute inset-0 bg-black opacity-10"></div>
+            <div className="relative flex justify-between items-center">
+              <Button 
+                icon={<ArrowLeftOutlined />} 
+                onClick={handleBack}
+                className="text-white border-white hover:bg-white hover:text-blue-500 shadow-lg"
+                size="large"
+              >
+                返回列表
+              </Button>
+              <Space size="middle">
+                <Button 
+                  danger 
+                  icon={<DeleteOutlined />}
+                  onClick={handleDelete}
+                  className="shadow-lg"
                   size="large"
-                  onSearch={handleSearch}
-                  allowClear
-                />
-              </Col>
-              
-              <Col xs={24} md={12} lg={16}>
-                <div className="flex flex-wrap gap-3 justify-end">
-                  <div className="flex items-center">
-                    <span className="mr-2 text-gray-600">排序:</span>
-                    <Button 
-                      type="text"
-                      className={`flex items-center ${filters.sortField === 'created_at' ? 'text-indigo-600' : ''}`}
-                      onClick={() => handleSortChange('created_at')}
-                    >
-                      <CalendarOutlined />
-                      <span className="ml-1">创建时间</span>
-                      {getSortIcon('created_at')}
-                    </Button>
-                    <Button 
-                      type="text"
-                      className={`flex items-center ml-2 ${filters.sortField === 'id' ? 'text-indigo-600' : ''}`}
-                      onClick={() => handleSortChange('id')}
-                    >
-                      <span>ID</span>
-                      {getSortIcon('id')}
-                    </Button>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <span className="mr-2 text-gray-600">每页数量:</span>
-                    <Select
-                      defaultValue={10}
-                      onChange={(value) => {
-                        setPagination(prev => ({...prev, pageSize: value}));
-                        fetchVideos(1, value);
-                      }}
-                      options={[
-                        { value: 5, label: '5条' },
-                        { value: 10, label: '10条' },
-                        { value: 20, label: '20条' },
-                        { value: 50, label: '50条' },
-                      ]}
-                    />
-                  </div>
-                </div>
-              </Col>
-            </Row>
-          </Card>
-          
-          {/* 视频列表 */}
-          {videos.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="mb-4">
-                <PlayCircleOutlined className="text-5xl text-gray-300" />
-              </div>
-              <Title level={4} className="text-gray-500">暂无视频数据</Title>
-              <p className="text-gray-400 mb-6">尝试调整搜索条件或上传新视频</p>
+                >
+                  删除
+                </Button>
+              </Space>
             </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {videos.map(video => (
-                  <Card
-                    key={video.id}
-                    hoverable
-                    cover={
-                      <div 
-                        className="relative h-48 overflow-hidden cursor-pointer"
-                        onClick={() => handleViewVideoDetail(video.id)}
-                      >
-                        <img
-                          alt={video.description}
-                          src={video.thumbnail}
-                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                          onError={(e) => {
-                            e.target.src = '/placeholder-image.jpg';
-                          }}
-                        />
-                        <div 
-                          className="absolute inset-0 flex items-center justify-center"
-                          onClick={(e) => {
-                            e.stopPropagation(); // 阻止事件冒泡
-                            window.open(video.link, '_blank');
-                          }}
-                        >
-                          <PlayCircleOutlined className="text-4xl text-white opacity-80 hover:opacity-100 transition-opacity" />
-                        </div>
-                      </div>
-                    }
-                    actions={[
-                      <Popconfirm
-                        title="确定要删除这个视频吗？"
-                        onConfirm={() => handleDelete(video.id)}
-                        okText="删除"
-                        cancelText="取消"
-                        okButtonProps={{ danger: true }}
-                      >
-                        <Button type="text" danger icon={<DeleteOutlined />} />
-                      </Popconfirm>,
-                      <Button 
-                        type="text" 
-                        icon={<PlayCircleOutlined />}
-                        onClick={() => window.open(video.link, '_blank')}
-                      >
-                        播放
-                      </Button>
-                    ]}
-                    // 添加卡片主体区域的点击事件
-                    bodyStyle={{ cursor: 'pointer' }}
-                    onClick={() => handleViewVideoDetail(video.id)}
-                  >
-                    <div className="min-h-[120px]">
-                      <div className="mb-3">
-                        <p className="text-gray-700 line-clamp-2">{video.description}</p>
-                      </div>
-                      
-                      <div 
-                        className="flex items-center text-sm text-gray-500 mb-2"
-                        onClick={(e) => {
-                          e.stopPropagation(); // 阻止事件冒泡到卡片
-                          handleViewUser(video.user_id);
-                        }}
-                      >
-                        <UserAvatar user={video} size={20} />
-                        <Button type="text" className="mr-3 pl-2">{video.username}</Button>
-                      </div>
-                      
-                      <div className="flex items-center text-sm text-gray-500">
-                        <CalendarOutlined className="mr-1" />
-                        <span>{formatDate(video.created_at)}</span>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
+          </div>
+
+          {/* 视频内容 */}
+          <div className="p-8">
+            {/* 标题和统计信息 */}
+            <div className="mb-8 text-center">
+              <div className="flex items-center justify-center space-x-4 mb-6">
+                <Title level={1} className="mb-0 text-gray-800 font-bold">{video.description || '暂无标题'}</Title>
               </div>
               
-              <div className="mt-8 flex justify-center">
-                <Pagination
-                  current={pagination.current}
-                  pageSize={pagination.pageSize}
-                  total={pagination.total}
-                  onChange={handlePageChange}
-                  showSizeChanger={false}
-                  showQuickJumper
-                  showTotal={(total, range) => 
-                    `显示 ${range[0]}-${range[1]} 条，共 ${total} 条视频`
-                  }
-                />
+              {/* 统计信息 */}
+              <div className="flex items-center justify-center space-x-8 text-gray-500 mb-6">
+                <div className="flex items-center bg-red-50 px-4 py-2 rounded-full">
+                  <HeartOutlined className="mr-2 text-red-400" />
+                  <span className="font-medium">{video.likeCount || 0} 点赞</span>
+                </div>
+                <div className="flex items-center bg-yellow-50 px-4 py-2 rounded-full">
+                  <StarOutlined className="mr-2 text-yellow-400" />
+                  <span className="font-medium">{video.collectionCount || 0} 收藏</span>
+                </div>
+                <div className="flex items-center bg-blue-50 px-4 py-2 rounded-full">
+                  <EyeOutlined className="mr-2 text-blue-400" />
+                  <span className="font-medium">{video.viewCount?.totalViews || 0} 播放</span>
+                </div>
+                <div className="flex items-center bg-green-50 px-4 py-2 rounded-full">
+                  <CalendarOutlined className="mr-2 text-green-400" />
+                  <span className="font-medium">{formatDate(video.created_at)}</span>
+                </div>
               </div>
-            </>
-          )}
+            </div>
+
+            {/* 内嵌视频播放器 */}
+            <div className="mb-8">
+              <Card className="bg-gradient-to-r from-gray-50 to-blue-50 border-0 shadow-lg rounded-xl overflow-hidden">
+                <div className="relative">
+                  <video
+                    controls
+                    className="w-full h-auto max-h-[70vh] rounded-lg"
+                    poster={video.thumbnail}
+                    onError={(e) => {
+                      console.error('视频加载失败:', e);
+                      message.error('视频加载失败，请检查链接');
+                    }}
+                  >
+                    <source src={video.link} type="video/mp4" />
+                    您的浏览器不支持视频播放。
+                  </video>
+                </div>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* 错误处理模态框 */}
+      <Modal
+        title={
+          <div className="flex items-center space-x-2 text-red-500">
+            <ExclamationCircleOutlined />
+            <span>操作失败</span>
+          </div>
+        }
+        open={errorModalVisible}
+        onOk={() => setErrorModalVisible(false)}
+        onCancel={() => setErrorModalVisible(false)}
+        okText="确定"
+        cancelText="关闭"
+        okButtonProps={{ type: 'primary' }}
+      >
+        <Alert
+          message="错误信息"
+          description={error}
+          type="error"
+          showIcon
+          className="mb-4"
+        />
+        <div className="text-gray-600 text-sm">
+          <p>如果问题持续存在，请联系技术支持。</p>
+        </div>
+      </Modal>
     </div>
   );
 };
 
-export default VideoManagementPage;
+export default VideoDetailPage;

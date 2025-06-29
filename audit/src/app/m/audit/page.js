@@ -69,7 +69,7 @@ const AuditPage = () => {
     try {
       setLoading(true);
       const params = {
-        pageNum: page,
+        page: page,
         pageSize: pageSize,
         sort: sortConfig.field,
         order: sortConfig.order,
@@ -85,15 +85,16 @@ const AuditPage = () => {
       
       const response = await getNoteAll(params);
       
-      if (response.success) {
-        setNotes(response.list || []);
+      // 适配正确的响应格式
+      if (response.code === 200 && response.data) {
+        setNotes(response.data.list || []);
         setPagination({
-          current: page,
-          pageSize: pageSize,
-          total: response.total || 0
+          current: response.data.page || page,
+          pageSize: response.data.pageSize || pageSize,
+          total: response.data.total || 0
         });
       } else {
-        message.error('获取游记列表失败');
+        message.error(response.message || '获取游记列表失败');
       }
     } catch (error) {
       console.error('获取游记列表错误:', error);
@@ -109,6 +110,14 @@ const AuditPage = () => {
 
   const handlePageChange = (page, pageSize) => {
     fetchNotes(page, pageSize);
+  };
+
+  // 计算分页显示范围
+  const getPaginationRange = () => {
+    const { current, pageSize, total } = pagination;
+    const start = (current - 1) * pageSize + 1;
+    const end = Math.min(current * pageSize, total);
+    return { start, end };
   };
 
   const handleFilterChange = (key, value) => {
@@ -140,14 +149,14 @@ const AuditPage = () => {
       }
       
       const response = await reviewNote(noteId, auditData);
-      if (response.success) {
+      if (response.code === 200) {
         message.success('状态更新成功');
         // 更新本地状态
         setNotes(prev => prev.map(note => 
           note.id === noteId ? { ...note, status: newStatus } : note
         ));
       } else {
-        message.error('状态更新失败');
+        message.error(response.message || '状态更新失败');
       }
     } catch (error) {
       console.error('状态更新错误:', error);
@@ -164,11 +173,11 @@ const AuditPage = () => {
       onOk: async () => {
         try {
           const response = await deleteNote(noteId);
-          if (response.success) {
+          if (response.code === 200) {
             message.success('删除成功');
             fetchNotes(pagination.current, pagination.pageSize);
           } else {
-            message.error('删除失败');
+            message.error(response.message || '删除失败');
           }
         } catch (error) {
           console.error('删除错误:', error);
@@ -321,6 +330,25 @@ const AuditPage = () => {
                   </Select>
                 </div>
               </Col>
+              <Col xs={24} sm={12} md={6}>
+                <div>
+                  <Text strong>每页数量：</Text>
+                  <Select
+                    placeholder="选择每页数量"
+                    style={{ width: '100%', marginTop: 8 }}
+                    value={pagination.pageSize}
+                    onChange={(value) => {
+                      setPagination(prev => ({...prev, pageSize: value}));
+                      fetchNotes(1, value);
+                    }}
+                  >
+                    <Option value={5}>5条</Option>
+                    <Option value={10}>10条</Option>
+                    <Option value={20}>20条</Option>
+                    <Option value={50}>50条</Option>
+                  </Select>
+                </div>
+              </Col>
               <Col xs={24} sm={24} md={24}>
                 <div>
                   <Text strong>标题搜索：</Text>
@@ -453,9 +481,10 @@ const AuditPage = () => {
                   onChange={handlePageChange}
                   showSizeChanger={false}
                   showQuickJumper
-                  showTotal={(total, range) => 
-                    `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
-                  }
+                  showTotal={(total, range) => {
+                    const { start, end } = getPaginationRange();
+                    return `第 ${pagination.current} 页，显示 ${start}-${end} 条，共 ${total} 条游记`;
+                  }}
                 />
               </div>
             </>

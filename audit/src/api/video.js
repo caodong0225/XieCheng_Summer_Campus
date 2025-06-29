@@ -15,6 +15,12 @@ export async function deleteVideoById(videoId) {
 
 // 通过id获取视频详情
 export async function getVideoById(videoId) {
-    const video = await get(`video/${videoId}`);
-    return video?.data;
+    const response = await get(`video/${videoId}`);
+    
+    // 适配响应格式
+    if (response.code === 200 && response.data) {
+        return response.data;
+    } else {
+        throw new Error(response.message || '获取视频详情失败');
+    }
 }

@@ -57,7 +57,7 @@ const VideoManagementPage = () => {
       setLoading(true);
       const params = {
         page: page,
-        limit: pageSize,
+        pageSize: pageSize,
         sortField: filters.sortField,
         sortOrder: filters.sortOrder,
         description: filters.description
@@ -164,6 +164,14 @@ const VideoManagementPage = () => {
       <SortDescendingOutlined className="text-blue-500" />;
   };
 
+  // 计算分页显示范围
+  const getPaginationRange = () => {
+    const { current, pageSize, total } = pagination;
+    const start = (current - 1) * pageSize + 1;
+    const end = Math.min(current * pageSize, total);
+    return { start, end };
+  };
+
   if (loading && videos.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
@@ -206,26 +214,6 @@ const VideoManagementPage = () => {
               
               <Col xs={24} md={12} lg={16}>
                 <div className="flex flex-wrap gap-3 justify-end">
-                  <div className="flex items-center">
-                    <span className="mr-2 text-gray-600">排序:</span>
-                    <Button 
-                      type="text"
-                      className={`flex items-center ${filters.sortField === 'created_at' ? 'text-indigo-600' : ''}`}
-                      onClick={() => handleSortChange('created_at')}
-                    >
-                      <CalendarOutlined />
-                      <span className="ml-1">创建时间</span>
-                      {getSortIcon('created_at')}
-                    </Button>
-                    <Button 
-                      type="text"
-                      className={`flex items-center ml-2 ${filters.sortField === 'id' ? 'text-indigo-600' : ''}`}
-                      onClick={() => handleSortChange('id')}
-                    >
-                      <span>ID</span>
-                      {getSortIcon('id')}
-                    </Button>
-                  </div>
                   
                   <div className="flex items-center">
                     <span className="mr-2 text-gray-600">每页数量:</span>
@@ -264,6 +252,8 @@ const VideoManagementPage = () => {
                   <Card
                     key={video.id}
                     hoverable
+                    className="cursor-pointer transition-all duration-300 hover:shadow-xl"
+                    onClick={() => handleViewVideo(video.id)}
                     cover={
                       <div className="relative h-48 overflow-hidden">
                         <img
@@ -276,7 +266,10 @@ const VideoManagementPage = () => {
                         />
                         <div 
                           className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                          onClick={() => handleViewVideo(video.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewVideo(video.id);
+                          }}
                         >
                           <PlayCircleOutlined className="text-4xl text-white opacity-80 hover:opacity-100 transition-opacity" />
                         </div>
@@ -284,18 +277,31 @@ const VideoManagementPage = () => {
                     }
                     actions={[
                       <Popconfirm
+                        key="delete"
                         title="确定要删除这个视频吗？"
-                        onConfirm={() => handleDelete(video.id)}
+                        onConfirm={(e) => {
+                          e.stopPropagation();
+                          handleDelete(video.id);
+                        }}
                         okText="删除"
                         cancelText="取消"
                         okButtonProps={{ danger: true }}
                       >
-                        <Button type="text" danger icon={<DeleteOutlined />} />
+                        <Button 
+                          type="text" 
+                          danger 
+                          icon={<DeleteOutlined />}
+                          onClick={(e) => e.stopPropagation()}
+                        />
                       </Popconfirm>,
                       <Button 
+                        key="play"
                         type="text" 
                         icon={<PlayCircleOutlined />}
-                        onClick={() => handleViewVideo(video.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewVideo(video.id);
+                        }}
                       >
                         播放
                       </Button>
@@ -308,7 +314,16 @@ const VideoManagementPage = () => {
                       
                       <div className="flex items-center text-sm text-gray-500 mb-2">
                         <UserAvatar user={video} size={20} />
-                        <Button type="text" className="mr-3 pl-2" onClick={() => handleViewUser(video.user_id)}>{video.username}</Button>
+                        <Button 
+                          type="text" 
+                          className="mr-3 pl-2 hover:text-blue-600" 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewUser(video.user_id);
+                          }}
+                        >
+                          {video.username}
+                        </Button>
                       </div>
                       
                       <div className="flex items-center text-sm text-gray-500">
@@ -328,9 +343,10 @@ const VideoManagementPage = () => {
                   onChange={handlePageChange}
                   showSizeChanger={false}
                   showQuickJumper
-                  showTotal={(total, range) => 
-                    `显示 ${range[0]}-${range[1]} 条，共 ${total} 条视频`
-                  }
+                  showTotal={(total, range) => {
+                    const { start, end } = getPaginationRange();
+                    return `第 ${pagination.current} 页，显示 ${start}-${end} 条，共 ${total} 条视频`;
+                  }}
                 />
               </div>
             </>

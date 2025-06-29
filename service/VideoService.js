@@ -348,11 +348,7 @@ class VideoService {
         try {
             const videos = await this.mapper.findAllVideos(page, limit, description);
 
-            return {
-                videos,
-                page,
-                limit
-            };
+            return videos;
         } catch (error) {
             console.error('获取所有视频失败:', error);
             throw new Error('获取所有视频失败: ' + error.message);

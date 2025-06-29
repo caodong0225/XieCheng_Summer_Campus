@@ -288,43 +288,59 @@ class VideoMapper {
         const executor = this.connection || pool;
 
         let query = `
+        SELECT 
+            v.id, 
+            v.created_at, 
+            v.description, 
+            v.link, 
+            v.thumbnail,
+            u.username,
+            u.id AS user_id,
+            u.email
+        FROM videos v
+        INNER JOIN users u ON v.created_by = u.id
+        ORDER BY v.created_at DESC
+        LIMIT ? OFFSET ?
+    `;
+
+        let countQuery = `
+        SELECT COUNT(*) AS total
+        FROM videos v
+        INNER JOIN users u ON v.created_by = u.id
+    `;
+
+        const params = [pageSize, offset];
+        const countParams = [];
+
+        if (description) {
+            query = `
             SELECT 
                 v.id, 
                 v.created_at, 
                 v.description, 
                 v.link, 
                 v.thumbnail,
-                u.username,
-                u.id AS user_id,
-                u.email
+                u.username
             FROM videos v
             INNER JOIN users u ON v.created_by = u.id
+            WHERE v.description LIKE ?
             ORDER BY v.created_at DESC
             LIMIT ? OFFSET ?
         `;
-
-        const params = [pageSize, offset];
-
-        if (description) {
-            query = `
-                SELECT 
-                    v.id, 
-                    v.created_at, 
-                    v.description, 
-                    v.link, 
-                    v.thumbnail,
-                    u.username
-                FROM videos v
-                INNER JOIN users u ON v.created_by = u.id
-                WHERE v.description LIKE ?
-                ORDER BY v.created_at DESC
-                LIMIT ? OFFSET ?
-            `;
+            countQuery += ` WHERE v.description LIKE ?`;
             params.unshift(`%${description}%`);
+            countParams.push(`%${description}%`);
         }
 
         const [rows] = await executor.query(query, params);
-        return rows;
+        const [countResult] = await executor.query(countQuery, countParams);
+
+        return {
+            videos: rows,
+            total: countResult[0]?.total || 0,
+            page,
+            pageSize
+        };
     }
 }
 

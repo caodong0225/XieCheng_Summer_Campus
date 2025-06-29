@@ -203,6 +203,56 @@ class NoteMapper {
         return result.affectedRows > 0;
     }
 
+    async sendToAdminNotification(noteId, noteTitle, created_by, username) {
+        const conn = this.connection || pool; // Use transaction connection or pool
+        try {
+            // Start transaction
+            if (!this.connection) {
+                this.connection = await pool.getConnection();
+                await this.connection.beginTransaction();
+            }
+
+            // Fetch administrators
+            const [administrators] = await conn.query(
+                `SELECT id FROM users WHERE role = 'admin' or role = 'super-admin'`
+            );
+
+            // Insert notifications for each admin
+            for (const admin of administrators) {
+                const [result] = await conn.query(
+                    `INSERT INTO notifications (title, content, user_id, sender)
+        VALUES (?, ?, ?, ?)`,
+                    [
+                        `游记审核通知`,
+                        `用户<user id="${created_by}">${username}</user>提交了新的游记<note id="${noteId}">${noteTitle}</note>，请尽快审核。`,
+                        admin.id,
+                        'admin'
+                    ]
+                );
+                if (result.affectedRows === 0) {
+                    throw new Error('发送通知失败');
+                }
+            }
+
+            // Commit transaction
+            if (!this.connection) {
+                await this.connection.commit();
+                this.connection.release();
+                this.connection = null;
+            }
+
+            return true;
+        } catch (error) {
+            // Rollback transaction
+            if (this.connection) {
+                await this.connection.rollback();
+                this.connection.release();
+                this.connection = null;
+            }
+            throw error;
+        }
+    }
+
     // 获取游记列表信息
     async getNoteList({ page = 1, pageSize = 10, title , description, created_by,
                           status, sort = 'id', order = 'desc'}) {

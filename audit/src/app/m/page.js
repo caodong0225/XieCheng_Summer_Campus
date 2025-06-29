@@ -129,6 +129,19 @@ const NotesSection = () => {
         fetchNotes(page, pageSize);
     };
 
+    // 计算分页显示范围
+    const getPaginationRange = () => {
+        const { current, pageSize, total } = pagination;
+        const start = (current - 1) * pageSize + 1;
+        const end = Math.min(current * pageSize, total);
+        return { start, end };
+    };
+
+    // 处理点击游记跳转
+    const handleNoteClick = (noteId) => {
+        router.push(`/m/audit/${noteId}`);
+    };
+
     const getStatusTag = (status) => {
         const statusMap = {
             'checking': { color: 'orange', text: '审核中' },
@@ -184,6 +197,8 @@ const NotesSection = () => {
                         dataSource={notes}
                         renderItem={(note) => (
                             <List.Item
+                                className="cursor-pointer hover:bg-gray-50 transition-colors duration-200 rounded-lg p-2"
+                                onClick={() => handleNoteClick(note.id)}
                                 actions={[
                                     getStatusTag(note.status),
                                     <Text key="author" type="secondary" className="text-sm">
@@ -215,7 +230,7 @@ const NotesSection = () => {
                                     }
                                     title={
                                         <div className="flex items-center space-x-2">
-                                            <Title level={4} className="mb-0 line-clamp-1">
+                                            <Title level={4} className="mb-0 line-clamp-1 hover:text-blue-600 transition-colors">
                                                 {note.title}
                                             </Title>
                                         </div>
@@ -246,9 +261,10 @@ const NotesSection = () => {
                             onChange={handlePageChange}
                             showSizeChanger={false}
                             showQuickJumper
-                            showTotal={(total, range) =>
-                                `第 ${range[0]}-${range[1]} 条，共 ${total} 条`
-                            }
+                            showTotal={(total, range) => {
+                                const { start, end } = getPaginationRange();
+                                return `第 ${pagination.current} 页，显示 ${start}-${end} 条，共 ${total} 条游记`;
+                            }}
                         />
                     </div>
                 </>

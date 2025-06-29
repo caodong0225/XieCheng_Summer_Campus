@@ -17,7 +17,10 @@ import {
   Modal,
   Tooltip,
   Form,
-  Input
+  Input,
+  Alert,
+  Divider,
+  Badge
 } from 'antd';
 import { 
   ArrowLeftOutlined, 
@@ -30,13 +33,17 @@ import {
   CheckOutlined,
   CloseOutlined,
   LeftOutlined,
-  RightOutlined
+  RightOutlined,
+  EyeOutlined,
+  FileImageOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined
 } from '@ant-design/icons';
 import { useRouter, useParams } from 'next/navigation';
 import { getNoteById, deleteNote, reviewNote, deleteAttachment } from '../../../../api/note';
 import UserAvatar from "@/components/common/user_avatar";
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
 
 const NoteDetailPage = () => {
@@ -52,6 +59,10 @@ const NoteDetailPage = () => {
   // 拒绝理由相关状态
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
   const [rejectForm] = Form.useForm();
+
+  // 错误处理状态
+  const [error, setError] = useState(null);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
 
   useEffect(() => {
     if (noteId) {
@@ -87,15 +98,17 @@ const NoteDetailPage = () => {
   const fetchNoteDetail = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await getNoteById(noteId);
       if (data) {
         setNote(data);
       } else {
-        message.error('获取游记详情失败');
+        throw new Error('获取游记详情失败');
       }
     } catch (error) {
       console.error('获取游记详情错误:', error);
-      message.error('获取游记详情失败');
+      setError(error.message || '获取游记详情失败');
+      setErrorModalVisible(true);
     } finally {
       setLoading(false);
     }
@@ -111,6 +124,7 @@ const NoteDetailPage = () => {
       content: '确定要删除这篇游记吗？此操作不可恢复。',
       okText: '确认',
       cancelText: '取消',
+      okButtonProps: { danger: true },
       onOk: async () => {
         try {
           const response = await deleteNote(noteId);
@@ -118,11 +132,12 @@ const NoteDetailPage = () => {
             message.success('删除成功');
             router.back();
           } else {
-            message.error('删除失败');
+            throw new Error(response.message || '删除失败');
           }
         } catch (error) {
           console.error('删除错误:', error);
-          message.error('删除失败');
+          setError(error.message || '删除失败');
+          setErrorModalVisible(true);
         }
       }
     });
@@ -140,11 +155,12 @@ const NoteDetailPage = () => {
         message.success('状态更新成功');
         setNote(prev => ({ ...prev, status: newStatus }));
       } else {
-        message.error('状态更新失败');
+        throw new Error(response.message || '状态更新失败');
       }
     } catch (error) {
       console.error('状态更新错误:', error);
-      message.error('状态更新失败');
+      setError(error.message || '状态更新失败');
+      setErrorModalVisible(true);
     }
   };
 
@@ -171,13 +187,17 @@ const NoteDetailPage = () => {
 
   const getStatusTag = (status) => {
     const statusMap = {
-      'checking': { color: 'orange', text: '审核中' },
-      'approved': { color: 'green', text: '已通过' },
-      'rejected': { color: 'red', text: '已拒绝' }
+      'checking': { color: 'orange', text: '审核中', icon: <ExclamationCircleOutlined /> },
+      'approved': { color: 'green', text: '已通过', icon: <CheckOutlined /> },
+      'rejected': { color: 'red', text: '已拒绝', icon: <CloseOutlined /> }
     };
     
-    const statusInfo = statusMap[status] || { color: 'default', text: status };
-    return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;
+    const statusInfo = statusMap[status] || { color: 'default', text: status, icon: null };
+    return (
+      <Tag color={statusInfo.color} icon={statusInfo.icon} className="text-sm font-medium px-3 py-1">
+        {statusInfo.text}
+      </Tag>
+    );
   };
 
   const formatDate = (dateString) => {
@@ -214,15 +234,17 @@ const NoteDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="container mx-auto px-4 py-8">
-          <div className="bg-white p-6 shadow-lg rounded-lg">
-            <div className="mb-6">
-              <Button icon={<ArrowLeftOutlined />} onClick={handleBack}>
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="p-6 bg-gradient-to-r from-blue-500 to-purple-600">
+              <Button icon={<ArrowLeftOutlined />} onClick={handleBack} className="text-white border-white hover:bg-white hover:text-blue-500">
                 返回
               </Button>
             </div>
-            <Skeleton active paragraph={{ rows: 10 }} />
+            <div className="p-8">
+              <Skeleton active paragraph={{ rows: 10 }} />
+            </div>
           </div>
         </div>
       </div>
@@ -231,15 +253,19 @@ const NoteDetailPage = () => {
 
   if (!note) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="container mx-auto px-4 py-8">
-          <div className="bg-white p-6 shadow-lg rounded-lg text-center">
-            <div className="mb-6">
-              <Button icon={<ArrowLeftOutlined />} onClick={handleBack}>
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="p-6 bg-gradient-to-r from-blue-500 to-purple-600">
+              <Button icon={<ArrowLeftOutlined />} onClick={handleBack} className="text-white border-white hover:bg-white hover:text-blue-500">
                 返回
               </Button>
             </div>
-            <Text type="secondary">游记不存在或已被删除</Text>
+            <div className="p-8 text-center">
+              <div className="text-6xl mb-4">📝</div>
+              <Title level={3} className="text-gray-600">游记不存在或已被删除</Title>
+              <Text type="secondary">请检查链接是否正确</Text>
+            </div>
           </div>
         </div>
       </div>
@@ -247,28 +273,31 @@ const NoteDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* 头部操作栏 */}
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-green-500">
-            <div className="flex justify-between items-center">
+          <div className="p-6 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-600 relative overflow-hidden">
+            <div className="absolute inset-0 bg-black opacity-10"></div>
+            <div className="relative flex justify-between items-center">
               <Button 
                 icon={<ArrowLeftOutlined />} 
                 onClick={handleBack}
-                className="text-white border-white hover:bg-white hover:text-blue-500"
+                className="text-white border-white hover:bg-white hover:text-blue-500 shadow-lg"
+                size="large"
               >
                 返回列表
               </Button>
-              <Space>
+              <Space size="middle">
                 {note.status !== 'approved' && (
                   <Button 
                     type="primary" 
                     icon={<CheckOutlined />}
                     onClick={() => handleStatusChange('approved')}
-                    className="bg-green-500 border-green-500 hover:bg-green-600"
+                    className="bg-green-500 border-green-500 hover:bg-green-600 shadow-lg"
+                    size="large"
                   >
-                    通过
+                    通过审核
                   </Button>
                 )}
                 {note.status !== 'rejected' && (
@@ -276,6 +305,8 @@ const NoteDetailPage = () => {
                     danger
                     icon={<CloseOutlined />}
                     onClick={handleReject}
+                    className="shadow-lg"
+                    size="large"
                   >
                     拒绝
                   </Button>
@@ -284,6 +315,8 @@ const NoteDetailPage = () => {
                   danger 
                   icon={<DeleteOutlined />}
                   onClick={handleDelete}
+                  className="shadow-lg"
+                  size="large"
                 >
                   删除
                 </Button>
@@ -295,43 +328,47 @@ const NoteDetailPage = () => {
           <div className="p-8">
             {/* 标题和状态 */}
             <div className="mb-8 text-center">
-              <div className="flex items-center justify-center space-x-4 mb-4">
-                <Title level={1} className="mb-0 text-gray-800">{note.title}</Title>
+              <div className="flex items-center justify-center space-x-4 mb-6">
+                <Title level={1} className="mb-0 text-gray-800 font-bold">{note.title}</Title>
                 {getStatusTag(note.status)}
               </div>
               
               {/* 统计信息 */}
               <div className="flex items-center justify-center space-x-8 text-gray-500 mb-6">
-                <span className="flex items-center">
+                <div className="flex items-center bg-red-50 px-4 py-2 rounded-full">
                   <HeartOutlined className="mr-2 text-red-400" />
-                  {note.likes || 0} 点赞
-                </span>
-                <span className="flex items-center">
+                  <span className="font-medium">{note.likes || 0} 点赞</span>
+                </div>
+                <div className="flex items-center bg-yellow-50 px-4 py-2 rounded-full">
                   <StarOutlined className="mr-2 text-yellow-400" />
-                  {note.collections || 0} 收藏
-                </span>
-                <span className="flex items-center">
+                  <span className="font-medium">{note.collections || 0} 收藏</span>
+                </div>
+                <div className="flex items-center bg-blue-50 px-4 py-2 rounded-full">
                   <CalendarOutlined className="mr-2 text-blue-400" />
-                  {formatDate(note.created_at)}
-                </span>
+                  <span className="font-medium">{formatDate(note.created_at)}</span>
+                </div>
               </div>
             </div>
 
             {/* 作者信息 */}
-            <Card className="mb-8 bg-gray-50 border-0 shadow-sm">
+            <Card className="mb-8 bg-gradient-to-r from-gray-50 to-blue-50 border-0 shadow-lg rounded-xl">
               <div className="flex items-center space-x-4">
-                <UserAvatar user={note.user} size={50} />
+                <div className="relative">
+                  <UserAvatar user={note.user} size={60} />
+                  <Badge status="success" className="absolute -bottom-1 -right-1" />
+                </div>
                 <div className="flex-1 pl-4">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <Text strong className="text-lg">{note.user?.username}</Text>
+                  <div className="flex items-center space-x-3 mb-3">
+                    <Title level={4} className="mb-0 text-gray-800">{note.user?.username}</Title>
+                    <Tag color="blue" icon={<UserOutlined />}>作者</Tag>
                   </div>
                   <div className="flex items-center space-x-6 text-sm text-gray-500">
-                    <span className="flex items-center">
-                      <MailOutlined className="mr-1" />
+                    <span className="flex items-center bg-white px-3 py-1 rounded-full shadow-sm">
+                      <MailOutlined className="mr-2 text-blue-400" />
                       {note.user?.email}
                     </span>
-                    <span className="flex items-center">
-                      <CalendarOutlined className="mr-1" />
+                    <span className="flex items-center bg-white px-3 py-1 rounded-full shadow-sm">
+                      <CalendarOutlined className="mr-2 text-green-400" />
                       {formatDate(note.user?.created_at)}
                     </span>
                   </div>
@@ -343,26 +380,30 @@ const NoteDetailPage = () => {
             {note.attachments && note.attachments.length > 0 && (
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-6">
-                  <Title level={3} className="mb-0 text-gray-700">图片展示</Title>
-                  <Text type="secondary" className="text-sm">共 {note.attachments.length} 张图片</Text>
+                  <div className="flex items-center space-x-3">
+                    <FileImageOutlined className="text-2xl text-blue-500" />
+                    <Title level={3} className="mb-0 text-gray-700">图片展示</Title>
+                  </div>
+                  <Tag color="blue" className="text-sm font-medium px-3 py-1">
+                    共 {note.attachments.length} 张图片
+                  </Tag>
                 </div>
                 
-                {/* 缩略图网格 - 使用Row/Col布局 */}
-                <Row gutter={[16, 16]}>
+                {/* 缩略图网格 */}
+                <Row gutter={[20, 20]}>
                   {note.attachments.map((attachment, index) => (
                     <Col key={attachment.id} xs={24} sm={12} md={8} lg={6}>
                       <div 
-                        className="relative rounded-lg overflow-hidden cursor-pointer h-48"
+                        className="relative rounded-xl overflow-hidden cursor-pointer h-56 group shadow-lg hover:shadow-xl transition-all duration-300"
                         onClick={() => openImageModal(index)}
                       >
                         <Image
                           src={attachment.value}
                           alt={`缩略图 ${index + 1}`}
-                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                          fallback="/placeholder-image.jpg"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                           preview={false}
                         />
-                        <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded-full">
+                        <div className="absolute top-3 right-3 bg-gray bg-opacity-60 text-black text-sm px-2 py-1 rounded-full font-medium">
                           {index + 1}
                         </div>
                       </div>
@@ -372,11 +413,14 @@ const NoteDetailPage = () => {
               </div>
             )}
 
-            {/* 游记描述 - 使用普通文本显示 */}
+            {/* 游记描述 */}
             <div className="mb-8">
-              <Title level={3} className="mb-6 text-gray-700">游记内容</Title>
-              <Card className="bg-gray-50 border-0 shadow-sm">
-                <div className="text-gray-700 whitespace-pre-wrap">
+              <div className="flex items-center space-x-3 mb-6">
+                <EditOutlined className="text-2xl text-green-500" />
+                <Title level={3} className="mb-0 text-gray-700">游记内容</Title>
+              </div>
+              <Card className="bg-gradient-to-r from-gray-50 to-green-50 border-0 shadow-lg rounded-xl">
+                <div className="text-gray-700 whitespace-pre-wrap leading-relaxed text-base">
                   {note.description || '暂无内容'}
                 </div>
               </Card>
@@ -384,7 +428,8 @@ const NoteDetailPage = () => {
           </div>
         </div>
       </div>
-      {/* 图片查看模态框 - 优化版本 */}
+
+      {/* 图片查看模态框 */}
       <Modal
         open={imageModalVisible}
         onCancel={() => setImageModalVisible(false)}
@@ -400,7 +445,7 @@ const NoteDetailPage = () => {
           <Button
             type="text"
             icon={<DeleteOutlined />}
-            className="absolute top-4 right-4 z-20 text-white bg-black bg-opacity-40 hover:bg-opacity-60 border-none"
+            className="absolute top-4 right-4 z-20 text-white bg-black bg-opacity-40 hover:bg-opacity-60 border-none rounded-full"
             onClick={async () => {
               const attachment = note.attachments?.[currentImageIndex];
               if (!attachment) return;
@@ -409,35 +454,33 @@ const NoteDetailPage = () => {
                 await deleteAttachment(attachment.id);
                 message.success('删除成功');
 
-                // 更新图片数组或关闭弹窗
                 const newAttachments = [...note.attachments];
                 newAttachments.splice(currentImageIndex, 1);
 
                 if (newAttachments.length === 0) {
                   setImageModalVisible(false);
                 } else {
-                  // 处理当前索引
                   const newIndex = Math.min(currentImageIndex, newAttachments.length - 1);
                   setCurrentImageIndex(newIndex);
                 }
 
-                // 更新 note 状态（取决于你怎么维护 note）
                 note.attachments = newAttachments;
               } catch (err) {
-                message.error('删除失败');
+                setError(err.message || '删除失败');
+                setErrorModalVisible(true);
               }
             }}
           />
 
           {/* 导航按钮 */}
           <Button
-            className="absolute left-10 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 border-none text-white hover:bg-opacity-70"
+            className="absolute left-10 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 border-none text-white hover:bg-opacity-70 rounded-full"
             icon={<RightOutlined />}
             onClick={handlePrevImage}
             size="large"
           />
           <Button
-            className="absolute right-10 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 border-none text-white hover:bg-opacity-70"
+            className="absolute right-10 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 border-none text-white hover:bg-opacity-70 rounded-full"
             icon={<LeftOutlined />}
             onClick={handleNextImage}
             size="large"
@@ -448,7 +491,7 @@ const NoteDetailPage = () => {
             <img
               src={note.attachments?.[currentImageIndex]?.value}
               alt={`大图 ${currentImageIndex + 1}`}
-              className="max-w-[80vw] max-h-[70vh] object-contain"
+              className="max-w-[80vw] max-h-[70vh] object-contain rounded-lg"
               onError={(e) => {
                 e.target.src = '/placeholder-image.jpg';
               }}
@@ -456,7 +499,7 @@ const NoteDetailPage = () => {
           </div>
 
           {/* 图片计数器 */}
-          <div className="text-center mt-4 text-gray-600">
+          <div className="text-center mt-4 text-gray-600 font-medium">
             {currentImageIndex + 1} / {note.attachments?.length}
           </div>
 
@@ -466,15 +509,22 @@ const NoteDetailPage = () => {
           </div>
         </div>
       </Modal>
+
       {/* 拒绝理由模态框 */}
       <Modal
-        title="拒绝理由"
+        title={
+          <div className="flex items-center space-x-2">
+            <CloseOutlined className="text-red-500" />
+            <span>拒绝理由</span>
+          </div>
+        }
         open={rejectModalVisible}
         onOk={handleRejectConfirm}
         onCancel={handleRejectCancel}
         okText="确认拒绝"
         cancelText="取消"
         okButtonProps={{ danger: true }}
+        className="reject-modal"
       >
         <Form form={rejectForm} layout="vertical">
           <Form.Item
@@ -491,9 +541,37 @@ const NoteDetailPage = () => {
               placeholder="请输入拒绝这篇游记的理由..."
               showCount
               maxLength={500}
+              className="rounded-lg"
             />
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* 错误处理模态框 */}
+      <Modal
+        title={
+          <div className="flex items-center space-x-2 text-red-500">
+            <ExclamationCircleOutlined />
+            <span>操作失败</span>
+          </div>
+        }
+        open={errorModalVisible}
+        onOk={() => setErrorModalVisible(false)}
+        onCancel={() => setErrorModalVisible(false)}
+        okText="确定"
+        cancelText="关闭"
+        okButtonProps={{ type: 'primary' }}
+      >
+        <Alert
+          message="错误信息"
+          description={error}
+          type="error"
+          showIcon
+          className="mb-4"
+        />
+        <div className="text-gray-600 text-sm">
+          <p>如果问题持续存在，请联系技术支持。</p>
+        </div>
       </Modal>
     </div>
   );
