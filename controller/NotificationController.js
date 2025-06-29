@@ -40,7 +40,7 @@ class NotificationController {
         try {
             const contextUser = getContext()?.get('user');
             if(contextUser.role !== 'admin' && contextUser.role !== 'super-admin'){
-                await this.service.checkNotificationPermission(Number(req.params.id), req.user.id);
+                await this.service.checkNotificationPermission(Number(req.params.id), contextUser.userId);
             }
             const result = await this.service.deleteNotification(Number(req.params.id));
             response.success(res,  result);

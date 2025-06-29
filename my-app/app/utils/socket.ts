@@ -56,6 +56,52 @@ const addBaseListeners = () => {
 };
 
 export const getSocket = (): AppSocket | null => socket;
+
+// 添加消息监听器
+export const addMessageListener = (eventName: string, callback: (data: any) => void) => {
+  if (!socket) {
+    console.warn('Socket not initialized, cannot add message listener');
+    return;
+  }
+
+  (socket as any).on(eventName, (data: any) => {
+    console.log(`📨 Received ${eventName}:`, data);
+    callback(data);
+  });
+};
+
+// 移除消息监听器
+export const removeMessageListener = (eventName: string) => {
+  if (!socket) {
+    console.warn('Socket not initialized, cannot remove message listener');
+    return;
+  }
+
+  (socket as any).off(eventName);
+};
+
+// 加入用户房间
+export const joinUserRoom = (userId: string) => {
+  if (!socket) {
+    console.warn('Socket not initialized, cannot join room');
+    return;
+  }
+
+  (socket as any).emit('join_room', { room: `user_${userId}` });
+  console.log(`🏠 Joined room: user_${userId}`);
+};
+
+// 离开用户房间
+export const leaveUserRoom = (userId: string) => {
+  if (!socket) {
+    console.warn('Socket not initialized, cannot leave room');
+    return;
+  }
+
+  (socket as any).emit('leave_room', { room: `user_${userId}` });
+  console.log(`🚪 Left room: user_${userId}`);
+};
+
 export const disconnectSocket = () => {
   socket?.disconnect();
   socket = null;

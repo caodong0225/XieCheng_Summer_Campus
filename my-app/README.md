@@ -196,3 +196,77 @@ POST /video/collect/{id}
 ## 许可证
 
 MIT License
+
+# WebSocket 实时通知功能
+
+## 功能概述
+
+本项目实现了基于 WebSocket 的实时通知功能，当用户收到新通知时会自动刷新消息列表。
+
+## 使用方法
+
+### 1. 在组件中使用 WebSocket
+
+```typescript
+import { useSocket } from '@/utils/useSocket';
+
+export default function MessageScreen() {
+  const { socket } = useSocket({
+    eventName: 'new_notification',
+    onMessage: (data) => {
+      console.log('收到新通知:', data);
+      // 收到新通知时刷新列表
+      fetchNotifications();
+    },
+    userId: 'current_user_id', // 传入当前用户ID
+    autoJoinRoom: true
+  });
+
+  // 其他组件逻辑...
+}
+```
+
+### 2. WebSocket 配置选项
+
+- `eventName`: 要监听的事件名称
+- `onMessage`: 收到消息时的回调函数
+- `userId`: 当前用户ID，用于加入用户房间
+- `autoJoinRoom`: 是否自动加入用户房间（默认true）
+
+### 3. 手动管理监听器
+
+```typescript
+const { socket, addListener, removeListener } = useSocket();
+
+// 手动添加监听器
+addListener('custom_event', (data) => {
+  console.log('收到自定义事件:', data);
+});
+
+// 手动移除监听器
+removeListener('custom_event');
+```
+
+## 服务端集成
+
+服务端需要实现以下功能：
+
+1. **用户房间管理**：
+   - 监听 `join_room` 事件，将用户加入对应房间
+   - 监听 `leave_room` 事件，将用户从房间移除
+
+2. **发送通知**：
+   ```javascript
+   // 向特定用户发送通知
+   io.to(`user_${userId}`).emit('new_notification', message);
+   ```
+
+3. **连接管理**：
+   - 验证用户token
+   - 处理连接和断开事件
+
+## 注意事项
+
+- 确保在组件卸载时正确清理监听器
+- 用户ID需要与服务端的房间命名规则一致
+- 网络断开时会自动重连

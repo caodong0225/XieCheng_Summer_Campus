@@ -5,6 +5,7 @@ const UserMapper = require("../mapper/UserMapper");
 const NoteMapper = require("../mapper/NoteMapper");
 const NoteEmojiMapper = require("../mapper/NoteEmojiMapper");
 const ThreadEmojiMapper = require("../mapper/ThreadEmojiMapper");
+const webSocketServer = require("../websocketServer");
 
 class ThreadService {
     constructor() {
@@ -13,6 +14,7 @@ class ThreadService {
         this.noteMapper = new NoteMapper();
         this.noteEmojiMapper = new NoteEmojiMapper();
         this.threadEmojiMapper = new ThreadEmojiMapper();
+        this.io = webSocketServer.getIO(); // 获取 io 实例
     }
 
     // 用户收藏操作
@@ -108,6 +110,18 @@ class ThreadService {
 
             // 提交事务
             await this.mapper.commit();
+            // 发送前检查房间是否存在
+            if (this.io.sockets.adapter.rooms.has(`user_${note.created_by}`)) {
+                console.log(`发送新通知到房间 user_${note.created_by}`)
+                this.io.to(`user_${note.created_by}`).emit('new_notification',
+                    {
+                        'title': "用户" + user.username + "在游记《" + note.title + "》下评论了你",
+                        'message': value.content,
+                    }
+                );
+            }else{
+                console.warn(`房间 user_${note.created_by} 不存在，无法发送通知`);
+            }
             return thread;
         } catch (error) {
             await this.mapper.rollback();

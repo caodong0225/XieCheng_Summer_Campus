@@ -8,10 +8,63 @@ import {
 import { useSocket } from '@/utils/useSocket';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Platform, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
 import tw from 'twrnc';
+
+
+export const triggerNotification = async (title: string, body: string) => {
+  if (Platform.OS === 'web') {
+    // Web 平台用原生浏览器 Notification API
+    if (typeof window !== 'undefined' && 'Notification' in window && typeof Notification !== 'undefined') {
+      try {
+        // 检查Notification.permission是否存在
+        if (typeof Notification.permission === 'undefined') {
+          console.warn('🚫 Notification.permission 未定义');
+          return;
+        }
+        
+        // 检查权限状态
+        if (Notification.permission === 'default') {
+          // 如果权限未设置，先请求权限
+          const permission = await Notification.requestPermission();
+          if (permission !== 'granted') {
+            console.warn('🚫 用户拒绝了通知权限');
+            return;
+          }
+        } else if (Notification.permission === 'denied') {
+          console.warn('🚫 通知权限被拒绝');
+          return;
+        }
+        
+        // 权限已授权，发送通知
+        new Notification(title, { body });
+        console.log('✅ Web通知发送成功');
+      } catch (error) {
+        console.warn('🚫 Web通知失败:', error);
+      }
+    } else {
+      console.warn('🚫 当前浏览器不支持 Web 通知');
+    }
+  } else {
+    // 原生平台使用 expo-notifications
+    try {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title,
+          body,
+          sound: true,
+        },
+        trigger: null, // 立即触发
+      });
+      console.log('✅ 原生通知发送成功');
+    } catch (err) {
+      console.error('📛 本地通知失败:', err);
+    }
+  }
+};
 
 export default function NotificationScreen() {
   const router = useRouter();
@@ -27,11 +80,21 @@ export default function NotificationScreen() {
   const pageSize = 15;
   
   // 使用WebSocket监听新通知
-  const { socket } = useSocket('new_notification', () => {
-    if (isInitialized) {
-      fetchNotifications(activeTab, 1);
+  const { socket } = useSocket({
+    eventName: 'new_notification',
+    onMessage: (data) => {
+      console.log('收到新通知:', data);
+  
+      // ✅ 调用本地推送（兼容 Web / Android / iOS）
+      triggerNotification(data.title || '新通知', data.content || '您有一条新消息');
+  
+      // ✅ 刷新列表
+      if (isInitialized) {
+        fetchNotifications(activeTab, 1);
+      }
     }
   });
+  
 
   // 获取通知数据
   const fetchNotifications = async (type: 'system' | 'user' = activeTab, page: number = 1) => {

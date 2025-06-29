@@ -5,10 +5,14 @@ export interface ServerToClientEvents {
   new_notification: (data: NotificationData) => void;
   update_status: (response: OperationResponse) => void;
   error: (error: SocketError) => void;
+  [key: string]: (...args: any[]) => void; // 允许动态事件名称
 }
 
 export interface ClientToServerEvents {
   mark_as_read: (data: MarkAsReadData, callback?: (res: OperationResponse) => void) => void;
+  join_room: (data: { room: string }) => void;
+  leave_room: (data: { room: string }) => void;
+  [key: string]: (...args: any[]) => void; // 允许动态事件名称
 }
 
 export interface SocketEvents extends ServerToClientEvents, ClientToServerEvents {}
