@@ -1,0 +1,6256 @@
+{
+	"info": {
+		"_postman_id": "9482ca49-0bd0-479e-9bbd-4b3178d27936",
+		"name": "携程",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30513399",
+		"_collection_link": "https://interstellar-equinox-750388-7415.postman.co/workspace/usst_checkin~577c5dd6-83e3-4d09-bbb1-03a2f00921f0/collection/30513399-9482ca49-0bd0-479e-9bbd-4b3178d27936?action=share&source=collection_link&creator=30513399"
+	},
+	"item": [
+		{
+			"name": "用户Controller",
+			"item": [
+				{
+					"name": "用户登录",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"xxx\",\r\n    \"password\": \"xxx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "用户登录",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"xxx\",\r\n    \"password\": \"xxx\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/user/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "484"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1e4-hBsfztVaZSdv85fVqivNyFFPyrA\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 04 May 2025 05:31:10 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"user\": {\n            \"id\": 1,\n            \"username\": \"xxx\",\n            \"email\": \"xxx@xxx.xxx.cn\",\n            \"created_at\": \"2025-05-01T08:41:26.000Z\",\n            \"updated_at\": \"2025-05-02T07:31:37.000Z\",\n            \"role\": \"super-admin\"\n        },\n        \"token\": \"xxx\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "用户注册",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"xxx\",\r\n    \"password\": \"xxx\",\r\n    \"email\": \"xxx@xxx.xxx.xxx.cn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "用户注册",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"xxx\",\r\n    \"password\": \"xxx\",\r\n    \"email\": \"xxx@xxx.xxx.xxx.cn\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/user/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "206"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"ce-Gx/1ED9YuaB4vg3SnK0MUmm4O1Y\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 16:41:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"message\": \"注册成功\",\n    \"data\": {\n        \"id\": 1,\n        \"username\": \"xxx\",\n        \"email\": \"xxx@xxx.xxx.edu.cn\",\n        \"created_at\": \"2025-05-01T08:41:26.000Z\",\n        \"updated_at\": \"2025-05-01T08:41:26.000Z\",\n        \"role\": \"guest\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "通过用户id获取用户信息",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/user/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "通过用户id获取用户信息",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/user/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "288"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"120-LCbVZvQnv6wc7iMr1/VnYGWk5l0\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 05 May 2025 05:16:04 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 1,\n        \"username\": \"caodong0225\",\n        \"email\": \"xxx@xxx.ussst.edu.cn\",\n        \"created_at\": \"2025-05-01T08:41:26.000Z\",\n        \"updated_at\": \"2025-05-02T07:31:37.000Z\",\n        \"role\": \"super-admin\",\n        \"userExtraInfo\": {\n            \"description\": \"大家好，我是测试用户\",\n            \"sex\": \"男\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "获取用户列表",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/user/list?page=1&pageSize=12&role=guest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "12"
+								},
+								{
+									"key": "role",
+									"value": "guest"
+								},
+								{
+									"key": "username",
+									"value": "t",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取用户列表",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/user/list?page=1&pageSize=12&role=guest",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"list"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "12"
+										},
+										{
+											"key": "role",
+											"value": "guest"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "258"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"102-5eAGoFj0hnOqRdQWp2/gXAgZCdo\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 17:04:10 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"pageNum\": 1,\n        \"pageSize\": 12,\n        \"total\": 1,\n        \"pages\": 1,\n        \"list\": [\n            {\n                \"id\": 1,\n                \"username\": \"caodong\",\n                \"email\": \"xxx@xxx.ussst.edu.cn\",\n                \"created_at\": \"2025-05-01T08:41:26.000Z\",\n                \"updated_at\": \"2025-05-01T08:41:26.000Z\",\n                \"role\": \"guest\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "更新用户信息",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDYxMTgwNzYsImV4cCI6MTc0NjcyMjg3Nn0.GseSGB9jAqitl6iEMzSiaiFXm_XhuNqPUwPnnYeqvr0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"update"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "更新用户信息",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDYxMTgwNzYsImV4cCI6MTc0NjcyMjg3Nn0.GseSGB9jAqitl6iEMzSiaiFXm_XhuNqPUwPnnYeqvr0",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"password\": \"test123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/user/update",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"update"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "205"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"cd-LDmilqVBV7Gg8KyQi0IaBNL9Hq0\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 17:32:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 1,\n        \"username\": \"caodong0225\",\n        \"email\": \"xxx@xxx.ussst.edu.cn\",\n        \"created_at\": \"2025-05-01T08:41:26.000Z\",\n        \"updated_at\": \"2025-05-01T09:32:06.000Z\",\n        \"role\": \"guest\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "通过id删除用户（超级管理员）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MTIxNDUyLCJleHAiOjE3NDY3MjYyNTJ9.jXhukYeY2ZFqY2oFS9Dair9bodotiMv22myHyLDbhCI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/user/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "通过id删除用户",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MTIxNDUyLCJleHAiOjE3NDY3MjYyNTJ9.jXhukYeY2ZFqY2oFS9Dair9bodotiMv22myHyLDbhCI",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/user/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"2"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-QvtOUEhgmRRv8wLC9k2JHV67PDo\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 01 May 2025 17:48:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"用户删除成功\"\n}"
+						}
+					]
+				},
+				{
+					"name": "更新或创建用户额外信息（超级管理员）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDYxMTgwNzYsImV4cCI6MTc0NjcyMjg3Nn0.GseSGB9jAqitl6iEMzSiaiFXm_XhuNqPUwPnnYeqvr0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"这是测试\",\r\n    \"sex\": \"男\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/update/extra",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"update",
+								"extra"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "更新或创建用户额外信息",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDYxMTgwNzYsImV4cCI6MTc0NjcyMjg3Nn0.GseSGB9jAqitl6iEMzSiaiFXm_XhuNqPUwPnnYeqvr0",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\": \"这是测试\",\r\n    \"sex\": \"男\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/user/update/extra",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"update",
+										"extra"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "82"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"52-QN72Zw5zlR7urxEsuOS5a5Qa630\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 02 May 2025 06:37:00 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"description\": \"这是测试\",\n        \"sex\": \"男\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "更新用户密码（超级管理员）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MTk5OTIyLCJleHAiOjE3NDY4MDQ3MjJ9.-m9qoonc_R4YdGmcoQe5QObq41LvGFNDG9GviL31PjY",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"xxx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/update/3/password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"update",
+								"3",
+								"password"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "更新用户密码",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MTk5OTIyLCJleHAiOjE3NDY4MDQ3MjJ9.-m9qoonc_R4YdGmcoQe5QObq41LvGFNDG9GviL31PjY",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"password\": \"xxx\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/user/update/3/password",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"update",
+										"3",
+										"password"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-7D52DI05mFzD1VbX0oJu5fTvbE4\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 02 May 2025 15:33:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"密码更新成功\"\n}"
+						}
+					]
+				},
+				{
+					"name": "获取用户喜欢的游记",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3N0LmVkdS5jbiIsImlhdCI6MTc1MTA5MTY3OCwiZXhwIjoxNzUxNjk2NDc4fQ.0X-gxrt_yNQz-KQPKabhBtcIKmBdnpZgEGcZetXW8S8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/user/favorites?type=video",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"favorites"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "video"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取用户喜欢的游记",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NTAyNTkwNjYsImV4cCI6MTc1MDg2Mzg2Nn0.G02QvT3Szgoo2stgAW-yQGoHf_YYovd1kwd6QxNkHfg",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/user/favorites",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"favorites"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "734"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2de-3WOTlcL6c9NNEl/dON6ogfmNPdM\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 21 Jun 2025 16:16:35 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date"
+								}
+							],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"pageNum\": 1,\n        \"pageSize\": 10,\n        \"total\": 1,\n        \"pages\": 1,\n        \"list\": [\n            {\n                \"id\": 4,\n                \"title\": \"测试c\",\n                \"created_at\": \"2025-05-09T18:09:02.000Z\",\n                \"updated_at\": \"2025-05-09T18:09:02.000Z\",\n                \"description\": \"c二十\",\n                \"created_by\": 5,\n                \"username\": \"test\",\n                \"email\": \"test@qq.com\",\n                \"attachments\": [\n                    {\n                        \"id\": 3,\n                        \"note_id\": 4,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/5/2d2fdbb5-9fea-445c-b550-ab3172728a7e.jpg\",\n                        \"created_at\": \"2025-05-09T18:09:02.000Z\",\n                        \"updated_at\": \"2025-05-09T18:09:02.000Z\",\n                        \"weight\": 0\n                    }\n                ]\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "获取用户收藏的游记",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NTAyNTkwNjYsImV4cCI6MTc1MDg2Mzg2Nn0.G02QvT3Szgoo2stgAW-yQGoHf_YYovd1kwd6QxNkHfg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/user/collections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"collections"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取用户收藏的游记",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NTAyNTkwNjYsImV4cCI6MTc1MDg2Mzg2Nn0.G02QvT3Szgoo2stgAW-yQGoHf_YYovd1kwd6QxNkHfg",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/user/collections",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"collections"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "734"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2de-ODTGdhVKmRjW201TxNqkeiC8p+0\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 21 Jun 2025 16:16:51 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date"
+								}
+							],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"pageNum\": 1,\n        \"pageSize\": 10,\n        \"total\": 1,\n        \"pages\": 1,\n        \"list\": [\n            {\n                \"id\": 5,\n                \"title\": \"测试c\",\n                \"created_at\": \"2025-05-09T18:12:12.000Z\",\n                \"updated_at\": \"2025-05-09T18:12:12.000Z\",\n                \"description\": \"c二十\",\n                \"created_by\": 5,\n                \"username\": \"test\",\n                \"email\": \"test@qq.com\",\n                \"attachments\": [\n                    {\n                        \"id\": 5,\n                        \"note_id\": 5,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/5/2d2fdbb5-9fea-445c-b550-ab3172728a7e.jpg\",\n                        \"created_at\": \"2025-05-09T18:12:12.000Z\",\n                        \"updated_at\": \"2025-05-09T18:12:12.000Z\",\n                        \"weight\": 0\n                    }\n                ]\n            }\n        ]\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "游记Controller",
+			"item": [
+				{
+					"name": "新建游记",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MzM2NjcwLCJleHAiOjE3NDY5NDE0NzB9.mtyGa4S-FXPIYEV6hlBr6pgE4pWuTgjZpuvltpCpob8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"test2\",\r\n    \"description\": \"test2\",\r\n    \"attachments\": [\r\n        {\r\n            \"type\": \"picture\",\r\n            \"link\": \"https://jwc.usst.edu.cn/_upload/article/images/61/6a/3504ea674e99ad4650362289b87d/85ed58d6-9f01-465a-9aa8-e6dc33cc2010.jpg\",\r\n            \"weight\": 0\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/note/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"create"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "新建游记",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MzM2NjcwLCJleHAiOjE3NDY5NDE0NzB9.mtyGa4S-FXPIYEV6hlBr6pgE4pWuTgjZpuvltpCpob8",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"test2\",\r\n    \"description\": \"test2\",\r\n    \"attachments\": [\r\n        {\r\n            \"type\": \"picture\",\r\n            \"link\": \"https://jwc.usst.edu.cn/_upload/article/images/61/6a/3504ea674e99ad4650362289b87d/85ed58d6-9f01-465a-9aa8-e6dc33cc2010.jpg\",\r\n            \"weight\": 0\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/note/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"create"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "63"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3f-DYw3OUUp/anjuV02fHQjplu4f9I\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 04 May 2025 05:40:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"游记创建成功\",\n    \"data\": {\n        \"noteId\": 3\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "更新游记状态（管理员权限）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MzM2NjcwLCJleHAiOjE3NDY5NDE0NzB9.mtyGa4S-FXPIYEV6hlBr6pgE4pWuTgjZpuvltpCpob8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"rejected\",\r\n    \"reason\": \"垃圾博文\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/note/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"2"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "更新游记状态",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MzM2NjcwLCJleHAiOjE3NDY5NDE0NzB9.mtyGa4S-FXPIYEV6hlBr6pgE4pWuTgjZpuvltpCpob8",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"rejected\",\r\n    \"reason\": \"垃圾博文\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/note/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"2"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "46"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2e-DP90FTIlEN7bUVL7wiybcFvdZ80\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 04 May 2025 05:46:04 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"审核状态已更新\"\n}"
+						}
+					]
+				},
+				{
+					"name": "删除游记（管理员权限）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MzM2NjcwLCJleHAiOjE3NDY5NDE0NzB9.mtyGa4S-FXPIYEV6hlBr6pgE4pWuTgjZpuvltpCpob8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/note/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"2"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "删除游记（管理员权限）",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MzM2NjcwLCJleHAiOjE3NDY5NDE0NzB9.mtyGa4S-FXPIYEV6hlBr6pgE4pWuTgjZpuvltpCpob8",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/note/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"2"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-0dceJtQllmXkK8vxNjLgkn6hg1Y\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 04 May 2025 06:06:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 400,\n    \"message\": \"游记已被删除\"\n}"
+						}
+					]
+				},
+				{
+					"name": "更新游记信息",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MzM2NjcwLCJleHAiOjE3NDY5NDE0NzB9.mtyGa4S-FXPIYEV6hlBr6pgE4pWuTgjZpuvltpCpob8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"testtest\",\r\n    \"description\": \"testettest\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/note/update/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"update",
+								"3"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "更新游记信息",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MzM2NjcwLCJleHAiOjE3NDY5NDE0NzB9.mtyGa4S-FXPIYEV6hlBr6pgE4pWuTgjZpuvltpCpob8",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"testtest\",\r\n    \"description\": \"testettest\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/note/update/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"update",
+										"3"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"28-FoXL6OjcWyjQRiKGrWBRUvvlzTU\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 04 May 2025 06:28:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"游记已更新\"\n}"
+						}
+					]
+				},
+				{
+					"name": "删除附件",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MzM2NjcwLCJleHAiOjE3NDY5NDE0NzB9.mtyGa4S-FXPIYEV6hlBr6pgE4pWuTgjZpuvltpCpob8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/note/attachment/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"attachment",
+								"2"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "删除附件",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6IjIyMzUwNjIwMDlAc3QudXNzc3QuZWR1LmNuIiwiaWF0IjoxNzQ2MzM2NjcwLCJleHAiOjE3NDY5NDE0NzB9.mtyGa4S-FXPIYEV6hlBr6pgE4pWuTgjZpuvltpCpob8",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/note/attachment/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"attachment",
+										"2"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "55"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-vPkSJa00WkukQYDvVu1UxukiwX4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 04 May 2025 07:00:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 400,\n    \"message\": \"游记至少需要一个附件\"\n}"
+						}
+					]
+				},
+				{
+					"name": "审核游记（管理员权限）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3N0LmVkdS5jbiIsImlhdCI6MTc1MTE2ODI5MSwiZXhwIjoxNzUxNzczMDkxfQ.dMv-QsYyu3QKa9QZOuZ10W_-y1HZkcv09HdZUvD7ALw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"rejected\",\r\n    \"reason\": \"内容侵权\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/note/review/:noteId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"review",
+								":noteId"
+							],
+							"variable": [
+								{
+									"key": "noteId",
+									"value": "13"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "审核游记",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"approved\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/note/review/4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"review",
+										"4"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"28-S/MNw3zPCW7zCVjKUjAIPLkNHX0\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 17 May 2025 13:52:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"游记已审核\"\n}"
+						}
+					]
+				},
+				{
+					"name": "获取自己发布的游记列表",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/note/list?page=1&pageSize=12&title=c&sort=created_at&order=desc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "12"
+								},
+								{
+									"key": "title",
+									"value": "c"
+								},
+								{
+									"key": "sort",
+									"value": "created_at"
+								},
+								{
+									"key": "status",
+									"value": "approved",
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取游记列表",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/note/list?page=1&pageSize=12&title=c&sort=created_at",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"list"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "12"
+										},
+										{
+											"key": "title",
+											"value": "c"
+										},
+										{
+											"key": "sort",
+											"value": "created_at"
+										},
+										{
+											"key": "status",
+											"value": "approved",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "771"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"303-BZgrCWGgP5exJeB22hjpMIfLdWM\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 19 May 2025 10:33:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"游记列表获取成功\",\n    \"data\": {\n        \"pageNum\": 1,\n        \"pageSize\": 12,\n        \"total\": 2,\n        \"pages\": 1,\n        \"list\": [\n            {\n                \"id\": 5,\n                \"title\": \"测试c\",\n                \"created_at\": \"2025-05-09T18:12:12.000Z\",\n                \"updated_at\": \"2025-05-09T18:12:12.000Z\",\n                \"description\": \"c二十\",\n                \"created_by\": 5,\n                \"username\": \"test\",\n                \"email\": \"test@qq.com\",\n                \"status\": \"checking\",\n                \"attachments\": [\n                    {\n                        \"id\": 5,\n                        \"note_id\": 5,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/5/2d2fdbb5-9fea-445c-b550-ab3172728a7e.jpg\",\n                        \"created_at\": \"2025-05-09T18:12:12.000Z\",\n                        \"updated_at\": \"2025-05-09T18:12:12.000Z\",\n                        \"weight\": 0\n                    },\n                    {\n                        \"id\": 6,\n                        \"note_id\": 5,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/5/8f5ce705-69cf-4239-ac7a-a4616fd44c40.jpg\",\n                        \"created_at\": \"2025-05-09T18:12:12.000Z\",\n                        \"updated_at\": \"2025-05-09T18:12:12.000Z\",\n                        \"weight\": 1\n                    }\n                ]\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "获取游记详细信息",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/note/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"4"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取游记详细信息",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/note/4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"4"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "891"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37b-vJmZgJ6HUd7L+7uQ10rOxZlexf0\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 19 May 2025 15:50:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"游记获取成功\",\n    \"data\": {\n        \"id\": 4,\n        \"title\": \"测试c\",\n        \"created_at\": \"2025-05-09T18:09:02.000Z\",\n        \"updated_at\": \"2025-05-09T18:09:02.000Z\",\n        \"del_flag\": 0,\n        \"created_by\": 5,\n        \"description\": \"c二十\",\n        \"user\": {\n            \"id\": 5,\n            \"username\": \"test\",\n            \"email\": \"test@qq.com\",\n            \"created_at\": \"2025-05-05T15:25:45.000Z\",\n            \"updated_at\": \"2025-05-05T15:25:45.000Z\",\n            \"role\": \"guest\"\n        },\n        \"isFavorite\": false,\n        \"isCollection\": false,\n        \"likes\": 0,\n        \"collections\": 0,\n        \"comments\": 0,\n        \"attachments\": [\n            {\n                \"id\": 3,\n                \"note_id\": 4,\n                \"key\": \"picture\",\n                \"value\": \"https://frp.caodong0225.top/xiecheng/5/2d2fdbb5-9fea-445c-b550-ab3172728a7e.jpg\",\n                \"created_at\": \"2025-05-09T18:09:02.000Z\",\n                \"updated_at\": \"2025-05-09T18:09:02.000Z\",\n                \"weight\": 0\n            },\n            {\n                \"id\": 4,\n                \"note_id\": 4,\n                \"key\": \"picture\",\n                \"value\": \"https://frp.caodong0225.top/xiecheng/5/8f5ce705-69cf-4239-ac7a-a4616fd44c40.jpg\",\n                \"created_at\": \"2025-05-09T18:09:02.000Z\",\n                \"updated_at\": \"2025-05-09T18:09:02.000Z\",\n                \"weight\": 1\n            }\n        ],\n        \"isRejected\": false,\n        \"isChecking\": false\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "收藏游记",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/note/4/collection",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"4",
+								"collection"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "收藏游记",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/note/4/collection",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"4",
+										"collection"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "58"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3a-adcgbDDuBHSRRgaa9fTbmfHb22U\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 19 May 2025 16:11:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"collected\": true\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "喜欢游记",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/note/4/like",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"4",
+								"like"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "喜欢游记",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/note/4/like",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"4",
+										"like"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "58"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3a-AXoUO5EviR8uX2sfG/n+BYXJ7bo\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 19 May 2025 16:12:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"favorited\": true\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "通过noteId获取游记评论信息",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDgzMzU2NzQsImV4cCI6MTc0ODk0MDQ3NH0.Afm7YZHCBl7FZiEpI3LG2_PX47_GVOS_pUpclp0mNkk",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/note/detail/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"detail",
+								"5"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "通过noteId获取游记评论信息",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDgzMzU2NzQsImV4cCI6MTc0ODk0MDQ3NH0.Afm7YZHCBl7FZiEpI3LG2_PX47_GVOS_pUpclp0mNkk",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/note/detail/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"detail",
+										"5"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "853"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"355-O+o6oHvDFSX95L9d+t2l2I4+gHA\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 27 May 2025 13:32:45 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"评论列表获取成功\",\n    \"data\": [\n        {\n            \"id\": 4,\n            \"content\": \"这是测试\",\n            \"user_id\": 6,\n            \"note_id\": 5,\n            \"created_at\": \"2025-05-27T08:48:28.000Z\",\n            \"updated_at\": \"2025-05-27T08:48:28.000Z\",\n            \"status\": \"open\",\n            \"weight\": 0,\n            \"username\": \"caodong\",\n            \"email\": \"xxx@xxx.ussst.edu.cn\",\n            \"reply_count\": 2,\n            \"total_reactions\": 1,\n            \"reactions\": {\n                \"💖\": {\n                    \"count\": 1,\n                    \"users\": [\n                        6\n                    ]\n                }\n            },\n            \"replies\": [\n                {\n                    \"id\": 1,\n                    \"user_id\": 6,\n                    \"thread_id\": 4,\n                    \"reply_id\": null,\n                    \"content\": \"测试\",\n                    \"created_at\": \"2025-05-27T13:21:43.000Z\",\n                    \"updated_at\": \"2025-05-27T13:21:43.000Z\",\n                    \"username\": \"caodong\",\n                    \"email\": \"xxx@xxx.ussst.edu.cn\",\n                    \"child_replies_count\": 1,\n                    \"reactions\": {}\n                },\n                {\n                    \"id\": 2,\n                    \"user_id\": 5,\n                    \"thread_id\": 4,\n                    \"reply_id\": 1,\n                    \"content\": \"测试测试\",\n                    \"created_at\": \"2025-05-27T13:23:02.000Z\",\n                    \"updated_at\": \"2025-05-27T13:23:02.000Z\",\n                    \"username\": \"test\",\n                    \"email\": \"test@qq.com\",\n                    \"child_replies_count\": 0,\n                    \"reactions\": {}\n                }\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "获取所有游记信息（管理员）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NTAyNTc3MjUsImV4cCI6MTc1MDg2MjUyNX0.NiKjdCgoZuAYbBu9KPwB2arw-MTLNNwgVMICwFDWcAY",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/note/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"all"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取所有游记信息",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NTAyNTc3MjUsImV4cCI6MTc1MDg2MjUyNX0.NiKjdCgoZuAYbBu9KPwB2arw-MTLNNwgVMICwFDWcAY",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/note/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"all"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1429"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"595-H0BhEbbmAOSSaOlMXmD9j14BDPY\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 18 Jun 2025 14:42:45 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"游记列表获取成功\",\n    \"data\": {\n        \"pageNum\": 1,\n        \"pageSize\": 10,\n        \"total\": 2,\n        \"pages\": 1,\n        \"list\": [\n            {\n                \"id\": 5,\n                \"title\": \"测试c\",\n                \"created_at\": \"2025-05-09T18:12:12.000Z\",\n                \"updated_at\": \"2025-05-09T18:12:12.000Z\",\n                \"description\": \"c二十\",\n                \"created_by\": 5,\n                \"username\": \"test\",\n                \"email\": \"test@qq.com\",\n                \"status\": \"checking\",\n                \"attachments\": [\n                    {\n                        \"id\": 5,\n                        \"note_id\": 5,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/5/2d2fdbb5-9fea-445c-b550-ab3172728a7e.jpg\",\n                        \"created_at\": \"2025-05-09T18:12:12.000Z\",\n                        \"updated_at\": \"2025-05-09T18:12:12.000Z\",\n                        \"weight\": 0\n                    },\n                    {\n                        \"id\": 6,\n                        \"note_id\": 5,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/5/8f5ce705-69cf-4239-ac7a-a4616fd44c40.jpg\",\n                        \"created_at\": \"2025-05-09T18:12:12.000Z\",\n                        \"updated_at\": \"2025-05-09T18:12:12.000Z\",\n                        \"weight\": 1\n                    }\n                ]\n            },\n            {\n                \"id\": 4,\n                \"title\": \"测试c\",\n                \"created_at\": \"2025-05-09T18:09:02.000Z\",\n                \"updated_at\": \"2025-05-09T18:09:02.000Z\",\n                \"description\": \"c二十\",\n                \"created_by\": 5,\n                \"username\": \"test\",\n                \"email\": \"test@qq.com\",\n                \"status\": \"approved\",\n                \"attachments\": [\n                    {\n                        \"id\": 3,\n                        \"note_id\": 4,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/5/2d2fdbb5-9fea-445c-b550-ab3172728a7e.jpg\",\n                        \"created_at\": \"2025-05-09T18:09:02.000Z\",\n                        \"updated_at\": \"2025-05-09T18:09:02.000Z\",\n                        \"weight\": 0\n                    },\n                    {\n                        \"id\": 4,\n                        \"note_id\": 4,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/5/8f5ce705-69cf-4239-ac7a-a4616fd44c40.jpg\",\n                        \"created_at\": \"2025-05-09T18:09:02.000Z\",\n                        \"updated_at\": \"2025-05-09T18:09:02.000Z\",\n                        \"weight\": 1\n                    }\n                ]\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "获取所有审批通过的游记",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/note/approved",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"approved"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取所有审批通过的游记",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/note/approved",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"approved"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "538"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"21a-XKm2OE2Pmdlk86b6Zsd2fpNKfsk\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 09:10:20 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"游记列表获取成功\",\n    \"data\": {\n        \"pageNum\": 1,\n        \"pageSize\": 10,\n        \"total\": 7,\n        \"pages\": 1,\n        \"list\": [\n            {\n                \"id\": 11,\n                \"title\": \"🌟 西安旅游攻略｜本地人私藏玩法，不踩\",\n                \"description\": \"遇上节假日，西安景点一定要记得提前予约！特别是兵马俑、陕西历史博物馆等\\n给还没来得及做攻略的宝子整体的西安旅游攻略，可以直接抄作业呢哦~🚶🏻‍♀️🚶🏻‍♀️\\n-\\n✅西安必去景点\\n📍秦始皇兵马俑:三分看，七分听，找专业讲解员！\\n📍陕西历史博物馆:一年四季的票都难抢，注意周一闭馆\\n📍西安钟/鼓楼:真的值得一天两刷，白天和晚上的感觉完全不一样\\n📍华清宫:华清宫里很大、很清净，景色也宜人，适合慢慢逛\\n📍大唐不夜城:有很免费表演，晚上慢慢逛\",\n                \"created_at\": \"2025-06-22T19:20:07.000Z\",\n                \"updated_at\": \"2025-06-22T19:20:07.000Z\",\n                \"username\": \"caoguoliang\",\n                \"email\": \"867137498@qq.com\",\n                \"status\": \"approved\",\n                \"total_views\": \"6\",\n                \"attachments\": [\n                    {\n                        \"id\": 15,\n                        \"note_id\": 11,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/8/399fe700-d741-4629-9b41-49b8048d83ad.jpg\",\n                        \"created_at\": \"2025-06-22T19:20:07.000Z\",\n                        \"updated_at\": \"2025-06-22T19:20:07.000Z\",\n                        \"weight\": 0\n                    }\n                ]\n            },\n            {\n                \"id\": 10,\n                \"title\": \"6~7月去南京🌈保姆级游玩攻略\",\n                \"description\": \"计划6~7月来南京旅游的姐妹👭建议出发前看看这篇攻略📝里面有南京的景点打卡指南，还有交通、住宿跟美食攻略✅很适合初次来南京的姐妹，有需要的可以来抄作业哦📝\\n-\\n✅南京3日游路线\\n1️⃣D1：钟山风景区（音乐台、中山陵、明孝陵等）→南京博物院→新街口\\n2️⃣D2：遇难同胞纪念馆→总统府→先锋书店→夫子庙/老门东\\n3️⃣D3：鸡鸣寺→明城墙→玄武湖→颐和路\\n-\\n🌈南京地铁沿线景点\\n🚇1号线：百家湖、南京南站、三山街、甘熙故居、新街口、紫峰大厦、玄武湖、红山森林动物园、南京站\\n🚇2号线：南京鱼嘴湿地公园、南京遇难同胞纪念馆、莫愁湖、江宁织造博物馆、钟山风景区、总统府\\n🚇3号线：南京南站、白鹭洲公园、郑和公园、夫子庙、老门东、鸡鸣寺、南京国际展览中心、南京站、幕府山\\n-\\n✅南京的美食\\n♨️李百蟹·江南蟹黄面（夫子庙店）\\n♨️金陵家宴·金陵春·南京菜（夫子庙店）\\n♨️晚园·江南火锅·秦淮河景餐厅\\n♨️少伯茶苑·秦淮河景茶馆\",\n                \"created_at\": \"2025-06-22T18:56:19.000Z\",\n                \"updated_at\": \"2025-06-22T18:56:19.000Z\",\n                \"username\": \"vvbbnnoo\",\n                \"email\": \"vvbbnnoo@gmail.com\",\n                \"status\": \"approved\",\n                \"total_views\": \"3\",\n                \"attachments\": [\n                    {\n                        \"id\": 14,\n                        \"note_id\": 10,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/7/d91403dd-d0de-4a50-a4f3-081c53caa107.jpg\",\n                        \"created_at\": \"2025-06-22T18:56:19.000Z\",\n                        \"updated_at\": \"2025-06-22T18:56:19.000Z\",\n                        \"weight\": 0\n                    }\n                ]\n            },\n            {\n                \"id\": 9,\n                \"title\": \"南京土著熬夜整理南京3天旅游攻略😭\",\n                \"description\": \"姐妹们来南京一定要做好攻略❗️别再走回头路啦，🐎住这篇保姆级攻略带你少走弯路！学生寒暑假旅游也一样适用！\\n-\\n🗺️行程路线\\n1️⃣南京博物院-梧桐大道-明孝陵-美龄宫-中山陵-音乐台-灵谷寺\\n2️⃣同胞纪念馆-总tong府-老门东-大报恩寺\\n3️⃣红山动物园-玄武湖-颐和路-先锋书店-新街口\\n-\\n🍜美食指南\\n✅口口火山（超讲究的麻辣烫小店\\n✅第五季大排档（十几年烟火气大排档\\n✅觅炙现炒海鲜粥火锅（海鲜粥➕烧烤双重满足\\n✅火山屋台（奶油咖喱乌冬面敲nice\\n✅泥炉烧肉师（炭烤活鳗鱼外焦里嫩\\n✅梅花颂金陵小馆（一站式打卡南京特色美食\\n✅竹里馆（我心中南京淮扬菜前三\\n✅石锅轩（科巷开了十几年的宝藏小店\",\n                \"created_at\": \"2025-06-22T18:49:40.000Z\",\n                \"updated_at\": \"2025-06-22T18:49:40.000Z\",\n                \"username\": \"caoguoliang\",\n                \"email\": \"867137498@qq.com\",\n                \"status\": \"approved\",\n                \"total_views\": \"1\",\n                \"attachments\": [\n                    {\n                        \"id\": 10,\n                        \"note_id\": 9,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/8/bd9c8533-e851-41af-a4b3-9020dfa25fd3.jpg\",\n                        \"created_at\": \"2025-06-22T18:49:40.000Z\",\n                        \"updated_at\": \"2025-06-22T18:49:40.000Z\",\n                        \"weight\": 0\n                    }\n                ]\n            },\n            {\n                \"id\": 8,\n                \"title\": \"去过5次泰山，我的攻略是\",\n                \"description\": \"1、身份证(必带)❗❗❗\\n2、充电宝(必带)\\n3、护目镜(拍照贼出片一定要戴)\\n4、速干衣(冲锋衣必带山上冷，到南天门就可以穿了，山风吹着汗容易感冒，体力好的可以带一身换的衣服)\\n5、体力不行的(山顶租大衣防寒30元一位\\n6、登山鞋(最好穿运动鞋透气的)不然全程下来，非常累😫\\n7、纸巾湿巾(务必带)山上有卖毛巾的，质量不好，价格小贵(自己做决定)\\n8、口罩帽子(防风沙)\\n9、士力架(个人建议可以不带想补充能量一路上都有卖吃的，中天门以下，价格便宜，中天门往上，价格一点点涨)士力架太甜，腻人。吃多了容易渴\\n10、登山杖(随便买一根很便宜)\\n11、手电筒(必带)有的楼梯或路段比较黑，有手电筒防止磕碰\\n12、五元现金(必带)打卡神器\\n13、云南膏药(看身体素质准备)(下山后容易膝盖疼或腿疼，下山之前贴一下，缓解)\\n14、一次性雨衣(必带)不管下不下雨都带\\n15、矿泉水、红牛(矿泉水不贵，2元一瓶)登山之前不建议带太多。红牛可带一瓶，补充能量，山上的稍微贵一点，但价格不是特别离谱\\n❗16、天气预报(必看)下雨后转晴观日出的几率较大。\\n山上的天气变化莫测看日出不要抱太大希望，看到是非常幸运的，看不到也没关系，人生处处是遗憾，调整心态，下次再来\\n17、九点多或十点从红门出发。大约6-7小时，人非常多，吃的一路都有卖，单独的摊位贵一点，好几个摊位的会便宜\",\n                \"created_at\": \"2025-06-22T18:45:42.000Z\",\n                \"updated_at\": \"2025-06-22T18:45:42.000Z\",\n                \"username\": \"caoguoliang\",\n                \"email\": \"867137498@qq.com\",\n                \"status\": \"approved\",\n                \"total_views\": \"0\",\n                \"attachments\": [\n                    {\n                        \"id\": 9,\n                        \"note_id\": 8,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/8/e6b144f7-d928-4ca0-81dd-8a0b2c924442.jpg\",\n                        \"created_at\": \"2025-06-22T18:45:42.000Z\",\n                        \"updated_at\": \"2025-06-22T18:45:42.000Z\",\n                        \"weight\": 0\n                    }\n                ]\n            },\n            {\n                \"id\": 7,\n                \"title\": \"要是去上海旅游之前看到这篇这些就好了\",\n                \"description\": \"上海的路线攻略也太详细啦～来上海真的不要不做攻略就来！不然一来一个不吱声！\\n✅上海交通建议\\n✈浦东机场：距离迪士尼比较近，虹桥机场：距离市区较近，\\n🚂上海站、上海虹桥、上海西站、上海南站\\n🚌下载“metro大都会”乘地铁或公交\\n🚖上海打车挺贵的，起步价就的16，而且还容易堵车\\n🚢上海还可以坐轮渡，观看黄浦江夜景非常美\\n-\\n📷上海旅游要注意\\n1⃣市区尽量选择地铁🚇或者步行，交通就很方便了，打车等车时间很久，而且还很堵很堵！\\n2⃣外滩夏天晚上七点亮灯，十一点熄灯，可以在亮灯前找到机位拍亮灯视频\\n3⃣黄浦江有2r的轮渡就可以游🚢\\n4⃣上海citywalk🚶可以选择去愚园路、静安寺、南京西路石门路、南京西路张园、淮海中路、新天地\\n5⃣外滩人会很多！不想人挤人就直接去北外滩欣赏江对岸的景色！可以拍到外滩三件套和万国建筑群📷\\n6⃣上还有两个机场✈，一个浦东，一个虹桥，去迪士尼可以选浦东机场，市区离虹桥机场更近\\n-\\n👍上海的美食分享\\n●太琼糟粕醋火锅(八佰伴店):酸酸辣辣的吃起来很开胃，很多明星吃过\\n●嗲嗲的椰子鸡（五角场店）:用的海南当地的椰子加上文昌鸡，汤汁很鲜，鸡肉也很嫩，\",\n                \"created_at\": \"2025-06-22T18:35:18.000Z\",\n                \"updated_at\": \"2025-06-22T18:35:18.000Z\",\n                \"username\": \"vvbbnnoo\",\n                \"email\": \"vvbbnnoo@gmail.com\",\n                \"status\": \"approved\",\n                \"total_views\": \"1\",\n                \"attachments\": [\n                    {\n                        \"id\": 8,\n                        \"note_id\": 7,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/7/85f15e72-ea9a-4276-a1e2-aac26d776dea.jpg\",\n                        \"created_at\": \"2025-06-22T18:35:18.000Z\",\n                        \"updated_at\": \"2025-06-22T18:35:18.000Z\",\n                        \"weight\": 0\n                    }\n                ]\n            },\n            {\n                \"id\": 6,\n                \"title\": \"人生建议❗千万不要凌晨4️⃣点去西湖\",\n                \"description\": \"因为你会彻底沦陷在无人知晓的绝色里\\n🔸凌晨的西湖很凉快，游客稀少，偶有晨练跑步的\\n🔸湖面偶有雾气，荷叶上都是露珠\\n🔸早起的鸟儿和鱼儿都很活跃\\n🔸如果是晴天还能同时看到西湖的月亮和日出\\n我们已经连着去了三次了☺️\\n.\\n⭕路线（图2）\\n断桥➡️白堤➡️平湖秋月➡️西泠桥➡️曲苑风荷➡️神州基地➡️乌龟潭➡️浴鹄湾➡️花港观鱼➡️马家湾码头\\n.\\n✅可以打车前往「断桥」\\n✅沿着白堤步行到「平湖秋月」\\n✅路边租自行车骑行到「马家湾码头」，可以乘船游览西湖秘境\\n✅如果不想乘船游玩，可以到花港观鱼结束行程，回去休息，傍晚再出来游玩；有精力的还能去太子湾公园和雷峰塔游玩\\n.\\n❣️我们第三次去的时候居然在杨公堤附近碰到了西湖半程马拉松🏃🏻‍♂️，运动员们身手矫健的奔跑着，沿途的观众热情高涨👍，加油声，欢呼声此起彼伏，我一个不爱跑步的人都被这种氛围震撼了\\n中间有个大叔摔倒了，简单处理一下伤口继续奔跑，莫名的有点感动到了🤧\\n.\\n💡打听到终点站是在黄龙体育中心，立马骑车抄近路奔向终点，蹬了半小时到达，感觉腿都软了😭，这时前三名已经产生了（骑车还追不上他们😂），但后面的运动员还在继续奔跑，那一刻突然懂了，名次不是问题，能坚持到终点就是胜利吧\\n.\\n🎖️赛道设计在西湖景区，串联断桥残雪、平湖秋月、南屏晚钟、雷峰夕照等景点，运动们可以边奔跑边欣赏风景🏞️，感受到心灵的洗涤\\n.\\n赛事居然有众安保险全程护航，这可是首届西湖半程马拉松的保险合作伙伴，有了它，运动员们都能安心畅跑啦！👍👍👍\",\n                \"created_at\": \"2025-06-22T18:29:17.000Z\",\n                \"updated_at\": \"2025-06-22T18:29:17.000Z\",\n                \"username\": \"vvbbnnoo\",\n                \"email\": \"vvbbnnoo@gmail.com\",\n                \"status\": \"approved\",\n                \"total_views\": \"0\",\n                \"attachments\": [\n                    {\n                        \"id\": 5,\n                        \"note_id\": 6,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/7/51992a5d-448a-4683-9e57-14cabe6ac789.jpg\",\n                        \"created_at\": \"2025-06-22T18:29:17.000Z\",\n                        \"updated_at\": \"2025-06-22T18:29:17.000Z\",\n                        \"weight\": 0\n                    }\n                ]\n            },\n            {\n                \"id\": 5,\n                \"title\": \"6-9月杭州最新旅游攻略！建议去🆚不建议去\",\n                \"description\": \"杭州打工人告诉想要来杭州旅游的姐妹们….杭州真的不适合临时起意来玩！！要做攻略，而且还要预约！假期到处都是人，再加上接连踩～坑！就会很暴躁影响心情💢今天给姐妹们分享我的一些建议点，希望能帮到来杭州旅游的姐妹！！\\n✅游玩建议:\\n✔️出门游玩逛西湖的时候建议换双舒服点的鞋子。\\n✔️杭州天气很多变建议带把雨伞，挡雨又遮阳。\\n✅美食建议:\\n✔️李百蟹蟹黄面西湖店不容错过，面条裹上蟹黄，满满一大口很满足。\\n✔️山椿泰粉非常值得一试，酸辣开胃的东南亚风味，汤底很鲜，来杭州bi吃。\\n✔️烟江月•西湖家宴:在西湖边的正zong杭帮菜，松鼠桂鱼，东坡肉，龙井虾仁不容错过，店内环境和服务超级nice~\\n✔️葱包烩真的很香，小巷子里的更正宗。\\n✔️西湖醋鱼很多人难以接受，但是来都来了。\",\n                \"created_at\": \"2025-06-22T18:22:29.000Z\",\n                \"updated_at\": \"2025-06-22T18:22:29.000Z\",\n                \"username\": \"caodong\",\n                \"email\": \"xxx@xxx.usst.edu.cn\",\n                \"status\": \"approved\",\n                \"total_views\": \"4\",\n                \"attachments\": [\n                    {\n                        \"id\": 4,\n                        \"note_id\": 5,\n                        \"key\": \"picture\",\n                        \"value\": \"https://frp.caodong0225.top/xiecheng/6/5516b68c-06dc-4cb7-9f6c-00651b437a49.jpg\",\n                        \"created_at\": \"2025-06-22T18:22:29.000Z\",\n                        \"updated_at\": \"2025-06-22T18:22:29.000Z\",\n                        \"weight\": 0\n                    }\n                ]\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "上传游记附件",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3N0LmVkdS5jbiIsImlhdCI6MTc1MTA5MTY3OCwiZXhwIjoxNzUxNjk2NDc4fQ.0X-gxrt_yNQz-KQPKabhBtcIKmBdnpZgEGcZetXW8S8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"picture\",\r\n    \"link\": \"https://frp.caodong0225.top/xiecheng/6/e2485e57-9864-45cd-a472-2ad469dd7a08.jpg\",\r\n    \"weight\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/note/upload/:noteId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"note",
+								"upload",
+								":noteId"
+							],
+							"variable": [
+								{
+									"key": "noteId",
+									"value": "14"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "上传游记附件",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3N0LmVkdS5jbiIsImlhdCI6MTc1MTA5MTY3OCwiZXhwIjoxNzUxNjk2NDc4fQ.0X-gxrt_yNQz-KQPKabhBtcIKmBdnpZgEGcZetXW8S8",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"picture\",\r\n    \"link\": \"https://frp.caodong0225.top/xiecheng/6/e2485e57-9864-45cd-a472-2ad469dd7a08.jpg\",\r\n    \"weight\": 4\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/note/upload/:noteId",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"note",
+										"upload",
+										":noteId"
+									],
+									"variable": [
+										{
+											"key": "noteId",
+											"value": "14"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"28-8m5zY32aDY2oopp4jVBTCj32FoQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 08:00:33 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"附件已上传\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "通知Controller",
+			"item": [
+				{
+					"name": "创建通知",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": 5,\r\n    \"title\": \"测试\",\r\n    \"content\": \"这是测试消息\",\r\n    \"sender\": \"system\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/notification/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"notification",
+								"create"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "创建通知",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": 5,\r\n    \"title\": \"测试\",\r\n    \"content\": \"这是测试消息\",\r\n    \"sender\": \"system\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/notification/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"notification",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "219"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"db-hp2grSi8DkvVeCSq3yanf5xjWYc\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 07 May 2025 03:53:47 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 16,\n        \"title\": \"测试\",\n        \"content\": \"这是测试消息\",\n        \"created_at\": \"2025-05-07T03:53:47.000Z\",\n        \"updated_at\": \"2025-05-07T03:53:47.000Z\",\n        \"user_id\": 5,\n        \"is_read\": 0,\n        \"sender\": \"system\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "删除通知",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/notification/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"notification",
+								"5"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "删除通知",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/notification/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"notification",
+										"5"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"28-Mu3/q7BLTz6x+IVHvIjidYUuy40\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 15:19:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 404,\n    \"message\": \"通知不存在\"\n}"
+						}
+					]
+				},
+				{
+					"name": "获取所有通知",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/notification/list?sender=system&page=1&pageSize=13",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"notification",
+								"list"
+							],
+							"query": [
+								{
+									"key": "sender",
+									"value": "system"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "13"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取所有通知",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/notification/list?sender=system&page=1&pageSize=13",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"notification",
+										"list"
+									],
+									"query": [
+										{
+											"key": "sender",
+											"value": "system"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "13"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "281"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"119-cpoe6kXa5Gb22aOEJxnmllRQCt0\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 15:29:09 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"pageNum\": 1,\n        \"pageSize\": 13,\n        \"total\": 1,\n        \"pages\": 1,\n        \"list\": [\n            {\n                \"id\": 3,\n                \"title\": \"测试\",\n                \"content\": \"这是一条测试消息\",\n                \"created_at\": \"2025-05-06T15:12:15.000Z\",\n                \"updated_at\": \"2025-05-06T15:12:15.000Z\",\n                \"user_id\": 6,\n                \"is_read\": 0,\n                \"sender\": \"system\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "标记已读（单条数据）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/notification/3/mark-as-read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"notification",
+								"3",
+								"mark-as-read"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "标记已读（单条数据）",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/notification/3/mark-as-read",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"notification",
+										"3",
+										"mark-as-read"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "44"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2c-45816H0bki3IptHdf3a9j+hYI3w\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 15:31:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "标记已读（所有数据）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/notification/markAllAsRead/system",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"notification",
+								"markAllAsRead",
+								"system"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "标记已读（所有数据）",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/notification/markAllAsRead/system",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"notification",
+										"markAllAsRead",
+										"system"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "44"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2c-45816H0bki3IptHdf3a9j+hYI3w\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 15:49:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "获取用户未读消息数量",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3N0LmVkdS5jbiIsImlhdCI6MTc1MTI0OTk1NiwiZXhwIjoxNzUxODU0NzU2fQ.S3lDnoFZG6_s5c22rb22x7A-BImgutw89sw_HBnpS4k",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/notification/unread-count",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"notification",
+								"unread-count"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取用户未读消息数量",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3N0LmVkdS5jbiIsImlhdCI6MTc1MTI0OTk1NiwiZXhwIjoxNzUxODU0NzU2fQ.S3lDnoFZG6_s5c22rb22x7A-BImgutw89sw_HBnpS4k",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/notification/unread-count",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"notification",
+										"unread-count"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "51"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"33-DVxaplNVHwDVQGNIhof6mD/6wVk\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 30 Jun 2025 02:19:32 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"count\": 0\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "文件上传",
+			"item": [
+				{
+					"name": "文件上传接口",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTAzNDEzNTYsImV4cCI6MTc1MDk0NjE1Nn0.wBdbqWKvPnInLE5JNTXRuIgB2e8ecEV8ufhyL1SEwYI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "postman-cloud:///1f02c2ab-705e-41f0-a251-66dfae7a99e2"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/file/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"file",
+								"upload"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "文件上传接口",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDY1NDQyOTcsImV4cCI6MTc0NzE0OTA5N30.qfPA9BDWao0fbaWFWDS7duKc-UIrme6pVJ8CduhDF2I",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1f02c2ab-705e-41f0-a251-66dfae7a99e2"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/file/upload",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"file",
+										"upload"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "198"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"c6-vYxO6KD0sLcyoMBbeHGYFEnO4Ys\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 08 May 2025 16:42:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"文件上传成功\",\n    \"data\": {\n        \"objectName\": \"6/00d433e4-cda3-4ed5-b67f-229e7f7737f0.jpg\",\n        \"url\": \"https://frp.caodong0225.top/xiecheng/6/00d433e4-cda3-4ed5-b67f-229e7f7737f0.jpg\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "上传视频",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTAzNDEzNTYsImV4cCI6MTc1MDk0NjE1Nn0.wBdbqWKvPnInLE5JNTXRuIgB2e8ecEV8ufhyL1SEwYI",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "video",
+									"type": "file",
+									"src": "postman-cloud:///1f04d175-29ea-42c0-a8da-052aed888606"
+								},
+								{
+									"key": "description",
+									"value": "暂无描述",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/video/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"upload"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "上传视频",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTAzNDEzNTYsImV4cCI6MTc1MDk0NjE1Nn0.wBdbqWKvPnInLE5JNTXRuIgB2e8ecEV8ufhyL1SEwYI",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "video",
+											"type": "file",
+											"src": "postman-cloud:///1f04d175-29ea-42c0-a8da-052aed888606"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/video/upload",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"upload"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "453"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1c5-JqRlhFm8iYlM5Zxzt6jYjD18oNM\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 19 Jun 2025 15:44:16 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"视频上传成功\",\n    \"data\": {\n        \"userId\": 7,\n        \"title\": \"未命名视频\",\n        \"filename\": \"video-1750347854411-6a64ada7000e4bd3.mp4\",\n        \"originalName\": \"mp4.mp4\",\n        \"size\": 383631,\n        \"duration\": 5.568,\n        \"format\": \"mov,mp4,m4a,3gp,3g2,mj2\",\n        \"videoUrl\": \"https://frp.caodong0225.top/xiecheng/video-1750347854411-6a64ada7000e4bd3.mp4\",\n        \"thumbnailUrl\": \"https://frp.caodong0225.top/xiecheng/video-1750347854411-6a64ada7000e4bd3.jpg\",\n        \"bucket\": \"xiecheng\",\n        \"thumbnailBucket\": \"xiecheng\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "贴子Controller",
+			"item": [
+				{
+					"name": "创建评论",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"这是测试\",\r\n    \"note_id\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/thread",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"thread"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "创建评论",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"这是测试\",\r\n    \"note_id\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/thread",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"thread"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "273"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"111-q67D+obaIUKNO0V65x98ZUCC5SM\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 22 May 2025 15:26:33 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"评论创建成功\",\n    \"data\": {\n        \"id\": 1,\n        \"content\": \"这是测试\",\n        \"user_id\": 6,\n        \"note_id\": 5,\n        \"created_at\": \"2025-05-22T15:26:33.000Z\",\n        \"updated_at\": \"2025-05-22T15:26:33.000Z\",\n        \"status\": \"open\",\n        \"weight\": 0,\n        \"username\": \"caodong\",\n        \"email\": \"xxx@xxx.ussst.edu.cn\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "删除评论（管理员）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/thread/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"thread",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "删除评论（管理员）",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/thread/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"thread",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-aJz5qxhIforNFGSVb4pl6o5w7f4\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 22 May 2025 15:30:55 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"评论删除成功\"\n}"
+						}
+					]
+				},
+				{
+					"name": "撤销评论",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/thread/undo/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"thread",
+								"undo",
+								"2"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "撤销评论",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/thread/undo/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"thread",
+										"undo",
+										"2"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-aJz5qxhIforNFGSVb4pl6o5w7f4\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 22 May 2025 15:35:15 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"评论删除成功\"\n}"
+						}
+					]
+				},
+				{
+					"name": "更新评论",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"closed\",\r\n    \"weight\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/thread/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"thread",
+								"3"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "更新评论",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"closed\",\r\n    \"weight\": 2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/thread/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"thread",
+										"3"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "275"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"113-a38y8A+2YgoUync2q5ipYwFnO4w\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 22 May 2025 15:38:16 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"评论更新成功\",\n    \"data\": {\n        \"id\": 3,\n        \"content\": \"这是测试\",\n        \"user_id\": 6,\n        \"note_id\": 5,\n        \"created_at\": \"2025-05-22T15:36:22.000Z\",\n        \"updated_at\": \"2025-05-22T15:38:16.000Z\",\n        \"status\": \"closed\",\n        \"weight\": 2,\n        \"username\": \"caodong\",\n        \"email\": \"xxx@xxx.ussst.edu.cn\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "通过id获取评论",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/thread/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"thread",
+								"3"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "通过id获取评论",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDc0ODk1NDEsImV4cCI6MTc0ODA5NDM0MX0.WDvaKEs2wfWzO92hYIfHSW4RNgGcIUW4iV0VI0aGNyc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/thread/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"thread",
+										"3"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "252"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"fc-QoCX8IwYIAlMU627X+o0OQcnEuw\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 22 May 2025 15:40:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 3,\n        \"content\": \"这是测试\",\n        \"note_id\": 5,\n        \"created_at\": \"2025-05-22T15:36:22.000Z\",\n        \"updated_at\": \"2025-05-22T15:38:16.000Z\",\n        \"status\": \"closed\",\n        \"weight\": 2,\n        \"username\": \"caodong\",\n        \"email\": \"xxx@xxx.ussst.edu.cn\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "点赞帖子",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDk0NTM3ODUsImV4cCI6MTc1MDA1ODU4NX0.VtiqlX_nbXbmY8g6zib7XaMRXfPdlm7PYHhYTCz1xB0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/thread/like/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"thread",
+								"like",
+								"4"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "点赞帖子",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NDk0NTM3ODUsImV4cCI6MTc1MDA1ODU4NX0.VtiqlX_nbXbmY8g6zib7XaMRXfPdlm7PYHhYTCz1xB0",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/thread/like/4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"thread",
+										"like",
+										"4"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "65"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"41-ltuVnqRfdVAsjIG0BKgnpvb9dtw\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 09 Jun 2025 07:28:43 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"点赞操作成功\",\n    \"data\": {\n        \"liked\": true\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "收藏帖子",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/thread/collect/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"thread",
+								"collect",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "收藏帖子",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/thread/collect/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"thread",
+										"collect",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "69"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"45-2dpLqhjBIGahl3tXUdNIfy7SzKo\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 09:45:51 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"收藏操作成功\",\n    \"data\": {\n        \"collected\": true\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "回复Controller",
+			"item": [
+				{
+					"name": "创建回复",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"thread_id\": 1,\r\n    \"content\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/reply",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reply"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "创建回复",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"thread_id\": 1,\r\n    \"content\": \"test\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/reply",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"reply"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "246"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f6-HWboXUpFhg2iAoaNVEE9w9FXJB0\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 08:55:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"message\": \"回复创建成功\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 5,\n        \"thread_id\": 1,\n        \"reply_id\": null,\n        \"content\": \"test\",\n        \"created_at\": \"2025-06-12T00:55:26.000Z\",\n        \"updated_at\": \"2025-06-12T00:55:26.000Z\",\n        \"username\": \"caodong\",\n        \"email\": \"867137498@qq.com\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "通过id获取回复",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/reply/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reply",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "通过id获取回复",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/reply/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"reply",
+										"1"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "155"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"9b-LbsMVEgIqZPik49AoHh1uyg8NvU\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 09:02:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 5,\n        \"thread_id\": 1,\n        \"reply_id\": null,\n        \"content\": \"test\",\n        \"username\": \"caodong\",\n        \"email\": \"867137498@qq.com\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "更新回复信息",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"new test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/reply/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reply",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "更新回复信息",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"new test\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/reply/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"reply",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "250"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"fa-TayvSvpIWwy0wa71DWwJvkAkCbI\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 09:05:48 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"回复更新成功\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 5,\n        \"thread_id\": 1,\n        \"reply_id\": null,\n        \"content\": \"new test\",\n        \"created_at\": \"2025-06-12T00:55:26.000Z\",\n        \"updated_at\": \"2025-06-12T01:05:48.000Z\",\n        \"username\": \"caodong\",\n        \"email\": \"867137498@qq.com\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "删除回复",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/reply/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reply",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "删除回复",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/reply/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"reply",
+										"1"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "61"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3d-ZW7hNRirmT9Hpn82gB/2JQ8Sh5U\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 09:06:35 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 403,\n    \"message\": \"权限不足，仅限管理员操作\"\n}"
+						}
+					]
+				},
+				{
+					"name": "点赞回复",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/reply/like/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reply",
+								"like",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "点赞回复",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/reply/like/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"reply",
+										"like",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "65"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"41-ltuVnqRfdVAsjIG0BKgnpvb9dtw\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 09:29:55 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"点赞操作成功\",\n    \"data\": {\n        \"liked\": true\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "收藏回复",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/reply/collect/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reply",
+								"collect",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "收藏回复",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiODY3MTM3NDk4QHFxLmNvbSIsImlhdCI6MTc0OTcxODMyMSwiZXhwIjoxNzUwMzIzMTIxfQ._Z_cKbb0wRIRXs-jHSQXOpvO58VaEhxCjXG2DkMRgD4",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/reply/collect/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"reply",
+										"collect",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "69"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"45-2dpLqhjBIGahl3tXUdNIfy7SzKo\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 12 Jun 2025 09:30:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"收藏操作成功\",\n    \"data\": {\n        \"collected\": true\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "视频Controller",
+			"item": [
+				{
+					"name": "获取我上传的视频列表",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/list/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"list",
+								"me"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取我上传的视频列表",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/list/me",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"list",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "356"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"164-jcaHE1RDEOQNL7FVeLGnlP1oE4o\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 21 Jun 2025 04:56:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date"
+								}
+							],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"视频列表获取成功\",\n    \"data\": {\n        \"videos\": [\n            {\n                \"id\": 1,\n                \"created_at\": \"2025-06-21T04:04:03.000Z\",\n                \"description\": \"暂无描述\",\n                \"link\": \"https://frp.caodong0225.top/xiecheng/video-1750478636649-e7b8968c7883aeeb.mp4\",\n                \"thumbnail\": \"https://frp.caodong0225.top/xiecheng/video-1750478636649-e7b8968c7883aeeb.jpg\",\n                \"play_count\": \"0\"\n            }\n        ],\n        \"total\": 1,\n        \"page\": 1,\n        \"limit\": 10\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "点赞视频",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/like/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"like",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "点赞视频",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/like/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"like",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "113"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"71-iaP5yPNV7zJ47XF1SQ4G2PX73B4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 21 Jun 2025 05:05:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"视频点赞状态切换成功\",\n    \"data\": {\n        \"favorited\": true,\n        \"videoId\": \"1\",\n        \"favoriteCount\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "收藏视频",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTAzNDEzNTYsImV4cCI6MTc1MDk0NjE1Nn0.wBdbqWKvPnInLE5JNTXRuIgB2e8ecEV8ufhyL1SEwYI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/collect/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"collect",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "收藏视频",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTAzNDEzNTYsImV4cCI6MTc1MDk0NjE1Nn0.wBdbqWKvPnInLE5JNTXRuIgB2e8ecEV8ufhyL1SEwYI",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/collect/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"collect",
+										"1"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "115"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"73-MoUaCeieCTL92XVrAQuJANw2/vk\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 21 Jun 2025 05:06:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"视频收藏状态切换成功\",\n    \"data\": {\n        \"collected\": true,\n        \"videoId\": \"1\",\n        \"collectionCount\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "通过id获取视频详情",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "通过id获取视频详情",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "484"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1e4-RqVVYApFJmxweBZ0IB+K8MOApqk\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 21 Jun 2025 09:48:01 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"视频详情获取成功\",\n    \"data\": {\n        \"id\": 1,\n        \"created_at\": \"2025-06-21T04:04:03.000Z\",\n        \"updated_at\": \"2025-06-21T04:04:03.000Z\",\n        \"description\": \"暂无描述\",\n        \"created_by\": 7,\n        \"link\": \"https://frp.caodong0225.top/xiecheng/video-1750478636649-e7b8968c7883aeeb.mp4\",\n        \"thumbnail\": \"https://frp.caodong0225.top/xiecheng/video-1750478636649-e7b8968c7883aeeb.jpg\",\n        \"likeCount\": 0,\n        \"collectionCount\": 1,\n        \"isCollected\": true,\n        \"isLiked\": false,\n        \"viewCount\": {\n            \"totalViews\": \"2\",\n            \"uniqueUsers\": 1\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "观看视频",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/watch/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"watch",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "观看视频",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/watch/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"watch",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "449"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1c1-DPR955qDoMJqvj17YMZNIUge8Zc\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 21 Jun 2025 07:22:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"视频详情获取成功\",\n    \"data\": {\n        \"id\": 1,\n        \"created_at\": \"2025-06-21T04:04:03.000Z\",\n        \"updated_at\": \"2025-06-21T04:04:03.000Z\",\n        \"description\": \"暂无描述\",\n        \"created_by\": 7,\n        \"link\": \"https://frp.caodong0225.top/xiecheng/video-1750478636649-e7b8968c7883aeeb.mp4\",\n        \"thumbnail\": \"https://frp.caodong0225.top/xiecheng/video-1750478636649-e7b8968c7883aeeb.jpg\",\n        \"likeCount\": 0,\n        \"collectionCount\": 1,\n        \"viewCount\": {\n            \"totalViews\": \"2\",\n            \"uniqueUsers\": 1\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "获取未读视频",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/unread",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"unread"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取未读视频",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/unread",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"unread"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "601"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"259-82P465lUjPr5a9GRNZZuaonDaFA\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 21 Jun 2025 09:23:22 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"未读视频列表获取成功\",\n    \"data\": {\n        \"videos\": [\n            {\n                \"id\": 3,\n                \"created_at\": \"2025-06-21T08:06:09.000Z\",\n                \"description\": \"test\",\n                \"link\": \"https://frp.caodong0225.top/xiecheng/video-1750493167116-0ff59bd4dc8a230d.mp4\",\n                \"thumbnail\": \"https://frp.caodong0225.top/xiecheng/video-1750493167116-0ff59bd4dc8a230d.jpg\"\n            },\n            {\n                \"id\": 2,\n                \"created_at\": \"2025-06-21T06:03:15.000Z\",\n                \"description\": \"暂无描述\",\n                \"link\": \"https://frp.caodong0225.top/xiecheng/video-1750485792994-a781bc7c7381588f.mp4\",\n                \"thumbnail\": \"https://frp.caodong0225.top/xiecheng/video-1750485792994-a781bc7c7381588f.jpg\"\n            }\n        ],\n        \"page\": 1,\n        \"limit\": 10\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "通过id删除视频",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "通过id删除视频",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsInJvbGUiOiJndWVzdCIsInVzZXJuYW1lIjoiY2FvZG9uZzAyMjUiLCJlbWFpbCI6Ijg2NzEzNzQ5OEBxcS5jb20iLCJpYXQiOjE3NTA0ODEyMTksImV4cCI6MTc1MTA4NjAxOX0.QLSOqDUsWY06hBSq700TUOswZP0cSkWsQk-5QbkYUhs",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"1"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "61"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3d-ZW7hNRirmT9Hpn82gB/2JQ8Sh5U\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 04:14:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 403,\n    \"message\": \"权限不足，仅限管理员操作\"\n}"
+						}
+					]
+				},
+				{
+					"name": "获取用户看过的视频列表",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NTAyNTkwNjYsImV4cCI6MTc1MDg2Mzg2Nn0.G02QvT3Szgoo2stgAW-yQGoHf_YYovd1kwd6QxNkHfg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/history/views?page=1&pageSize=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"history",
+								"views"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取用户看过的视频列表",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NTAyNTkwNjYsImV4cCI6MTc1MDg2Mzg2Nn0.G02QvT3Szgoo2stgAW-yQGoHf_YYovd1kwd6QxNkHfg",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/history/views?page=1&pageSize=5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"history",
+										"views"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "659"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"293-5qrA5i9PEbTylg+aQzWnXFog7xc\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 05:38:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"用户观看过的视频列表获取成功\",\n    \"data\": {\n        \"videos\": [\n            {\n                \"video_id\": 3,\n                \"video_title\": \"test\",\n                \"video_thumbnail\": \"https://frp.caodong0225.top/xiecheng/video-1750493167116-0ff59bd4dc8a230d.jpg\",\n                \"last_visited_at\": \"2025-06-22T05:16:37.000Z\"\n            },\n            {\n                \"video_id\": 2,\n                \"video_title\": \"暂无描述\",\n                \"video_thumbnail\": \"https://frp.caodong0225.top/xiecheng/video-1750485792994-a781bc7c7381588f.jpg\",\n                \"last_visited_at\": \"2025-06-21T15:47:23.000Z\"\n            },\n            {\n                \"video_id\": 1,\n                \"video_title\": \"暂无描述\",\n                \"video_thumbnail\": \"https://frp.caodong0225.top/xiecheng/video-1750478636649-e7b8968c7883aeeb.jpg\",\n                \"last_visited_at\": \"2025-06-21T10:43:20.000Z\"\n            }\n        ],\n        \"page\": 1,\n        \"limit\": 5\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "删除视频观看记录",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NTAyNTkwNjYsImV4cCI6MTc1MDg2Mzg2Nn0.G02QvT3Szgoo2stgAW-yQGoHf_YYovd1kwd6QxNkHfg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/history/views/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"history",
+								"views",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "删除视频观看记录",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3NzdC5lZHUuY24iLCJpYXQiOjE3NTAyNTkwNjYsImV4cCI6MTc1MDg2Mzg2Nn0.G02QvT3Szgoo2stgAW-yQGoHf_YYovd1kwd6QxNkHfg",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/history/views/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"history",
+										"views",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "55"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-F8ZgJSSHtlFXJlIxaeVwWXWTZEU\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 06:32:51 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"视频观看记录删除成功\"\n}"
+						}
+					]
+				},
+				{
+					"name": "获取所有的视频列表（管理员权限）",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3N0LmVkdS5jbiIsImlhdCI6MTc1MDY2NTU2MywiZXhwIjoxNzUxMjcwMzYzfQ.HBUPXJu7pLhtZlULLTDhv00kKMJ-x-GNpvLxjaa6HoU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"all"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "获取所有的视频列表（管理员权限）",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3N0LmVkdS5jbiIsImlhdCI6MTc1MDY2NTU2MywiZXhwIjoxNzUxMjcwMzYzfQ.HBUPXJu7pLhtZlULLTDhv00kKMJ-x-GNpvLxjaa6HoU",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"all"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "796"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"31c-Q25noeBKfosgzgw9ukkAGZllXcE\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 08:33:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"所有视频列表获取成功\",\n    \"data\": {\n        \"videos\": [\n            {\n                \"id\": 2,\n                \"created_at\": \"2025-06-22T19:01:11.000Z\",\n                \"description\": \"上海最好的地方都是免费的\",\n                \"link\": \"https://frp.caodong0225.top/xiecheng/video-1750647671210-3530b27edcdb7bcd.mp4\",\n                \"thumbnail\": \"https://frp.caodong0225.top/xiecheng/video-1750647671210-3530b27edcdb7bcd.jpg\",\n                \"username\": \"vvbbnnoo\",\n                \"user_id\": 7,\n                \"email\": \"vvbbnnoo@gmail.com\"\n            },\n            {\n                \"id\": 1,\n                \"created_at\": \"2025-06-22T18:25:14.000Z\",\n                \"description\": \"6.16杭州西湖实况！！有一亿人！！！\",\n                \"link\": \"https://frp.caodong0225.top/xiecheng/video-1750645512980-cf955860a3daed86.mp4\",\n                \"thumbnail\": \"https://frp.caodong0225.top/xiecheng/video-1750645512980-cf955860a3daed86.jpg\",\n                \"username\": \"vvbbnnoo\",\n                \"user_id\": 7,\n                \"email\": \"vvbbnnoo@gmail.com\"\n            }\n        ],\n        \"page\": 1,\n        \"limit\": 10\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "撤销发布视频",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3N0LmVkdS5jbiIsImlhdCI6MTc1MTA5MTY3OCwiZXhwIjoxNzUxNjk2NDc4fQ.0X-gxrt_yNQz-KQPKabhBtcIKmBdnpZgEGcZetXW8S8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/video/cancel/:videoId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"video",
+								"cancel",
+								":videoId"
+							],
+							"variable": [
+								{
+									"key": "videoId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "撤销发布视频",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJzdXBlci1hZG1pbiIsInVzZXJuYW1lIjoiY2FvZG9uZyIsImVtYWlsIjoiMjIzNTA2MjAwOUBzdC51c3N0LmVkdS5jbiIsImlhdCI6MTc1MTA5MTY3OCwiZXhwIjoxNzUxNjk2NDc4fQ.0X-gxrt_yNQz-KQPKabhBtcIKmBdnpZgEGcZetXW8S8",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/video/cancel/:videoId",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"video",
+										"cancel",
+										":videoId"
+									],
+									"variable": [
+										{
+											"key": "videoId",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Expose-Headers",
+									"value": "X-Custom-Header"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-lnkSSgv7L66NFyPJr0tlLB+6gI4\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 28 Jun 2025 09:06:15 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"message\": \"视频删除成功\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
