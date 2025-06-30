@@ -128,12 +128,8 @@ const NoteDetailPage = () => {
       onOk: async () => {
         try {
           const response = await deleteNote(noteId);
-          if (response.success) {
-            message.success('删除成功');
-            router.back();
-          } else {
-            throw new Error(response.message || '删除失败');
-          }
+          message.success('删除成功');
+          router.back();
         } catch (error) {
           console.error('删除错误:', error);
           setError(error.message || '删除失败');
@@ -151,16 +147,26 @@ const NoteDetailPage = () => {
       }
       
       const response = await reviewNote(noteId, auditData);
-      if (response.success) {
-        message.success('状态更新成功');
-        setNote(prev => ({ ...prev, status: newStatus }));
-      } else {
-        throw new Error(response.message || '状态更新失败');
+      // 如果请求成功执行到这里，说明审核操作成功
+      // 根据操作类型更新状态字段
+      if (newStatus === 'approved') {
+        setNote(prev => ({ 
+          ...prev, 
+          isRejected: false, 
+          isChecking: false 
+        }));
+      } else if (newStatus === 'rejected') {
+        setNote(prev => ({ 
+          ...prev, 
+          isRejected: true, 
+          isChecking: false 
+        }));
       }
+      message.success('状态更新成功');
     } catch (error) {
       console.error('状态更新错误:', error);
       setError(error.message || '状态更新失败');
-      setErrorModalVisible(true);
+      // setErrorModalVisible(true);
     }
   };
 
@@ -185,19 +191,26 @@ const NoteDetailPage = () => {
     rejectForm.resetFields();
   };
 
-  const getStatusTag = (status) => {
-    const statusMap = {
-      'checking': { color: 'orange', text: '审核中', icon: <ExclamationCircleOutlined /> },
-      'approved': { color: 'green', text: '已通过', icon: <CheckOutlined /> },
-      'rejected': { color: 'red', text: '已拒绝', icon: <CloseOutlined /> }
-    };
-    
-    const statusInfo = statusMap[status] || { color: 'default', text: status, icon: null };
-    return (
-      <Tag color={statusInfo.color} icon={statusInfo.icon} className="text-sm font-medium px-3 py-1">
-        {statusInfo.text}
-      </Tag>
-    );
+  const getStatusTag = (note) => {
+    if (note.isRejected) {
+      return (
+        <Tag color="red" icon={<CloseOutlined />} className="text-sm font-medium px-3 py-1">
+          已拒绝
+        </Tag>
+      );
+    } else if (note.isChecking) {
+      return (
+        <Tag color="orange" icon={<ExclamationCircleOutlined />} className="text-sm font-medium px-3 py-1">
+          审核中
+        </Tag>
+      );
+    } else {
+      return (
+        <Tag color="green" icon={<CheckOutlined />} className="text-sm font-medium px-3 py-1">
+          已通过
+        </Tag>
+      );
+    }
   };
 
   const formatDate = (dateString) => {
@@ -289,7 +302,7 @@ const NoteDetailPage = () => {
                 返回列表
               </Button>
               <Space size="middle">
-                {note.status !== 'approved' && (
+                {note.isChecking && (
                   <Button 
                     type="primary" 
                     icon={<CheckOutlined />}
@@ -300,7 +313,7 @@ const NoteDetailPage = () => {
                     通过审核
                   </Button>
                 )}
-                {note.status !== 'rejected' && (
+                {!note.isRejected && (
                   <Button 
                     danger
                     icon={<CloseOutlined />}
@@ -330,7 +343,7 @@ const NoteDetailPage = () => {
             <div className="mb-8 text-center">
               <div className="flex items-center justify-center space-x-4 mb-6">
                 <Title level={1} className="mb-0 text-gray-800 font-bold">{note.title}</Title>
-                {getStatusTag(note.status)}
+                {getStatusTag(note)}
               </div>
               
               {/* 统计信息 */}

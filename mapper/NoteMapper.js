@@ -517,11 +517,11 @@ class NoteMapper {
     }
 
     // 判断游记状态是否为未审核通过
-    async getRejectedByNoteId(noteId){
+    async getStatusByNoteId(noteId,status){
         const [rows] = await pool.query(
             `SELECT * FROM notes_status 
-       WHERE note_id = ? AND status = 'rejected'`,
-            [noteId]
+       WHERE note_id = ? AND status = ?`,
+            [noteId, status]
         );
         if (rows.length === 0) return null; // 没有未通过记录
         // 返回最新的未通过记录

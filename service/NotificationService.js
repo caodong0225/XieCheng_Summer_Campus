@@ -58,6 +58,10 @@ class NotificationService {
         return result;
     }
 
+    async getUnreadNotificationCount(userId){
+        return this.mapper.getUnreadCount(userId);
+    }
+
     async markAllNotificationsAsRead(userId, sender) {
         if (!ALLOWED_SENDER.includes(sender)) {
             throw new Error('发送者类型不合法');

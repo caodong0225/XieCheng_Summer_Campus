@@ -14,6 +14,7 @@ class NotificationController {
         this.markAsRead = this.markAsRead.bind(this);
         this.listUserNotifications = this.listUserNotifications.bind(this);
         this.markAsReadAll = this.markAsReadAll.bind(this);
+        this.getUnreadNotificationCount = this.getUnreadNotificationCount.bind(this);
     }
 
     async createNotification(req, res) {
@@ -59,6 +60,16 @@ class NotificationController {
         } catch (error) {
             const status = error.message.includes('无操作权限') ? 403 : 400;
             response.error(res, error.message, status);
+        }
+    }
+
+    async getUnreadNotificationCount(req, res) {
+        try {
+            const contextUser = getContext()?.get('user');
+            const count = await this.service.getUnreadNotificationCount(contextUser.userId);
+            response.success(res, { count });
+        } catch (error) {
+            response.error(res, error.message, 500);
         }
     }
 

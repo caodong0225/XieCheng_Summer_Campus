@@ -13,12 +13,35 @@ import {getAvatar} from "@/util/string";
 import {logout} from "@/util/logout";
 import {useRouter} from '@bprogress/next';
 import {useMe} from "@/context/usercontext";
+import Link from "next/link";
+import {getUnreadNotificationCount} from "@/api/notification";
+import useSWR from "swr";
 
 export default function UserTopbar({}) {
     const {meData, mutateMe, userRoleLevel, extraState} = useMe();
     const router = useRouter();
     const [avatar, setAvatar] = useState();
     const [menuItem, setMenuItem] = useState();
+    const {data: notificationCount} = useSWR(
+        ["notificationCount", meData, extraState],
+        async () => {
+            if (!meData || !meData?.id) return 0;
+            try {
+                const response = await getUnreadNotificationCount();
+                console.log('未读通知数量响应:', response);
+                return response?.count || 0;
+            } catch (error) {
+                console.error('获取未读通知数量失败:', error);
+                return 0;
+            }
+        },
+        {
+            refreshInterval: 60000,
+            onError: (error) => {
+                console.error('SWR获取未读通知数量错误:', error);
+            }
+        }
+    );
 
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -151,6 +174,19 @@ export default function UserTopbar({}) {
             {contextHolder}
             {meData && (
                 <div className="flex gap-0 items-center">
+                    <div className={"flex gap-2 items-center"}>
+                        {console.log('当前未读通知数量:', notificationCount)}
+                        <Badge
+                            overflowCount={99}
+                            count={notificationCount || 0}
+                            size="small"
+                            offset={[-5, 5]}
+                        >
+                            <Link href="/m/notification">
+                                <Button type="text" icon={<BellOutlined/>} title={"消息中心"}/>
+                            </Link>
+                        </Badge>
+                    </div>
                     <Menu
                         mode="horizontal"
                         items={menuItem}

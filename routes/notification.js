@@ -34,6 +34,15 @@ router.put('/:id/mark-as-read',
     NotificationController.markAsRead
 );
 
+router.get('/unread-count',
+    verifyJWT,
+    (req, res, next) => {
+        // 将用户信息注入上下文
+        runInContext(req, next);
+    },
+    NotificationController.getUnreadNotificationCount
+);
+
 router.put('/markAllAsRead/:sender',
     verifyJWT,
     (req, res, next) => {

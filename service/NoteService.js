@@ -113,7 +113,7 @@ class NoteService {
 
     // 更改游记内容
 // 更改游记内容
-    async updateNote(noteId, noteData) {
+    async updateNote(noteId, noteData, user) {
         const { error } = NoteEntity.createSchema.validate(noteData);
         if (error) throw new Error(error.details[0].message);
 
@@ -135,6 +135,7 @@ class NoteService {
             if (noteStatus.status === 'rejected') {
                 // 如果状态是rejected，更新为checking
                 await this.mapper.updateNoteStatusById(noteId, 'checking');
+                await this.mapper.sendToAdminNotification(noteId,noteData.title, user.userId, user.username)
             }
 
             // 更新游记内容
@@ -241,7 +242,8 @@ class NoteService {
         const isFavorite = await this.noteEmojiMapper.isFavorite(userId, note.id);
         // 是否用户有收藏
         const isCollection = await this.noteEmojiMapper.isCollection(userId, note.id);
-        const getRejected = await this.mapper.getRejectedByNoteId(note.id)
+        const getRejected = await this.mapper.getStatusByNoteId(note.id,'rejected')
+        const getChecking = await this.mapper.getStatusByNoteId(note.id,'checking')
         // 获取游记是否是被拒绝状态
         const isRejected = getRejected != null;
         if(isRejected){
@@ -254,6 +256,7 @@ class NoteService {
         note.comments = comments;
         note.attachments = attachments;
         note.isRejected = isRejected;
+        note.isChecking = getChecking != null;
         return note;
     }
 

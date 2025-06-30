@@ -70,7 +70,7 @@ class NoteController {
             if(contextUser.role !== 'admin' && contextUser.role !== 'super-admin'){
                 await this.noteService.checkNotePermission(contextUser.userId, noteId)
             }
-            await this.noteService.updateNote(noteId, req.body);
+            await this.noteService.updateNote(noteId, req.body, contextUser);
             response.success(res, null, '游记已更新');
         } catch (error) {
             response.error(res, error.message, 400);

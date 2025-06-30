@@ -75,6 +75,16 @@ class NotificationMapper {
         return result.affectedRows > 0;
     }
 
+    // 获取用户未读消息数量
+    async getUnreadCount(userId) {
+        const [rows] = await pool.query(
+            `SELECT COUNT(*) as count FROM notifications 
+       WHERE user_id = ? AND is_read = 0`,
+            [userId]
+        );
+        return rows[0].count;
+    }
+
     // 标记所有通知为已读
     async markAllAsRead(userId, sender) {
         const [result] = await pool.query(
