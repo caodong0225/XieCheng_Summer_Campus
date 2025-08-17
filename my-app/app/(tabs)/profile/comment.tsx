@@ -199,7 +199,7 @@ export default function CommentScreen() {
           setCommentText('');
           setReplyTo(null);
           // 重载数据
-          fetchComments(true);
+          await fetchComments(true);
         } else {
           Toast.show({
             type: 'error',
@@ -223,7 +223,8 @@ export default function CommentScreen() {
             text2: '评论已发布',
           });
           setCommentText('');
-          await fetchComments(false);
+          // 重新渲染数据
+          await fetchComments()
         } else {
           Toast.show({
             type: 'error',

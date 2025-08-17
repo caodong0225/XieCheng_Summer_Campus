@@ -143,7 +143,7 @@ const NoteDetailPage = () => {
     try {
       const auditData = { status: newStatus };
       if (newStatus === 'rejected' && rejectReason) {
-        auditData.rejectReason = rejectReason;
+        auditData.reason = rejectReason;
       }
       
       const response = await reviewNote(noteId, auditData);

@@ -198,7 +198,7 @@ class NoteMapper {
         const [result] = await pool.query(
             `insert into notifications (title, content, user_id, sender) values
        (?, ?, ?, ?)`,
-            ['游记审核未通过通知', '您的游记<note id = ' + note_id.toString() + '>' + note_title + '</note>审核未通过，未通过理由：' + reason, userId, 'system']
+            ['游记审核未通过通知', '您的游记<note id=' + note_id.toString() + '>' + note_title + '</note>审核未通过，未通过理由：' + reason, userId, 'system']
         );
         return result.affectedRows > 0;
     }

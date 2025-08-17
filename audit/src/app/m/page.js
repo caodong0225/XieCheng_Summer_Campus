@@ -10,67 +10,6 @@ import { useMe } from "@/context/usercontext";
 
 const { Text, Title } = Typography;
 
-const ArchitectureSection = () => {
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 500);
-    }, []);
-
-    if (isLoading) {
-        return (
-            <div className="bg-white p-6 shadow-lg rounded-lg mb-8">
-                <Skeleton active />
-            </div>
-        );
-    }
-
-    const architectureContent = `
-# 技术架构说明
-
-## 平台概述
-携程集团前端大作业
-  `;
-
-    return (
-        <div className="bg-white p-6 shadow-lg rounded-lg mb-8">
-            <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">技术架构说明</h1>
-            <div className="markdown-content">
-                <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                        h1: ({node, ...props}) => (
-                            <h1 className="text-2xl font-bold mb-4 text-blue-600" {...props} />
-                        ),
-                        h2: ({node, ...props}) => (
-                            <h2 className="text-xl font-bold mb-3 text-gray-800" {...props} />
-                        ),
-                        h3: ({node, ...props}) => (
-                            <h3 className="text-lg font-bold mb-2 text-gray-700" {...props} />
-                        ),
-                        p: ({node, ...props}) => (
-                            <p className="mb-4 text-gray-600 leading-relaxed" {...props} />
-                        ),
-                        ul: ({node, ...props}) => (
-                            <ul className="list-disc list-inside mb-4 text-gray-600" {...props} />
-                        ),
-                        li: ({node, ...props}) => (
-                            <li className="mb-1" {...props} />
-                        ),
-                        strong: ({node, ...props}) => (
-                            <strong className="font-semibold text-gray-800" {...props} />
-                        )
-                    }}
-                >
-                    {architectureContent}
-                </ReactMarkdown>
-            </div>
-        </div>
-    );
-};
-
 const NotesSection = () => {
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -287,7 +226,6 @@ export default function Home() {
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
             <div className="container mx-auto px-4 py-8">
                 {/* 上部分：技术架构说明 */}
-                <ArchitectureSection />
 
                 {/* 下部分：游记列表 - 传递认证状态 */}
                 <NotesSection />
